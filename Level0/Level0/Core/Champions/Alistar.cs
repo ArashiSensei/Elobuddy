@@ -32,10 +32,6 @@ namespace LevelZero.Core.Champions
         public override void InitEvents()
         {
             base.InitEvents();
-            Interrupter.OnInterruptableSpell += Interrupter_OnInterruptableSpell;
-            AIHeroClient.OnProcessSpellCast += AIHeroClient_OnProcessSpellCast;
-            Drawing.OnDraw += OnDraw;
-
         }
 
         //extension

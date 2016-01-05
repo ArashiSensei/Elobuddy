@@ -32,7 +32,6 @@ namespace LevelZero.Core.Champions
         public override void InitEvents()
         {
             base.InitEvents();
-            Game.OnTick += Game_OnTick;
             Interrupter.OnInterruptableSpell += Interrupter_OnInterruptableSpell;
             AIHeroClient.OnProcessSpellCast += AIHeroClient_OnProcessSpellCast;
             Drawing.OnDraw += OnDraw;
@@ -173,7 +172,7 @@ namespace LevelZero.Core.Champions
             return;
         }
 
-        private void Game_OnTick(EventArgs args)
+        public override void OnUpdate(EventArgs args)
         {
             var misc = Features.First(it => it.NameFeature == "Misc");
 

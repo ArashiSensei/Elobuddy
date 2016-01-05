@@ -33,7 +33,6 @@ namespace LevelZero.Core.Champions
         public override void InitEvents()
         {
             base.InitEvents();
-            Drawing.OnDraw += OnDraw;
         }
 
         public override void InitVariables()

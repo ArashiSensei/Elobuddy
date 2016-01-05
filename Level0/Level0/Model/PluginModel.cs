@@ -48,6 +48,10 @@ namespace LevelZero.Model
         {
             Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnLevelUp += OnPlayerLevelUp;
+            Drawing.OnDraw += OnDraw;
+            Orbwalker.OnPostAttack += OnAfterAttack;
+            Interrupter.OnInterruptableSpell += OnPossibleToInterrupt;
+            Gapcloser.OnGapcloser += OnGapCloser;
         }
 
         public virtual void OnPlayerLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs args)
@@ -91,17 +95,14 @@ namespace LevelZero.Model
 
         public virtual void OnDraw(EventArgs args)
         {
-            throw new NotImplementedException();
         }
 
         public virtual void OnAfterAttack(AttackableUnit target, EventArgs args)
         {
-            throw new NotImplementedException();
         }
 
-        public virtual void OnPossibleToInterrupt(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs interruptableSpellEventArgs)
+        public virtual void OnPossibleToInterrupt(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs args)
         {
-            throw new NotImplementedException();
         }
 
         public virtual void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
@@ -111,17 +112,14 @@ namespace LevelZero.Model
 
         public virtual void OnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            throw new NotImplementedException();
         }
 
         public virtual void GameObjectOnCreate(GameObject sender, EventArgs args)
         {
-            throw new NotImplementedException();
         }
 
         public virtual void GameObjectOnDelete(GameObject sender, EventArgs args)
         {
-            throw new NotImplementedException();
         }
     }
 }

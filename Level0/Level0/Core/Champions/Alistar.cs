@@ -41,7 +41,8 @@ namespace LevelZero.Core.Champions
             if (target != null && target.IsValidTarget())
             {
                 Combing = true;
-                int delay = (int)((150 * (Player.Instance.Distance(target))) / 650);
+                int ADelay = Features.First(it => it.NameFeature == "Misc").SliderValue("misc.W/Q Delay");
+                int delay = (int)( (150 * (Player.Instance.Distance(target))) / 650 + ADelay);
 
                 if (Player.CastSpell(SpellSlot.W, target))
                 {

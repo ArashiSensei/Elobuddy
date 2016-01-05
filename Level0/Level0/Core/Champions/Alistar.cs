@@ -121,68 +121,6 @@ namespace LevelZero.Core.Champions
             return true;
         }
 
-        public override void OnUpdate(EventArgs args)
-        {
-            var misc = Features.First(it => it.NameFeature == "Misc");
-
-            //Insec
-
-            if (misc.IsChecked("misc.insec"))
-            {
-                var Target = TargetSelector.GetTarget(1000, DamageType.Magical);
-
-                var flashslot = Player.Instance.GetSpellSlotFromName("summonerflash");
-
-                if (flashslot != SpellSlot.Unknown)
-                {
-                    Flash = new Spell.Skillshot(flashslot, 425, SkillShotType.Linear);
-                }
-
-                if (!Insecing && !Target.HasBuffOfType(BuffType.SpellImmunity) && !Target.HasBuffOfType(BuffType.Invulnerability))
-                {
-                    Player.IssueOrder(GameObjectOrder.MoveTo, Target);
-
-                    if (Spells[1].IsReady())
-                    {
-                        if (Spells[0].IsReady() && (Target.IsValidTarget(Spells[0].Range - 130) || (Target.IsValidTarget(Spells[0].Range - 50) && !CanMove(Target))) && Player.Instance.Mana >= (Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData.ManaCostArray[Spells[1].Level - 1] + Player.Instance.Spellbook.GetSpell(SpellSlot.Q).SData.ManaCostArray[Spells[0].Level - 1]))
-                        {
-                            Insecing = true;
-                            QWInsec(Target);
-                        }
-                        else if (Flash != null)
-                        {
-                            var WalkPos = Game.CursorPos.Extend(Target, Game.CursorPos.Distance(Target) + 100);
-
-                            if ((Player.Instance.Distance(WalkPos) <= Flash.Range - 80 || (Target.IsValidTarget(Flash.Range - 50) && !CanMove(Target))) && Flash.IsReady() && Player.Instance.Mana >= Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData.ManaCostArray[Spells[1].Level - 1])
-                            {
-                                Insecing = true;
-
-                                if (Flash.Cast(WalkPos.To3D())) Spells[1].Cast(Target);
-
-                                Insecing = false;
-                            }
-
-                            else if ((Target.IsValidTarget(Flash.Range + Spells[0].Range - 130) || (Target.IsValidTarget(Flash.Range + Spells[0].Range - 50) && !CanMove(Target))) && Flash.IsReady() && Spells[0].IsReady() && Player.Instance.Mana >= (Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData.ManaCostArray[Spells[1].Level - 1] + Player.Instance.Spellbook.GetSpell(SpellSlot.Q).SData.ManaCostArray[Spells[0].Level - 1]))
-                            {
-                                Insecing = true;
-                                QWInsec(Target, true);
-                            }
-                        }
-                    }
-                }
-            }
-
-            //Heal
-
-            if (Spells[2].IsReady() && misc.IsChecked("misc.heal") && Player.Instance.ManaPercent >= misc.SliderValue("misc.heal.mana%") && EntityManager.Heroes.Allies.Any(it => it.HealthPercent <= misc.SliderValue("misc.heal.health%") && Spells[2].IsInRange(it)))
-            {
-                if (!misc.IsChecked("misc.heal.myself") && Player.Instance.HealthPercent <= misc.SliderValue("misc.heal.health%")) { }
-                else Spells[2].Cast();
-            }
-
-            return;
-        }
-
         //extension
 
         public override void InitVariables()
@@ -258,6 +196,68 @@ namespace LevelZero.Core.Champions
 
             feature.ToMenu();
             Features.Add(feature);
+        }
+
+        public override void OnUpdate(EventArgs args)
+        {
+            var misc = Features.First(it => it.NameFeature == "Misc");
+
+            //Insec
+
+            if (misc.IsChecked("misc.insec"))
+            {
+                var Target = TargetSelector.GetTarget(1000, DamageType.Magical);
+
+                var flashslot = Player.Instance.GetSpellSlotFromName("summonerflash");
+
+                if (flashslot != SpellSlot.Unknown)
+                {
+                    Flash = new Spell.Skillshot(flashslot, 425, SkillShotType.Linear);
+                }
+
+                if (!Insecing && !Target.HasBuffOfType(BuffType.SpellImmunity) && !Target.HasBuffOfType(BuffType.Invulnerability))
+                {
+                    Player.IssueOrder(GameObjectOrder.MoveTo, Target);
+
+                    if (Spells[1].IsReady())
+                    {
+                        if (Spells[0].IsReady() && (Target.IsValidTarget(Spells[0].Range - 130) || (Target.IsValidTarget(Spells[0].Range - 50) && !CanMove(Target))) && Player.Instance.Mana >= (Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData.ManaCostArray[Spells[1].Level - 1] + Player.Instance.Spellbook.GetSpell(SpellSlot.Q).SData.ManaCostArray[Spells[0].Level - 1]))
+                        {
+                            Insecing = true;
+                            QWInsec(Target);
+                        }
+                        else if (Flash != null)
+                        {
+                            var WalkPos = Game.CursorPos.Extend(Target, Game.CursorPos.Distance(Target) + 100);
+
+                            if ((Player.Instance.Distance(WalkPos) <= Flash.Range - 80 || (Target.IsValidTarget(Flash.Range - 50) && !CanMove(Target))) && Flash.IsReady() && Player.Instance.Mana >= Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData.ManaCostArray[Spells[1].Level - 1])
+                            {
+                                Insecing = true;
+
+                                if (Flash.Cast(WalkPos.To3D())) Spells[1].Cast(Target);
+
+                                Insecing = false;
+                            }
+
+                            else if ((Target.IsValidTarget(Flash.Range + Spells[0].Range - 130) || (Target.IsValidTarget(Flash.Range + Spells[0].Range - 50) && !CanMove(Target))) && Flash.IsReady() && Spells[0].IsReady() && Player.Instance.Mana >= (Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData.ManaCostArray[Spells[1].Level - 1] + Player.Instance.Spellbook.GetSpell(SpellSlot.Q).SData.ManaCostArray[Spells[0].Level - 1]))
+                            {
+                                Insecing = true;
+                                QWInsec(Target, true);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //Heal
+
+            if (Spells[2].IsReady() && misc.IsChecked("misc.heal") && Player.Instance.ManaPercent >= misc.SliderValue("misc.heal.mana%") && EntityManager.Heroes.Allies.Any(it => it.HealthPercent <= misc.SliderValue("misc.heal.health%") && Spells[2].IsInRange(it)))
+            {
+                if (!misc.IsChecked("misc.heal.myself") && Player.Instance.HealthPercent <= misc.SliderValue("misc.heal.health%")) { }
+                else Spells[2].Cast();
+            }
+
+            return;
         }
 
         public override void OnDraw(EventArgs args)

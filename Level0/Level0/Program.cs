@@ -36,6 +36,7 @@ namespace LevelZero
 
                         if (CorrectVersion > AssVersion)
                         {
+                            Chat.Print("Your AIO is OUTDATED, update it");
                             NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Your AIO version is OUTDATED, current version is " + CorrectVersion, Color.Yellow));
                         }
                     }

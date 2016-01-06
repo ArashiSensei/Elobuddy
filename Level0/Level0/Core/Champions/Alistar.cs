@@ -198,7 +198,9 @@ namespace LevelZero.Core.Champions
                     new ValueSlider(99, 1, 50, "misc.heal.health%", "Heal when ally health% <="),
                     new ValueSlider(99, 1, 30, "misc.heal.mana%", "Heal when mana% >="),
                     new ValueCheckbox(true, "misc.gapcloser", "W/Q on enemy gapcloser"),
-                    new ValueCheckbox(true, "misc.interrupter", "Interrupt enemy spells")
+                    new ValueCheckbox(true, "misc.interrupter", "Interrupt enemy spells"),
+                    new ValueKeybind(false, "misc.hu3HU3hu3", "hu3HU3hu3"),
+                    new ValueSlider(4, 1, 3, "misc.hu3HU3hu3.mode", "hu3HU3hu3 mode, 1:joke, 2:taunt, 3:dance, 4:laugh")
                 }
             };
 
@@ -212,6 +214,37 @@ namespace LevelZero.Core.Champions
 
             var misc = Features.First(it => it.NameFeature == "Misc");
 
+            //hu3HU3hu3
+
+            if (misc.IsChecked("misc.hu3HU3hu3"))
+            {
+                switch (misc.SliderValue("misc.hu3HU3hu3.mode"))
+                {
+                    case 1:
+                        Player.DoEmote(Emote.Joke);
+                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                        break;
+
+                    case 2:
+                        Player.DoEmote(Emote.Taunt);
+                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                        break;
+
+                    case 3:
+                        Player.DoEmote(Emote.Dance);
+                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                        break;
+
+                    case 4:
+                        Player.DoEmote(Emote.Laugh);
+                        Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            
             //Insec
 
             if (misc.IsChecked("misc.insec"))

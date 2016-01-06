@@ -30,7 +30,7 @@ namespace LevelZero
                 /*
                     Anyone wants your name here ?
                 */
-                NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Addon by: MrArticuno", Color.White));
+                NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Addon by: MrArticuno and WujuSan", Color.White));
             }
             catch (Exception ex)
             {

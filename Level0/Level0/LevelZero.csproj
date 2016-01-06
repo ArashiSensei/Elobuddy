@@ -88,6 +88,7 @@
     <Compile Include="Util\NotificationUtil.cs" />
     <Compile Include="Util\PredictionUtil.cs" />
     <Compile Include="Util\ItemUtil.cs" />
+    <Compile Include="Util\SpellsUtil.cs" />
     <Compile Include="Util\TargetUtil.cs" />
     <Compile Include="Util\VersionUtil.cs" />
   </ItemGroup>

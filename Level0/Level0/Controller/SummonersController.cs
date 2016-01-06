@@ -10,7 +10,7 @@ namespace LevelZero.Controller
     {
         public bool CastIgnite(Obj_AI_Base target)
         {
-            if (target == null || !target.IsValidTarget() || target.IsStructure()) return false;
+            if (target == null || !target.IsValidTarget() || target.IsStructure() || target.IsMinion) return false;
 
             var summoner = SpellsUtil.GetTargettedSpell("summonerdot", 600);
 
@@ -21,7 +21,7 @@ namespace LevelZero.Controller
 
         public bool CastExhaust(Obj_AI_Base target)
         {
-            if (target == null || !target.IsValidTarget() || target.IsStructure()) return false;
+            if (target == null || !target.IsValidTarget() || target.IsStructure() || target.IsMinion) return false;
 
             var summoner = SpellsUtil.GetTargettedSpell("summonerexhaust", 650);
 

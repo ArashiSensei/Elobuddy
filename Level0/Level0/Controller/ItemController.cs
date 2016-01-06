@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EloBuddy;
+﻿using EloBuddy;
 using EloBuddy.SDK;
 using LevelZero.Util;
 using SharpDX;
@@ -16,6 +11,8 @@ namespace LevelZero.Controller
         
         public bool CastHextechGunBlade(Obj_AI_Base target)
         {
+            if (target == null || !target.IsValidTarget() || target.IsStructure() || target.IsMinion()) return false;
+
             var Hextech = ItemUtil.GetItem(ItemId.Hextech_Gunblade, 700);
 
             if (Hextech.IsOwned() && Hextech.IsReady() && Hextech.IsInRange(target) && Hextech.Cast(target)) return true;
@@ -60,6 +57,8 @@ namespace LevelZero.Controller
 
         public bool CastBilgeBtrk(Obj_AI_Base target)
         {
+            if (target == null || !target.IsValidTarget() || target.IsStructure() || target.IsMinion()) return false;
+
             var bilgewaterBtrk = ItemUtil.GetItem(ItemId.Bilgewater_Cutlass, 550);
 
             if (bilgewaterBtrk.IsOwned() && bilgewaterBtrk.IsReady() && bilgewaterBtrk.IsInRange(target) && bilgewaterBtrk.Cast(target)) return true;
@@ -77,6 +76,8 @@ namespace LevelZero.Controller
 
         public bool CastFaceOfTheMountain(Obj_AI_Base ally)
         {
+            if (ally == null || !ally.IsValidTarget() || ally.IsStructure() || ally.IsMinion()) return false;
+
             var fotmountain = ItemUtil.GetItem(ItemId.Face_of_the_Mountain, 600);
 
             if (fotmountain.IsOwned() && fotmountain.IsReady() && fotmountain.IsInRange(ally) && fotmountain.Cast(ally)) return true;
@@ -86,6 +87,8 @@ namespace LevelZero.Controller
 
         public bool CastMikael(Obj_AI_Base ally)
         {
+            if (ally == null || !ally.IsValidTarget() || ally.IsStructure() || ally.IsMinion()) return false;
+
             var mikael = ItemUtil.GetItem(ItemId.Mikaels_Crucible, 600);
 
             if (mikael.IsOwned() && mikael.IsReady() && mikael.IsInRange(ally) && mikael.Cast(ally)) return true;
@@ -95,6 +98,8 @@ namespace LevelZero.Controller
 
         public bool CastSolari(Obj_AI_Base ally)
         {
+            if (ally == null || !ally.IsValidTarget() || ally.IsStructure() || ally.IsMinion()) return false;
+
             var solari = ItemUtil.GetItem(ItemId.Locket_of_the_Iron_Solari, 600);
 
             if (solari.IsOwned() && solari.IsReady() && solari.IsInRange(ally) && solari.Cast(ally)) return true;
@@ -128,6 +133,8 @@ namespace LevelZero.Controller
 
         public bool CastRanduin(Obj_AI_Base target = null)
         {
+            if (target == null || !target.IsValidTarget() || target.IsStructure()) return false;
+
             if (target != null)
             {
                 var randuin = ItemUtil.GetItem(ItemId.Randuins_Omen, 450);//500 of range

@@ -122,6 +122,14 @@ namespace LevelZero.Core.Champions
             return true;
         }
 
+        private int qwmana
+        {
+            get
+            {
+                return new[] { 0, 65, 70, 75, 80, 85 }[Spells[0].Level] + new[] { 0, 65, 70, 75, 80, 85 }[Spells[1].Level];
+            }
+        }
+
         //extension
 
         public override void InitVariables()
@@ -190,8 +198,8 @@ namespace LevelZero.Core.Champions
                     new ValueCheckbox(true,  "misc.heal.myself", "Heal myself"),
                     new ValueSlider(99, 1, 50, "misc.heal.health%", "Heal when ally health% <="),
                     new ValueSlider(99, 1, 30, "misc.heal.mana%", "Heal when mana% >="),
-                    new ValueSlider(100, 0 , 40, "misc.gapcloser", "W/Q on enemy gapcloser"),
-                    new ValueSlider(100, 0 , 40, "misc.interrupter", "Interrupt enemy spells")
+                    new ValueCheckbox(true, "misc.gapcloser", "W/Q on enemy gapcloser"),
+                    new ValueCheckbox(true, "misc.interrupter", "Interrupt enemy spells")
                 }
             };
 
@@ -201,6 +209,8 @@ namespace LevelZero.Core.Champions
 
         public override void OnUpdate(EventArgs args)
         {
+            base.OnUpdate(args);
+
             var misc = Features.First(it => it.NameFeature == "Misc");
 
             //Insec
@@ -273,7 +283,7 @@ namespace LevelZero.Core.Champions
 
             var Target = TargetSelector.GetTarget(1000, DamageType.Magical);
             var insec = Features.First(it => it.NameFeature == "Misc").IsChecked("misc.insec");
-            var qwmana = (Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData.ManaCostArray[Spells[1].Level - 1] + Player.Instance.Spellbook.GetSpell(SpellSlot.Q).SData.ManaCostArray[Spells[0].Level - 1]);
+            int qwmana = new[] { 0, 65, 70, 75, 80, 85 }[Spells[0].Level] + new[] { 0, 65, 70, 75, 80, 85 }[Spells[1].Level];
 
             if (Target != null && Spells[1].IsReady())
             {
@@ -335,7 +345,7 @@ namespace LevelZero.Core.Champions
 
                 if (Spells[0].IsReady() && Target.IsValidTarget(Spells[0].Range - 80) && !Player.Instance.IsDashing()) Spells[0].Cast();
 
-                else if (Spells[0].IsReady() && Spells[1].IsReady() && Target.IsValidTarget(625) && Player.Instance.Mana >= (Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData.ManaCostArray[Spells[0].Level - 1] + Player.Instance.Spellbook.GetSpell(SpellSlot.Q).SData.ManaCostArray[Spells[0].Level - 1])) { WQ(Target); Combing = true; }
+                else if (Spells[0].IsReady() && Spells[1].IsReady() && Target.IsValidTarget(625) && Player.Instance.Mana >= qwmana) { WQ(Target); Combing = true; }
 
                 var combo = Features.First(it => it.NameFeature == "Combo");
 

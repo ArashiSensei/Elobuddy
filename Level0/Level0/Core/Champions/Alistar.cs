@@ -179,8 +179,8 @@ namespace LevelZero.Core.Champions
                 MenuValueStyleList = new List<ValueAbstract>
                 {
                     new ValueCheckbox(true,  "combo.r", "Combo R"),
-                    new ValueCheckbox(true,  "combo.r.health%", "Health% to ult"),
-                    new ValueCheckbox(true,  "combo.r.minenemies", "Min Enemies to ult")
+                    new ValueSlider(100, 1, 30, "combo.r.health%", "Health% to ult"),
+                    new ValueSlider(5, 1, 2, "combo.r.minenemies", "Min Enemies to ult")
                 }
             };
 

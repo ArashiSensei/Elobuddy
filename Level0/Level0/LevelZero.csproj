@@ -35,16 +35,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EloBuddy">
-      <HintPath>..\..\..\..\..\..\..\EloBuddy\System\EloBuddy.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\EloBuddy.Loader.Complete\System\EloBuddy.dll</HintPath>
     </Reference>
     <Reference Include="EloBuddy.SDK">
-      <HintPath>..\..\..\..\..\..\..\EloBuddy\System\EloBuddy.SDK.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\EloBuddy.Loader.Complete\System\EloBuddy.SDK.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>..\..\..\..\..\..\..\EloBuddy\System\SharpDX.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\EloBuddy.Loader.Complete\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX.Direct3D9">
-      <HintPath>..\..\..\..\..\..\..\EloBuddy\System\SharpDX.Direct3D9.dll</HintPath>
+      <HintPath>..\..\..\..\..\Downloads\EloBuddy.Loader.Complete\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -61,6 +61,8 @@
     <Compile Include="Controller\DamageIndicator.cs" />
     <Compile Include="Controller\ItemController.cs" />
     <Compile Include="Controller\SkinController.cs" />
+    <Compile Include="Controller\SummonersController.cs" />
+    <Compile Include="Core\Champions\Alistar.cs" />
     <Compile Include="Core\Champions\Xerath.cs" />
     <Compile Include="Core\Champions\Tristana.cs" />
     <Compile Include="Model\Enuns\EnumMenuStyle.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="Util\PredictionUtil.cs" />
     <Compile Include="Util\ItemUtil.cs" />
     <Compile Include="Util\TargetUtil.cs" />
+    <Compile Include="Util\VersionUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

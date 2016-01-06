@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EloBuddy;
 using EloBuddy.SDK;
 using SharpDX;
+using Color = System.Drawing.Color;
 
 namespace LevelZero.Controller
 {
@@ -20,11 +18,11 @@ namespace LevelZero.Controller
 
         private static readonly Vector2 BarOffset = new Vector2(0, 0);
 
-        private static System.Drawing.Color _drawingColor;
-        public static System.Drawing.Color DrawingColor
+        private static Color _drawingColor;
+        public static Color DrawingColor
         {
             get { return _drawingColor; }
-            set { _drawingColor = System.Drawing.Color.FromArgb(170, value); }
+            set { _drawingColor = Color.FromArgb(170, value); }
         }
 
         public static bool Enabled { get; set; }
@@ -33,7 +31,7 @@ namespace LevelZero.Controller
         {
             // Apply needed field delegate for damage calculation
             DamageToUnit = damageToUnit;
-            DrawingColor = System.Drawing.Color.DarkOrange;
+            DrawingColor = Color.DarkOrange;
             Enabled = true;
 
             // Register event handlers

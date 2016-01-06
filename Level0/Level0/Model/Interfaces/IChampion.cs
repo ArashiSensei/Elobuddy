@@ -1,6 +1,6 @@
-﻿using EloBuddy;
+﻿using System;
+using EloBuddy;
 using EloBuddy.SDK.Events;
-using System;
 
 namespace LevelZero.Model.Interfaces
 {

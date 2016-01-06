@@ -1,17 +1,18 @@
 ﻿using System;
-using LevelZero.Model;
-using EloBuddy;
-using EloBuddy.SDK.Events;
-using LevelZero.Model.Values;
 using System.Collections.Generic;
 using System.Linq;
+using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
+using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Rendering;
 using LevelZero.Controller;
+using LevelZero.Model;
+using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
+using Color = System.Drawing.Color;
 
 namespace LevelZero.Core.Champions
 {
@@ -321,30 +322,30 @@ namespace LevelZero.Core.Champions
             {
                 if (Spells[0].IsReady() && (Target.IsValidTarget(600)) && Player.Instance.Mana >= qwmana)
                 {
-                    Drawing.DrawText(Target.Position.WorldToScreen().X - 30, Target.Position.WorldToScreen().Y - 180, System.Drawing.Color.Yellow, "W/Q is possible !!");
+                    Drawing.DrawText(Target.Position.WorldToScreen().X - 30, Target.Position.WorldToScreen().Y - 180, Color.Yellow, "W/Q is possible !!");
                 }
 
                 if (Spells[0].IsReady() && (Target.IsValidTarget(Spells[0].Range - 130) || (Target.IsValidTarget(Spells[0].Range - 50) && !CanMove(Target)) && Player.Instance.Mana >= qwmana))
                 {
-                    Drawing.DrawText(Target.Position.WorldToScreen().X - 30, Target.Position.WorldToScreen().Y - 150, System.Drawing.Color.Yellow, "Q/W Insec !!");
-                    Drawing.DrawLine(Target.Position.WorldToScreen(), Game.CursorPos2D, 3, System.Drawing.Color.Yellow);
-                    Drawing.DrawCircle(WalkPos, 70, System.Drawing.Color.BlueViolet);
+                    Drawing.DrawText(Target.Position.WorldToScreen().X - 30, Target.Position.WorldToScreen().Y - 150, Color.Yellow, "Q/W Insec !!");
+                    Drawing.DrawLine(Target.Position.WorldToScreen(), Game.CursorPos2D, 3, Color.Yellow);
+                    Drawing.DrawCircle(WalkPos, 70, Color.BlueViolet);
                 }
                 else if (Flash != null)
                 {
                     if (Flash.IsReady() && Player.Instance.Distance(WalkPos) <= Flash.Range - 100 && Player.Instance.Mana >= Player.Instance.Spellbook.GetSpell(SpellSlot.W).SData.ManaCostArray[Spells[1].Level - 1])
                     {
-                        Drawing.DrawText(Target.Position.WorldToScreen().X - 30, Target.Position.WorldToScreen().Y - 150, System.Drawing.Color.Yellow, "Flash/W Insec !!");
-                        Drawing.DrawLine(Target.Position.WorldToScreen(), Game.CursorPos2D, 3, System.Drawing.Color.Yellow);
-                        Drawing.DrawCircle(WalkPos, 70, System.Drawing.Color.BlueViolet);
+                        Drawing.DrawText(Target.Position.WorldToScreen().X - 30, Target.Position.WorldToScreen().Y - 150, Color.Yellow, "Flash/W Insec !!");
+                        Drawing.DrawLine(Target.Position.WorldToScreen(), Game.CursorPos2D, 3, Color.Yellow);
+                        Drawing.DrawCircle(WalkPos, 70, Color.BlueViolet);
                     }
 
                     else if (Flash.IsReady() && Spells[0].IsReady() && Target.IsValidTarget(Flash.Range + Spells[0].Range - 40) && Player.Instance.Mana >= qwmana)
                     {
-                        Drawing.DrawText(Target.Position.WorldToScreen().X - 30, Target.Position.WorldToScreen().Y - 150, System.Drawing.Color.Yellow, "Flash/Q/W Insec !!");
-                        Drawing.DrawLine(Target.Position.WorldToScreen(), Game.CursorPos2D, 3, System.Drawing.Color.Yellow);
-                        Drawing.DrawCircle(Player.Instance.Position.Extend(Target, Flash.Range).To3D(), 70, System.Drawing.Color.Yellow);
-                        Drawing.DrawCircle(WalkPos, 70, System.Drawing.Color.BlueViolet);
+                        Drawing.DrawText(Target.Position.WorldToScreen().X - 30, Target.Position.WorldToScreen().Y - 150, Color.Yellow, "Flash/Q/W Insec !!");
+                        Drawing.DrawLine(Target.Position.WorldToScreen(), Game.CursorPos2D, 3, Color.Yellow);
+                        Drawing.DrawCircle(Player.Instance.Position.Extend(Target, Flash.Range).To3D(), 70, Color.Yellow);
+                        Drawing.DrawCircle(WalkPos, 70, Color.BlueViolet);
                     }
                 }
             }

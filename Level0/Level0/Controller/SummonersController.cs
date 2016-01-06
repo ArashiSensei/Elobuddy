@@ -1,7 +1,6 @@
 ﻿using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
-using LevelZero.Util;
 using SharpDX;
 
 namespace LevelZero.Controller

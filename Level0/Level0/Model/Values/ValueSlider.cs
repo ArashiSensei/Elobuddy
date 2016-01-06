@@ -1,5 +1,4 @@
-﻿using System;
-using LevelZero.Model.Enuns;
+﻿using LevelZero.Model.Enuns;
 
 namespace LevelZero.Model.Values
 {

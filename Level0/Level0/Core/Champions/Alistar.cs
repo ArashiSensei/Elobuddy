@@ -46,7 +46,6 @@ namespace LevelZero.Core.Champions
 
                 if (Player.CastSpell(SpellSlot.W, target))
                 {
-                    Chat.Print(Player.Instance.Distance(target));
                     EloBuddy.SDK.Core.DelayAction(() => Spells[0].Cast(), delay);
                     EloBuddy.SDK.Core.DelayAction(() => Combing = false, delay + 1000);
                 }

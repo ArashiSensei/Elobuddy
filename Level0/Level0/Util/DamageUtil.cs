@@ -25,6 +25,12 @@ namespace LevelZero.Util
                     ? Player.Instance.FlatMagicDamageMod
                     : Player.Instance.FlatPhysicalDamageMod));
 
+            if (spellBase.DamageType == DamageType.True)
+            {
+                return enemy.Health < (spellBase.SpellDamageValue[spellBase.Spell.Level] +
+                spellBase.SpellDamageModifier[spellBase.Spell.Level] * Player.Instance.FlatPhysicalDamageMod - damageDecrease);
+            }
+
             return enemy.Health < (possibleDamage - damageDecrease);
         }
     }

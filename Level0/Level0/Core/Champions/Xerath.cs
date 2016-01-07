@@ -11,6 +11,7 @@ using LevelZero.Model;
 using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
+using Circle = EloBuddy.SDK.Rendering.Circle;
 
 namespace LevelZero.Core.Champions
 {
@@ -26,11 +27,6 @@ namespace LevelZero.Core.Champions
         {
             InitVariables();
             InitEvents();
-        }
-
-        public override void InitEvents()
-        {
-            base.InitEvents();
         }
 
         public override void InitVariables()

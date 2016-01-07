@@ -17,6 +17,7 @@ namespace LevelZero.Model
             Spells = new List<Spell.SpellBase>();
             Features = new List<Feature>();
             Init();
+            InitEvents();
         }
 
         public Spell.SpellBase findSpell(SpellSlot spellSlot)
@@ -48,6 +49,7 @@ namespace LevelZero.Model
             Orbwalker.OnPostAttack += OnAfterAttack;
             Interrupter.OnInterruptableSpell += OnPossibleToInterrupt;
             Gapcloser.OnGapcloser += OnGapCloser;
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
         }
 
         public virtual void OnPlayerLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs args)

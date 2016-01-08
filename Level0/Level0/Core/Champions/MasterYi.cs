@@ -36,8 +36,6 @@ namespace LevelZero.Core.Champions
         public override void InitEvents()
         {
             base.InitEvents();
-
-            AIHeroClient.OnProcessSpellCast += OnProcessSpell;
         }
 
         public override void InitVariables()
@@ -195,8 +193,6 @@ namespace LevelZero.Core.Champions
         {
             base.OnUpdate(args);
 
-            if (Player.IsDead) return;
-
             var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
             var misc = Features.First(it => it.NameFeature == "Misc");
 
@@ -257,6 +253,8 @@ namespace LevelZero.Core.Champions
 
         public override void OnDraw(EventArgs args)
         {
+            base.OnDraw(args);
+
             var draw = Features.Find(f => f.NameFeature == "Draw");
 
             if (draw.IsChecked("disable"))
@@ -397,6 +395,8 @@ namespace LevelZero.Core.Champions
 
         public override void OnAfterAttack(AttackableUnit target, EventArgs args)
         {
+            base.OnAfterAttack(target, args);
+
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear) && Q.IsReady())
             {
                 var jungleclear = Features.First(it => it.NameFeature == "Jungle Clear");
@@ -444,6 +444,8 @@ namespace LevelZero.Core.Champions
 
         public override void OnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
+            base.OnProcessSpell(sender, args);
+
             if (sender.IsValidTarget() && sender.IsEnemy && MenuSpells.Any(el => el == args.SData.Name) && Player.Distance(sender) <= args.SData.CastRange)
             {
                 var Target = TargetSelector.GetTarget(900, DamageType.Physical); 

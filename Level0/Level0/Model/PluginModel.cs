@@ -17,6 +17,7 @@ namespace LevelZero.Model
             Spells = new List<Spell.SpellBase>();
             Features = new List<Feature>();
             Init();
+            InitEvents();
         }
 
         public Spell.SpellBase findSpell(SpellSlot spellSlot)
@@ -44,6 +45,7 @@ namespace LevelZero.Model
         {
             Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnLevelUp += OnPlayerLevelUp;
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             Drawing.OnDraw += OnDraw;
             Orbwalker.OnPostAttack += OnAfterAttack;
             Interrupter.OnInterruptableSpell += OnPossibleToInterrupt;

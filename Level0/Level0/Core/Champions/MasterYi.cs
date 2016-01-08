@@ -195,6 +195,8 @@ namespace LevelZero.Core.Champions
         {
             base.OnUpdate(args);
 
+            if (Player.IsDead) return;
+
             var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
             var misc = Features.First(it => it.NameFeature == "Misc");
 
@@ -281,6 +283,9 @@ namespace LevelZero.Core.Champions
             var combo = Features.First(it => it.NameFeature == "Combo");
 
             var Target = TargetSelector.GetTarget(900, DamageType.Physical);
+
+            if (Target == null) return;
+
             var itens = new ItemController();
 
             if (Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Polymorph) || Player.HasBuffOfType(BuffType.Silence) || Player.HasBuffOfType(BuffType.Sleep) || Player.HasBuffOfType(BuffType.Snare) || Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Suppression) || Player.HasBuffOfType(BuffType.Taunt)) { itens.CastScimitarQSS(); }
@@ -322,6 +327,7 @@ namespace LevelZero.Core.Champions
         {
             var harass = Features.First(it => it.NameFeature == "Harass");
             var Target = TargetSelector.GetTarget(900, DamageType.Physical);
+            if (Target == null) return;
 
             if (harass.IsChecked("harass.q") && Q.IsReady() && Target.IsValidTarget(Q.Range)) Q.Cast(Target);
 
@@ -345,7 +351,7 @@ namespace LevelZero.Core.Champions
                 IEnumerable<Obj_AI_Minion> ListMinions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.ServerPosition, 1000).OrderBy(minion => minion.Distance(Player));
                 int hits = new int();
 
-                if (ListMinions.Any())
+                if (ListMinions.Any() && ListMinions.Count() >= laneclear.SliderValue("laneclear.q.minminions"))
                 {
                     if (!(ListMinions.First().Distance(Player) > Q.Range))
                     {
@@ -354,7 +360,7 @@ namespace LevelZero.Core.Champions
                         for (int i = 0; i < ListMinions.Count(); i++)
                         {
                             if (i + 1 == ListMinions.Count()) break;
-                            else if (ListMinions.ElementAt(i).Distance(ListMinions.ElementAt(i + 1)) <= 200) { hits += 1; }
+                            else if (ListMinions.ElementAt(i).Distance(ListMinions.ElementAt(i + 1)) <= 300) { hits += 1; }
                             else break;
                         }
 
@@ -362,7 +368,7 @@ namespace LevelZero.Core.Champions
                         {
                             if (laneclear.IsChecked("laneclear.q.jimwd"))
                             {
-                                if ((SpellDamage(ListMinions.First(), SpellSlot.Q) > ListMinions.First().Health || SpellDamage(ListMinions.ElementAt(1), SpellSlot.Q) > ListMinions.ElementAt(1).Health)) Q.Cast(ListMinions.First());
+                                if ((DamageUtil.GetSpellDamage(ListMinions.First(), SpellSlot.Q) > ListMinions.First().Health || DamageUtil.GetSpellDamage(ListMinions.ElementAt(1), SpellSlot.Q) > ListMinions.ElementAt(1).Health)) Q.Cast(ListMinions.First());
                             }
                             else { Q.Cast(ListMinions.First()); }
                         }
@@ -492,23 +498,6 @@ namespace LevelZero.Core.Champions
 
         //------------------------------------|| Extension ||--------------------------------------
 
-        //-------------------------------------SpellDamage()---------------------------------------
-
-        float SpellDamage(Obj_AI_Base target, SpellSlot slot)
-        {
-            switch (slot)
-            {
-                case SpellSlot.Q:
-                    return Damage.CalculateDamageOnUnit(Player, target, DamageType.Physical, new float[] { 0, 25, 60, 95, 130, 165 }[Q.Level] + Player.TotalAttackDamage, true, true);
-
-                case SpellSlot.E:
-                    return Damage.CalculateDamageOnUnit(Player, target, DamageType.True, new float[] { 10, 15, 20, 25, 30 }[E.Level - 1] + new float[] { 0.1f, 0.125f, 0.15f, 0.175f, 0.2f }[E.Level - 1] * Player.TotalAttackDamage, true, true);
-
-                default:
-                    return 0;
-            }
-        }
-
         //----------------------------------------QLogic()-----------------------------------------
 
         void QLogic(Obj_AI_Base Target)
@@ -516,7 +505,7 @@ namespace LevelZero.Core.Champions
             if (Target.IsDashing()) Q.Cast(Target);
             if (Target.HealthPercent <= 30) Q.Cast(Target);
             if (Player.HealthPercent <= 30) Q.Cast(Target);
-            if (SpellDamage(Target, SpellSlot.Q) >= Target.Health) Q.Cast(Target);
+            if (DamageUtil.GetSpellDamage(Target, SpellSlot.Q) >= Target.Health) Q.Cast(Target);
         }
 
         //----------------------------------------Dodge()------------------------------------------
@@ -564,7 +553,7 @@ namespace LevelZero.Core.Champions
         {
             if (Q.IsReady())
             {
-                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Q.Range) && SpellDamage(enemy, SpellSlot.Q) >= enemy.Health);
+                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Q.Range) && DamageUtil.GetSpellDamage(enemy, SpellSlot.Q, true, true) >= enemy.Health);
                 if (bye != null) { Q.Cast(bye); return; }
             }
 

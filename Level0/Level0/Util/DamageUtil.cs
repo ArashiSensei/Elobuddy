@@ -28,7 +28,7 @@ namespace LevelZero.Util
             return enemy.Health < (possibleDamage - damageDecrease);
         }
 
-        public static float GetSpellDamage(SpellSlot slot, Obj_AI_Base enemy, bool IsAbility = true, bool IsAAOrTargetted = false)
+        public static float GetSpellDamage(Obj_AI_Base enemy, SpellSlot slot, bool IsAbility = true, bool IsAAOrTargetted = false)
         {
             float damage = new float();
 

@@ -17,7 +17,6 @@ namespace LevelZero.Model
             Spells = new List<Spell.SpellBase>();
             Features = new List<Feature>();
             Init();
-            InitEvents();
         }
 
         public Spell.SpellBase findSpell(SpellSlot spellSlot)
@@ -49,7 +48,6 @@ namespace LevelZero.Model
             Orbwalker.OnPostAttack += OnAfterAttack;
             Interrupter.OnInterruptableSpell += OnPossibleToInterrupt;
             Gapcloser.OnGapcloser += OnGapCloser;
-            Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
         }
 
         public virtual void OnPlayerLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs args)
@@ -83,6 +81,8 @@ namespace LevelZero.Model
 
         public virtual void OnUpdate(EventArgs args)
         {
+            if (Player.Instance.IsDead) return;
+
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) OnCombo();
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)) OnHarass();
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) OnLaneClear();
@@ -93,23 +93,27 @@ namespace LevelZero.Model
 
         public virtual void OnDraw(EventArgs args)
         {
+            if (Player.Instance.IsDead) return;
         }
 
         public virtual void OnAfterAttack(AttackableUnit target, EventArgs args)
         {
+            if (Player.Instance.IsDead) return;
         }
 
         public virtual void OnPossibleToInterrupt(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs args)
         {
+            if (Player.Instance.IsDead) return;
         }
 
         public virtual void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)
         {
-            if(sender.IsAlly) return;
+            if(sender.IsAlly || Player.Instance.IsDead) return;
         }
 
         public virtual void OnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
+            if (Player.Instance.IsDead) return;
         }
 
         public virtual void GameObjectOnCreate(GameObject sender, EventArgs args)

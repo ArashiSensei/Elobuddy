@@ -24,11 +24,11 @@ namespace LevelZero.Controller
         {
             if (target != null)
             {
-                var tiamatHydra = ItemUtil.GetItem(ItemId.Tiamat_Melee_Only, 400);
+                var tiamatHydra = ItemUtil.GetItem(ItemId.Tiamat_Melee_Only, 350);
 
                 if (tiamatHydra.IsOwned() && tiamatHydra.IsReady() && tiamatHydra.IsInRange(target) && tiamatHydra.Cast()) return true;
 
-                tiamatHydra = ItemUtil.GetItem(ItemId.Ravenous_Hydra_Melee_Only, 400);
+                tiamatHydra = ItemUtil.GetItem(ItemId.Ravenous_Hydra_Melee_Only, 350);
 
                 if (tiamatHydra.IsOwned() && tiamatHydra.IsReady() && tiamatHydra.IsInRange(target) && tiamatHydra.Cast()) return true;
             }
@@ -46,7 +46,25 @@ namespace LevelZero.Controller
             return false;
         }
 
-        public bool CastYoumuu()
+        public bool CastTitanicHydra(Obj_AI_Base target = null)
+        {
+            if (target != null)
+            {
+                var titanicHydra = ItemUtil.GetItem(3053, 100);
+
+                if (titanicHydra.IsOwned() && titanicHydra.IsReady() && titanicHydra.IsInRange(target) && titanicHydra.Cast()) return true;
+            }
+            else
+            {
+                var titanicHydra = ItemUtil.GetItem(3053, 150);
+
+                if (titanicHydra.IsOwned() && titanicHydra.IsReady() && titanicHydra.Cast()) return true;
+            }
+
+            return false;
+        }
+
+        public bool CastYoumuusGhostBlade()
         {
             var youmuu = ItemUtil.GetItem(ItemId.Youmuus_Ghostblade);
 

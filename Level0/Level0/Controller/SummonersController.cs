@@ -1,8 +1,7 @@
 ﻿using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Enumerations;
-using LevelZero.Util;
 using SharpDX;
+using LevelZero.Util;
 
 namespace LevelZero.Controller
 {
@@ -12,7 +11,7 @@ namespace LevelZero.Controller
         {
             if (target == null || !target.IsValidTarget() || target.IsStructure() || target.IsMinion) return false;
 
-            var summoner = SpellsUtil.GetTargettedSpell("summonerdot", 600);
+            var summoner = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Ignite);
 
             if (summoner != null && summoner.IsReady() && summoner.IsInRange(target) && summoner.Cast(target)) return true;
 
@@ -23,7 +22,7 @@ namespace LevelZero.Controller
         {
             if (target == null || !target.IsValidTarget() || target.IsStructure() || target.IsMinion) return false;
 
-            var summoner = SpellsUtil.GetTargettedSpell("summonerexhaust", 650);
+            var summoner = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Exhaust);
 
             if (summoner != null && summoner.IsReady() && summoner.IsInRange(target) && summoner.Cast(target)) return true;
 
@@ -34,7 +33,7 @@ namespace LevelZero.Controller
         {
             if (target == null || !target.IsValidTarget() || target.IsStructure()) return false;
 
-            var summoner = SpellsUtil.GetTargettedSpell("summonersmite", 500);
+            var summoner = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
 
             if (summoner != null && summoner.IsReady() && summoner.IsInRange(target))
             {
@@ -51,7 +50,7 @@ namespace LevelZero.Controller
 
         public bool CastHeal()
         {
-            var summoner = SpellsUtil.GetActiveSpell("summonerheal", 850);
+            var summoner = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Heal);
 
             if (summoner != null && summoner.IsReady() && summoner.Cast()) return true;
 
@@ -60,7 +59,7 @@ namespace LevelZero.Controller
 
         public bool CastBarrier()
         {
-            var summoner = SpellsUtil.GetActiveSpell("summonerbarrier");
+            var summoner = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Barrier);
 
             if (summoner != null && summoner.IsReady() && summoner.Cast()) return true;
 
@@ -69,7 +68,7 @@ namespace LevelZero.Controller
 
         public bool CastCleanse()
         {
-            var summoner = SpellsUtil.GetActiveSpell("summonercleanse");
+            var summoner = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Cleanse);
 
             if (summoner != null && summoner.IsReady() && summoner.Cast()) return true;
 
@@ -78,7 +77,7 @@ namespace LevelZero.Controller
 
         public bool CastGhost()
         {
-            var summoner = SpellsUtil.GetActiveSpell("summonerghost");
+            var summoner = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Ghost);
 
             if (summoner != null && summoner.IsReady() && summoner.Cast()) return true;
 
@@ -87,7 +86,7 @@ namespace LevelZero.Controller
 
         public bool CastFlash(Vector3 position)
         {
-            var summoner = SpellsUtil.GetSkillshotSpell("summonerflash", 425, SkillShotType.Linear);
+            var summoner = SpellsUtil.GetSkillshotSpell(SpellsUtil.Summoners.Flash);
 
             if (Player.Instance.Distance(position) > summoner.Range)
                 position = Player.Instance.Position.Extend(position, summoner.Range).To3D();

@@ -6,6 +6,11 @@ namespace LevelZero.Util
 {
     class SpellsUtil
     {
+        public enum Summoners
+        {
+            Heal, Barrier, Cleanse, Ghost, Exhaust, Smite, Ignite, Flash
+        }
+
         public static Spell.SpellBase GetActiveSpell(string name, uint range = 0)
         {
             var slot = Player.Instance.GetSpellSlotFromName(name);
@@ -41,5 +46,88 @@ namespace LevelZero.Util
 
             return null;
         }
+
+        public static Spell.SpellBase GetActiveSpell(Summoners spell)
+        {
+            SpellSlot slot;
+
+            switch (spell)
+            {
+                case Summoners.Heal:
+                    slot = Player.Instance.GetSpellSlotFromName("summonerheal");
+
+                    if (slot != SpellSlot.Unknown) return new Spell.Active(slot);
+
+                    return null;
+
+                case Summoners.Barrier:
+                    slot = Player.Instance.GetSpellSlotFromName("summonerbarrier");
+
+                    if (slot != SpellSlot.Unknown) return new Spell.Active(slot);
+
+                    return null;
+
+                case Summoners.Cleanse:
+                    slot = Player.Instance.GetSpellSlotFromName("summonercleanse");
+
+                    if (slot != SpellSlot.Unknown) return new Spell.Active(slot);
+
+                    return null;
+
+                case Summoners.Ghost:
+                    slot = Player.Instance.GetSpellSlotFromName("summonerghost");
+
+                    if (slot != SpellSlot.Unknown) return new Spell.Active(slot);
+
+                    return null;
+
+                default:
+                    return null;
+            }
+        }
+
+        public static Spell.SpellBase GetTargettedSpell(Summoners spell)
+        {
+            SpellSlot slot;
+
+            switch (spell)
+            {
+                case Summoners.Exhaust:
+                    slot = Player.Instance.GetSpellSlotFromName("summonerexhaust");
+
+                    if (slot != SpellSlot.Unknown) return new Spell.Targeted(slot, 650);
+
+                    return null;
+
+                case Summoners.Smite:
+                    slot = Player.Instance.GetSpellSlotFromName("summonersmite");
+
+                    if (slot != SpellSlot.Unknown) return new Spell.Targeted(slot, 500);
+
+                    return null;
+
+                case Summoners.Ignite:
+                    slot = Player.Instance.GetSpellSlotFromName("summonerdot");
+
+                    if (slot != SpellSlot.Unknown) return new Spell.Targeted(slot, 600);
+
+                    return null;
+
+                default:
+                    return null;
+            }
+        }
+
+        public static Spell.SpellBase GetSkillshotSpell(Summoners spell)
+        {
+
+            if (spell != Summoners.Flash) return null;
+
+            var slot = Player.Instance.GetSpellSlotFromName("summonerflash");
+
+            if (slot != SpellSlot.Unknown) return new Spell.Skillshot(slot, 425, SkillShotType.Linear);
+
+            return null;
+            }
     }
 }

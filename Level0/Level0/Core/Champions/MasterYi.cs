@@ -285,10 +285,10 @@ namespace LevelZero.Core.Champions
 
             if (Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Polymorph) || Player.HasBuffOfType(BuffType.Silence) || Player.HasBuffOfType(BuffType.Sleep) || Player.HasBuffOfType(BuffType.Snare) || Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Suppression) || Player.HasBuffOfType(BuffType.Taunt)) { itens.CastScimitarQSS(); }
 
-            if (combo.IsChecked("UseQCombo") && Q.IsReady() && Target.IsValidTarget(Q.Range))
+            if (combo.IsChecked("combo.q") && Q.IsReady() && Target.IsValidTarget(Q.Range))
             {
-                if (combo.IsChecked("SmartQ")) { QLogic(Target); }
-                else if (combo.IsChecked("SaveQDodge")) { }
+                if (combo.IsChecked("combo.q.smartq")) { QLogic(Target); }
+                else if (combo.IsChecked("combo.q.saveqtododgespells")) { }
                 else { Q.Cast(Target); }
             }
 
@@ -303,9 +303,9 @@ namespace LevelZero.Core.Champions
                 }
             }
 
-            if (combo.IsChecked("UseRCombo") && R.IsReady() && Player.Distance(Target) <= Player.GetAutoAttackRange(Target) + 300) { R.Cast(); }
+            if (combo.IsChecked("combo.r") && R.IsReady() && Player.Distance(Target) <= Player.GetAutoAttackRange(Target) + 300) { R.Cast(); }
 
-            if (combo.IsChecked("UseECombo") && E.IsReady() && Player.IsInAutoAttackRange(Target)) E.Cast();
+            if (combo.IsChecked("combo.e") && E.IsReady() && Player.IsInAutoAttackRange(Target)) E.Cast();
 
             if (Target.IsValidTarget(Q.Range)) itens.CastYoumuusGhostBlade();
 
@@ -323,9 +323,9 @@ namespace LevelZero.Core.Champions
             var harass = Features.First(it => it.NameFeature == "Harass");
             var Target = TargetSelector.GetTarget(900, DamageType.Physical);
 
-            if (harass.IsChecked("UseQHarass") && Q.IsReady() && Target.IsValidTarget(Q.Range)) Q.Cast(Target);
+            if (harass.IsChecked("harass.q") && Q.IsReady() && Target.IsValidTarget(Q.Range)) Q.Cast(Target);
 
-            if (harass.IsChecked("UseEHarass") && E.IsReady() && Player.IsInAutoAttackRange(Target)) E.Cast();
+            if (harass.IsChecked("harass.e") && E.IsReady() && Player.IsInAutoAttackRange(Target)) E.Cast();
 
             return;
         }
@@ -335,35 +335,40 @@ namespace LevelZero.Core.Champions
             var laneclear = Features.First(it => it.NameFeature == "Lane Clear");
             var itens = new ItemController();
 
-            IEnumerable<Obj_AI_Minion> ListMinions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.ServerPosition, 1000).OrderBy(minion => minion.Distance(Player));
-            int hits = new int();
+            bool UseItem = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position, 400).Count() >= 3;
+            if (UseItem) itens.CastTiamatHydra();
 
-            if (ListMinions.Any())
+            if (Player.ManaPercent <= laneclear.SliderValue("laneclear.mana%")) return;
+
+            if (laneclear.IsChecked("laneclear.q"))
             {
-                if (!(ListMinions.First().Distance(Player) > Q.Range))
+                IEnumerable<Obj_AI_Minion> ListMinions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.ServerPosition, 1000).OrderBy(minion => minion.Distance(Player));
+                int hits = new int();
+
+                if (ListMinions.Any())
                 {
-                    hits += 1;
-
-                    for (int i = 0; i < ListMinions.Count(); i++)
+                    if (!(ListMinions.First().Distance(Player) > Q.Range))
                     {
-                        if (i + 1 == ListMinions.Count()) break;
-                        else if (ListMinions.ElementAt(i).Distance(ListMinions.ElementAt(i + 1)) <= 200) { hits += 1; }
-                        else break;
-                    }
+                        hits += 1;
 
-                    if (laneclear.IsChecked("laneclear.q") && hits >= laneclear.SliderValue("laneclear.q.minminions"))
-                    {
-                        if (laneclear.IsChecked("laneclear.q.jimwd"))
+                        for (int i = 0; i < ListMinions.Count(); i++)
                         {
-                            if ((SpellDamage(ListMinions.First(), SpellSlot.Q) > ListMinions.First().Health || SpellDamage(ListMinions.ElementAt(1), SpellSlot.Q) > ListMinions.ElementAt(1).Health)) Q.Cast(ListMinions.First());
+                            if (i + 1 == ListMinions.Count()) break;
+                            else if (ListMinions.ElementAt(i).Distance(ListMinions.ElementAt(i + 1)) <= 200) { hits += 1; }
+                            else break;
                         }
-                        else { Q.Cast(ListMinions.First()); }
+
+                        if (hits >= laneclear.SliderValue("laneclear.q.minminions"))
+                        {
+                            if (laneclear.IsChecked("laneclear.q.jimwd"))
+                            {
+                                if ((SpellDamage(ListMinions.First(), SpellSlot.Q) > ListMinions.First().Health || SpellDamage(ListMinions.ElementAt(1), SpellSlot.Q) > ListMinions.ElementAt(1).Health)) Q.Cast(ListMinions.First());
+                            }
+                            else { Q.Cast(ListMinions.First()); }
+                        }
                     }
                 }
             }
-
-            bool UseItem = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position, 400).Count() >= 3;
-            if (UseItem) itens.CastTiamatHydra();
 
             return;
         }
@@ -538,7 +543,7 @@ namespace LevelZero.Core.Champions
             return;
         }
 
-        //------------------------------------------GetSmiteDamage()--------------------------------------------
+        //------------------------------------GetSmiteDamage()-------------------------------------
 
         float GetSmiteDamage()
         {
@@ -553,7 +558,7 @@ namespace LevelZero.Core.Champions
             return damage;
         }
 
-        //-------------------------------------------------KS--------------------------------------------------
+        //-------------------------------------------KS--------------------------------------------
 
         void KS()
         {

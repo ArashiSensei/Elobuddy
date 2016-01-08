@@ -1,4 +1,5 @@
-﻿using EloBuddy;
+﻿using System.Linq;
+using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 
@@ -47,11 +48,11 @@ namespace LevelZero.Util
             return null;
         }
 
-        public static Spell.SpellBase GetActiveSpell(Summoners spell)
+        public static Spell.SpellBase GetActiveSpell(Summoners summoner)
         {
             SpellSlot slot;
 
-            switch (spell)
+            switch (summoner)
             {
                 case Summoners.Heal:
                     slot = Player.Instance.GetSpellSlotFromName("summonerheal");
@@ -86,11 +87,11 @@ namespace LevelZero.Util
             }
         }
 
-        public static Spell.SpellBase GetTargettedSpell(Summoners spell)
+        public static Spell.SpellBase GetTargettedSpell(Summoners summoner)
         {
             SpellSlot slot;
 
-            switch (spell)
+            switch (summoner)
             {
                 case Summoners.Exhaust:
                     slot = Player.Instance.GetSpellSlotFromName("summonerexhaust");
@@ -100,9 +101,9 @@ namespace LevelZero.Util
                     return null;
 
                 case Summoners.Smite:
-                    slot = Player.Instance.GetSpellSlotFromName("summonersmite");
+                    var spell = Player.Instance.Spellbook.Spells.FirstOrDefault(it => it.Name.Contains("summoner") && it.Name.Contains("smite"));
 
-                    if (slot != SpellSlot.Unknown) return new Spell.Targeted(slot, 500);
+                    if (spell != null) return new Spell.Targeted(spell.Slot, 500);
 
                     return null;
 
@@ -118,10 +119,10 @@ namespace LevelZero.Util
             }
         }
 
-        public static Spell.SpellBase GetSkillshotSpell(Summoners spell)
+        public static Spell.SpellBase GetSkillshotSpell(Summoners summoner)
         {
 
-            if (spell != Summoners.Flash) return null;
+            if (summoner != Summoners.Flash) return null;
 
             var slot = Player.Instance.GetSpellSlotFromName("summonerflash");
 

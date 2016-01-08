@@ -288,7 +288,7 @@ namespace LevelZero.Core.Champions
 
             if (Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Polymorph) || Player.HasBuffOfType(BuffType.Silence) || Player.HasBuffOfType(BuffType.Sleep) || Player.HasBuffOfType(BuffType.Snare) || Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Suppression) || Player.HasBuffOfType(BuffType.Taunt)) { itens.CastScimitarQSS(); }
 
-            if (combo.IsChecked("combo.q") && Q.IsReady() && Target.IsValidTarget(Q.Range))
+            if (Q.IsReady() && combo.IsChecked("combo.q") && Q.IsReady() && Target.IsValidTarget(Q.Range))
             {
                 if (combo.IsChecked("combo.q.smartq")) { QLogic(Target); }
                 else if (combo.IsChecked("combo.q.saveqtododgespells")) { }
@@ -297,6 +297,7 @@ namespace LevelZero.Core.Champions
 
             if (SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite) != null)
             {
+                Chat.Print("has smite");
                 var Smite = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
 
                 if (Target.IsValidTarget(Smite.Range) && Smite.IsReady())
@@ -306,9 +307,9 @@ namespace LevelZero.Core.Champions
                 }
             }
 
-            if (combo.IsChecked("combo.r") && R.IsReady() && Player.Distance(Target) <= Player.GetAutoAttackRange(Target) + 300) { R.Cast(); }
+            if (R.IsReady() && combo.IsChecked("combo.r") && Player.Distance(Target) <= Player.GetAutoAttackRange(Target) + 300) { R.Cast(); }
 
-            if (combo.IsChecked("combo.e") && E.IsReady() && Player.IsInAutoAttackRange(Target)) E.Cast();
+            if (E.IsReady() && combo.IsChecked("combo.e") && Player.IsInAutoAttackRange(Target)) E.Cast();
 
             if (Target.IsValidTarget(Q.Range)) itens.CastYoumuusGhostBlade();
 
@@ -342,7 +343,7 @@ namespace LevelZero.Core.Champions
             bool UseItem = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position, 400).Count() >= 3;
             if (UseItem) itens.CastTiamatHydra();
 
-            if (Player.ManaPercent <= laneclear.SliderValue("laneclear.mana%")) return;
+            if (Player.ManaPercent <= laneclear.SliderValue("laneclear.mana%") || !Q.IsReady()) return;
 
             if (laneclear.IsChecked("laneclear.q"))
             {
@@ -383,7 +384,7 @@ namespace LevelZero.Core.Champions
 
             if (Player.ManaPercent < jungleclear.SliderValue("jungleclear.mana%")) return;
 
-            if (EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Player.GetAutoAttackRange()).Any() && jungleclear.IsChecked("jungleclear.e")) E.Cast();
+            if (E.IsReady() && EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Player.GetAutoAttackRange()).Any() && jungleclear.IsChecked("jungleclear.e")) E.Cast();
 
             var itens = new ItemController();
 
@@ -448,7 +449,9 @@ namespace LevelZero.Core.Champions
 
             if (sender.IsValidTarget() && sender.IsEnemy && MenuSpells.Any(el => el == args.SData.Name) && Player.Distance(sender) <= args.SData.CastRange)
             {
-                var Target = TargetSelector.GetTarget(900, DamageType.Physical); 
+                var Target = TargetSelector.GetTarget(900, DamageType.Physical);
+
+                if (Target == null) return;
 
                 if (Q.IsReady() && (EOMenu[args.SData.Name].Cast<Slider>().CurrentValue == 1 || EOMenu[args.SData.Name].Cast<Slider>().CurrentValue == 3))
                 {

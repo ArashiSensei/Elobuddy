@@ -297,7 +297,6 @@ namespace LevelZero.Core.Champions
 
             if (SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite) != null)
             {
-                Chat.Print("has smite");
                 var Smite = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
 
                 if (Target.IsValidTarget(Smite.Range) && Smite.IsReady())

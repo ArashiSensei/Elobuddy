@@ -206,6 +206,25 @@ namespace LevelZero.Core.Champions
             
             var misc = Features.First(it => it.NameFeature == "Misc");
 
+            var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
+
+            //---------------------------------------------Smite Usage---------------------------------------------
+
+            if (Smite != null)
+            {
+                if (Smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
+                {
+                    Obj_AI_Minion Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Smite.Range).FirstOrDefault();
+
+                    if (Mob != default(Obj_AI_Minion))
+                    {
+                        bool kill = GetSmiteDamage() >= Mob.Health;
+
+                        if (kill && (Mob.Name.Contains("SRU_Dragon") || Mob.Name.Contains("SRU_Baron"))) Smite.Cast(Mob);
+                    }
+                }
+            }
+
             //------------------------------------------------KS------------------------------------------------
 
             if (misc.IsChecked("misc.ks") && EntityManager.Heroes.Enemies.Any(it => Q.IsInRange(it))) KS();
@@ -368,8 +387,7 @@ namespace LevelZero.Core.Champions
 
                         if (kill)
                         {
-                            if ((Mob.Name.Contains("SRU_Dragon") || Mob.Name.Contains("SRU_Baron"))) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Red") && smiteusage.IsChecked("smiteusage.red")) Smite.Cast(Mob);
+                            if (Mob.Name.StartsWith("SRU_Red") && smiteusage.IsChecked("smiteusage.red")) Smite.Cast(Mob);
                             else if (Mob.Name.StartsWith("SRU_Blue") && smiteusage.IsChecked("smiteusage.blue")) Smite.Cast(Mob);
                             else if (Mob.Name.StartsWith("SRU_Murkwolf") && smiteusage.IsChecked("smiteusage.wolf")) Smite.Cast(Mob);
                             else if (Mob.Name.StartsWith("SRU_Krug") && smiteusage.IsChecked("smiteusage.krug")) Smite.Cast(Mob);

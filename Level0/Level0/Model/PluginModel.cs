@@ -43,7 +43,7 @@ namespace LevelZero.Model
 
         public virtual void InitEvents()
         {
-            Game.OnUpdate += OnUpdate;
+            Game.OnTick += OnUpdate;
             Obj_AI_Base.OnLevelUp += OnPlayerLevelUp;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
             Drawing.OnDraw += OnDraw;

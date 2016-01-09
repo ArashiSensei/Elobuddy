@@ -21,6 +21,8 @@ namespace LevelZero.Core.Champions
 
         public bool castingR = false;
 
+        private readonly PredictionUtil _predictionUtil = new PredictionUtil();
+
         #endregion
 
         public override void Init()
@@ -353,7 +355,7 @@ namespace LevelZero.Core.Champions
 
             if (laneclear.IsChecked("laneclear.q") && Q.IsReady())
             {
-                var bestFarmPostion = PredictionUtil.GetBestLineFarmLocation(minions.Select(o => o.ServerPosition.To2D()).ToList(), Q.Width, Q.MaximumRange);
+                var bestFarmPostion = _predictionUtil.GetBestLineFarmLocation(minions.Select(o => o.ServerPosition.To2D()).ToList(), Q.Width, Q.MaximumRange);
                 if (!Q.IsCharging && bestFarmPostion.MinionsHit >= 2)
                 {
                     Q.StartCharging();
@@ -379,7 +381,7 @@ namespace LevelZero.Core.Champions
             if (laneclear.IsChecked("laneclear.w") && W.IsReady())
             {
                 var bestFarmPosition =
-                    PredictionUtil.GetBestCircularFarmLocation(minions.Select(o => o.ServerPosition.To2D()).ToList(),
+                    _predictionUtil.GetBestCircularFarmLocation(minions.Select(o => o.ServerPosition.To2D()).ToList(),
                         W.Width, W.Range);
 
                 if (bestFarmPosition.MinionsHit >= 2)
@@ -413,7 +415,7 @@ namespace LevelZero.Core.Champions
 
             if (jungleclear.IsChecked("jungleclear.q") && Q.IsReady())
             {
-                var bestFarmPostion = PredictionUtil.GetBestLineFarmLocation(minions.Select(o => o.ServerPosition.To2D()).ToList(), Q.Width, Q.MaximumRange);
+                var bestFarmPostion = _predictionUtil.GetBestLineFarmLocation(minions.Select(o => o.ServerPosition.To2D()).ToList(), Q.Width, Q.MaximumRange);
                 if (!Q.IsCharging)
                 {
                     Q.StartCharging();
@@ -440,7 +442,7 @@ namespace LevelZero.Core.Champions
             if (jungleclear.IsChecked("jungleclear.w") && W.IsReady())
             {
                 var bestFarmPosition =
-                    PredictionUtil.GetBestCircularFarmLocation(minions.Select(o => o.ServerPosition.To2D()).ToList(),
+                    _predictionUtil.GetBestCircularFarmLocation(minions.Select(o => o.ServerPosition.To2D()).ToList(),
                         W.Width, W.Range);
 
                 W.Cast(bestFarmPosition.Position.To3D());

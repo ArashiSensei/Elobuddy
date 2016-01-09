@@ -3,24 +3,24 @@ using EloBuddy.SDK;
 
 namespace LevelZero.Util
 {
-    static class ItemUtil
+    class ItemUtil
     {
-        public static Item GetItem(ItemId id)
+        public Item GetItem(ItemId id)
         {
             return new Item(id);
         }
 
-        public static Item GetItem(int id)
+        public Item GetItem(int id)
         {
             return new Item(id);
         }
 
-        public static Item GetItem(ItemId id, int range)
+        public Item GetItem(ItemId id, int range)
         {
             return new Item(id, range);
         }
 
-        public static Item GetItem(int id, int range)
+        public Item GetItem(int id, int range)
         {
             return new Item(id, range);
         }

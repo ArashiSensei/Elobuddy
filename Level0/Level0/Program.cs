@@ -9,6 +9,8 @@ namespace LevelZero
 {
     class Program
     {
+        public static NotificationUtil NotificationUtil = new NotificationUtil();
+
         static void Main(string[] args)
         {
             Loading.OnLoadingComplete += GameLoaded;

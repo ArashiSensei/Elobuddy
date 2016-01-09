@@ -8,7 +8,7 @@ namespace LevelZero.Util
 {
     class PredictionUtil
     {
-        internal static float GetArrivalTime(float distance, float delay, float missileSpeed = 0)
+        internal float GetArrivalTime(float distance, float delay, float missileSpeed = 0)
         {
             if (missileSpeed != 0)
                 return distance / missileSpeed + delay;
@@ -16,7 +16,7 @@ namespace LevelZero.Util
             return delay;
         }
 
-        public static FarmLocation GetBestLineFarmLocation(List<Vector2> minionPositions, float width, float range)
+        public FarmLocation GetBestLineFarmLocation(List<Vector2> minionPositions, float width, float range)
         {
             var result = new Vector2();
             var minionCount = 0;
@@ -56,7 +56,7 @@ namespace LevelZero.Util
 
             return new FarmLocation(result, minionCount);
         }
-        public static FarmLocation GetBestCircularFarmLocation(List<Vector2> minionPositions,
+        public FarmLocation GetBestCircularFarmLocation(List<Vector2> minionPositions,
             float width,
             float range,
             int useMECMax = 9)
@@ -110,7 +110,7 @@ namespace LevelZero.Util
             return new FarmLocation(result, minionCount);
         }
 
-        private static List<List<Vector2>> GetCombinations(List<Vector2> allValues)
+        private List<List<Vector2>> GetCombinations(List<Vector2> allValues)
         {
             var collection = new List<List<Vector2>>();
             for (var counter = 0; counter < (1 << allValues.Count); ++counter)

@@ -12,6 +12,7 @@ namespace LevelZero.Util
 {
     static class VersionUtil
     {
+
         public static void VersionChecker()
         {
             Task.Factory.StartNew(() =>
@@ -31,7 +32,7 @@ namespace LevelZero.Util
                         if (CorrectVersion > AssVersion)
                         {
                             Chat.Print("Your AIO is OUTDATED, update it");
-                            NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Your AIO version is OUTDATED, current version is " + CorrectVersion, Color.Yellow));
+                            Program.NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Your AIO version is OUTDATED, current version is " + CorrectVersion, Color.Yellow));
                         }
                     }
                 }

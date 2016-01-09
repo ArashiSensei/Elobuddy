@@ -11,19 +11,19 @@ using Color = System.Drawing.Color;
 
 namespace LevelZero.Util
 {
-    static class NotificationUtil
+    class NotificationUtil
     {
         static List<NotificationModel> _notifications = new List<NotificationModel>();
         public static readonly TextureLoader TextureLoader = new TextureLoader();
         private static Sprite MainBar { get; set; }
         private static readonly Text Text = new Text("", new Font(FontFamily.GenericSansSerif, 12, FontStyle.Regular)) { Color = Color.White };
 
-        static NotificationUtil()
+        public NotificationUtil()
         {
             TextureLoader.Load("notification", Resources.notification);
         }
 
-        public static void DrawNotification(NotificationModel notification)
+        public void DrawNotification(NotificationModel notification)
         {
             _notifications.Add(notification);
 
@@ -33,13 +33,13 @@ namespace LevelZero.Util
             Drawing.OnEndScene += OnDraw;
         }
 
-        private static void Init()
+        private void Init()
         {
             AppDomain.CurrentDomain.DomainUnload += OnDomainUnload;
             AppDomain.CurrentDomain.ProcessExit += OnDomainUnload;
         }
 
-        private static void OnDraw(EventArgs args)
+        private void OnDraw(EventArgs args)
         {
             if (_notifications.Count != 0)
             {

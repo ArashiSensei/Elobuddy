@@ -6,12 +6,12 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Events;
-using EloBuddy.SDK.Rendering;
 using LevelZero.Controller;
 using LevelZero.Model;
 using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
+using Circle = EloBuddy.SDK.Rendering.Circle;
 
 namespace LevelZero.Core.Champions
 {

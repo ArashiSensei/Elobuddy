@@ -153,8 +153,6 @@ namespace LevelZero.Controller
 
         public bool CastRanduin(Obj_AI_Base target = null)
         {
-            if (target == null || !target.IsValidTarget() || target.IsStructure()) return false;
-
             if (target != null)
             {
                 var randuin = _itemUtil.GetItem(ItemId.Randuins_Omen, 450);//500 of range

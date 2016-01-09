@@ -12,16 +12,21 @@ using LevelZero.Model;
 using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
-using Circle = EloBuddy.SDK.Rendering.Circle;
 
 namespace LevelZero.Core.Champions
 {
     class MasterYi : PluginModel
     {
-        static AIHeroClient Player = EloBuddy.Player.Instance;
-        static List<string> MenuSpells = new List<string>();
-        static List<string> DodgeSpells = new List<string>() { "SorakaQ", "SorakaE", "TahmKenchW", "TahmKenchQ", "Bushwhack", "ForcePulse", "KarthusFallenOne", "KarthusWallOfPain", "KarthusLayWasteA1", "KarmaWMantra", "KarmaQMissileMantra", "KarmaSpiritBind", "KarmaQ", "JinxW", "JinxE", "JarvanIVGoldenAegis", "HowlingGaleSpell", "SowTheWind", "ReapTheWhirlwind", "IllaoiE", "HeimerdingerUltWDummySpell", "HeimerdingerUltEDummySpell", "HeimerdingerW", "HeimerdingerE", "HecarimUlt", "HecarimRampAttack", "GravesQLineSpell", "GravesQLineMis", "GravesClusterShot", "GravesSmokeGrenade", "GangplankR", "GalioIdolOfDurand", "GalioResoluteSmite", "FioraE", "EvelynnR", "EliseHumanE", "EkkoR", "EkkoW", "EkkoQ", "DravenDoubleShot", "InfectedCleaverMissileCast", "DariusExecute", "DariusAxeGrabCone", "DariusNoxianTacticsONH", "DariusCleave", "PhosphorusBomb", "MissileBarrage", "BraumQ", "BrandFissure", "BardR", "BardQ", "AatroxQ", "AatroxE", "AzirE", "AzirEWrapper", "AzirQWrapper", "AzirQ", "AzirR", "Pulverize", "AhriSeduce", "CurseoftheSadMummy", "InfernalGuardian", "Incinerate", "Volley", "EnchantedCrystalArrow", "BraumRWrapper", "CassiopeiaPetrifyingGaze", "FeralScream", "Rupture", "EzrealEssenceFlux", "EzrealMysticShot", "EzrealTrueshotBarrage", "FizzMarinerDoom", "GnarW", "GnarBigQMissile", "GnarQ", "GnarR", "GragasQ", "GragasE", "GragasR", "RiftWalk", "LeblancSlideM", "LeblancSlide", "LeonaSolarFlare", "UFSlash", "LuxMaliceCannon", "LuxLightStrikeKugel", "LuxLightBinding", "yasuoq3w", "VelkozE", "VeigarEventHorizon", "VeigarDarkMatter", "VarusR", "ThreshQ", "ThreshE", "ThreshRPenta", "SonaQ", "SonaR", "ShenShadowDash", "SejuaniGlacialPrisonCast", "RivenMartyr", "JavelinToss", "NautilusSplashZone", "NautilusAnchorDrag", "NamiR", "NamiQ", "DarkBindingMissile", "StaticField", "RocketGrab", "RocketGrabMissile", "timebombenemybuff", "NocturneUnspeakableHorror", "SyndraQ", "SyndraE", "SyndraR", "VayneCondemn", "Dazzle", "Overload", "AbsoluteZero", "IceBlast", "LeblancChaosOrb", "JudicatorReckoning", "KatarinaQ", "NullLance", "Crowstorm", "FiddlesticksDarkWind", "BrandWildfire", "Disintegrate", "FlashFrost", "Frostbite", "AkaliMota", "InfiniteDuress", "PantheonW", "blindingdart", "JayceToTheSkies", "IreliaEquilibriumStrike", "maokaiunstablegrowth", "nautilusgandline", "runeprison", "WildCards", "BlueCardAttack", "RedCardAttack", "GoldCardAttack", "AkaliShadowDance", "Headbutt", "PowerFist", "BrandConflagration", "CaitlynYordleTrap", "CaitlynAceintheHole", "CassiopeiaNoxiousBlast", "CassiopeiaMiasma", "CassiopeiaTwinFang", "Feast", "DianaArc", "DianaTeleport", "EliseHumanQ", "EvelynnE", "Terrify", "FizzPiercingStrike", "Parley", "GarenQAttack", "GarenR", "IreliaGatotsu", "IreliaEquilibriumStrike", "SowTheWind", "JarvanIVCataclysm", "JaxLeapStrike", "JaxEmpowerTwo", "JaxCounterStrike", "JayceThunderingBlow", "KarmaSpiritBind", "NetherBlade", "KatarinaR", "JudicatorRighteousFury", "KennenBringTheLight", "LeblancChaosOrbM", "BlindMonkRKick", "LeonaZenithBlade", "LeonaShieldOfDaybreak", "LissandraW", "LissandraQ", "LissandraR", "LuluQ", "LuluW", "LuluE", "LuluR", "SeismicShard", "AlZaharMaleficVisions", "AlZaharNetherGrasp", "MaokaiUnstableGrowth", "MordekaiserMaceOfSpades", "MordekaiserChildrenOfTheGrave", "SoulShackles", "NamiW", "NasusW", "NautilusGrandLine", "Takedown", "NocturneParanoia", "PoppyDevastatingBlow", "PoppyHeroicCharge", "QuinnE", "PuncturingTaunt", "RenektonPreExecute", "SpellFlux", "SejuaniWintersClaw", "TwoShivPoisen", "Fling", "SkarnerImpale", "SonaHymnofValor", "SwainTorment", "SwainDecrepify", "BlindingDart", "OrianaIzunaCommand", "OrianaDetonateCommand", "DetonatingShot", "BusterShot", "TrundleTrollSmash", "TrundlePain", "MockingShout", "Expunge", "UdyrBearStance", "UrgotHeatseekingLineMissile", "UrgotSwap2", "VeigarBalefulStrike", "VeigarPrimordialBurst", "ViR", "ViktorPowerTransfer", "VladimirTransfusion", "VolibearQ", "HungeringStrike", "XenZhaoComboTarget", "XenZhaoSweep", "YasuoQ3W", "YasuoQ3Mis", "YasuoQ3", "YasuoRKnockUpComboW" };
-        static Menu EOMenu;
+        List<string> DodgeSpells = new List<string>() { "SorakaQ", "SorakaE", "TahmKenchW", "TahmKenchQ", "Bushwhack", "ForcePulse", "KarthusFallenOne", "KarthusWallOfPain", "KarthusLayWasteA1", "KarmaWMantra", "KarmaQMissileMantra", "KarmaSpiritBind", "KarmaQ", "JinxW", "JinxE", "JarvanIVGoldenAegis", "HowlingGaleSpell", "SowTheWind", "ReapTheWhirlwind", "IllaoiE", "HeimerdingerUltWDummySpell", "HeimerdingerUltEDummySpell", "HeimerdingerW", "HeimerdingerE", "HecarimUlt", "HecarimRampAttack", "GravesQLineSpell", "GravesQLineMis", "GravesClusterShot", "GravesSmokeGrenade", "GangplankR", "GalioIdolOfDurand", "GalioResoluteSmite", "FioraE", "EvelynnR", "EliseHumanE", "EkkoR", "EkkoW", "EkkoQ", "DravenDoubleShot", "InfectedCleaverMissileCast", "DariusExecute", "DariusAxeGrabCone", "DariusNoxianTacticsONH", "DariusCleave", "PhosphorusBomb", "MissileBarrage", "BraumQ", "BrandFissure", "BardR", "BardQ", "AatroxQ", "AatroxE", "AzirE", "AzirEWrapper", "AzirQWrapper", "AzirQ", "AzirR", "Pulverize", "AhriSeduce", "CurseoftheSadMummy", "InfernalGuardian", "Incinerate", "Volley", "EnchantedCrystalArrow", "BraumRWrapper", "CassiopeiaPetrifyingGaze", "FeralScream", "Rupture", "EzrealEssenceFlux", "EzrealMysticShot", "EzrealTrueshotBarrage", "FizzMarinerDoom", "GnarW", "GnarBigQMissile", "GnarQ", "GnarR", "GragasQ", "GragasE", "GragasR", "RiftWalk", "LeblancSlideM", "LeblancSlide", "LeonaSolarFlare", "UFSlash", "LuxMaliceCannon", "LuxLightStrikeKugel", "LuxLightBinding", "yasuoq3w", "VelkozE", "VeigarEventHorizon", "VeigarDarkMatter", "VarusR", "ThreshQ", "ThreshE", "ThreshRPenta", "SonaQ", "SonaR", "ShenShadowDash", "SejuaniGlacialPrisonCast", "RivenMartyr", "JavelinToss", "NautilusSplashZone", "NautilusAnchorDrag", "NamiR", "NamiQ", "DarkBindingMissile", "StaticField", "RocketGrab", "RocketGrabMissile", "timebombenemybuff", "NocturneUnspeakableHorror", "SyndraQ", "SyndraE", "SyndraR", "VayneCondemn", "Dazzle", "Overload", "AbsoluteZero", "IceBlast", "LeblancChaosOrb", "JudicatorReckoning", "KatarinaQ", "NullLance", "Crowstorm", "FiddlesticksDarkWind", "BrandWildfire", "Disintegrate", "FlashFrost", "Frostbite", "AkaliMota", "InfiniteDuress", "PantheonW", "blindingdart", "JayceToTheSkies", "IreliaEquilibriumStrike", "maokaiunstablegrowth", "nautilusgandline", "runeprison", "WildCards", "BlueCardAttack", "RedCardAttack", "GoldCardAttack", "AkaliShadowDance", "Headbutt", "PowerFist", "BrandConflagration", "CaitlynYordleTrap", "CaitlynAceintheHole", "CassiopeiaNoxiousBlast", "CassiopeiaMiasma", "CassiopeiaTwinFang", "Feast", "DianaArc", "DianaTeleport", "EliseHumanQ", "EvelynnE", "Terrify", "FizzPiercingStrike", "Parley", "GarenQAttack", "GarenR", "IreliaGatotsu", "IreliaEquilibriumStrike", "SowTheWind", "JarvanIVCataclysm", "JaxLeapStrike", "JaxEmpowerTwo", "JaxCounterStrike", "JayceThunderingBlow", "KarmaSpiritBind", "NetherBlade", "KatarinaR", "JudicatorRighteousFury", "KennenBringTheLight", "LeblancChaosOrbM", "BlindMonkRKick", "LeonaZenithBlade", "LeonaShieldOfDaybreak", "LissandraW", "LissandraQ", "LissandraR", "LuluQ", "LuluW", "LuluE", "LuluR", "SeismicShard", "AlZaharMaleficVisions", "AlZaharNetherGrasp", "MaokaiUnstableGrowth", "MordekaiserMaceOfSpades", "MordekaiserChildrenOfTheGrave", "SoulShackles", "NamiW", "NasusW", "NautilusGrandLine", "Takedown", "NocturneParanoia", "PoppyDevastatingBlow", "PoppyHeroicCharge", "QuinnE", "PuncturingTaunt", "RenektonPreExecute", "SpellFlux", "SejuaniWintersClaw", "TwoShivPoisen", "Fling", "SkarnerImpale", "SonaHymnofValor", "SwainTorment", "SwainDecrepify", "BlindingDart", "OrianaIzunaCommand", "OrianaDetonateCommand", "DetonatingShot", "BusterShot", "TrundleTrollSmash", "TrundlePain", "MockingShout", "Expunge", "UdyrBearStance", "UrgotHeatseekingLineMissile", "UrgotSwap2", "VeigarBalefulStrike", "VeigarPrimordialBurst", "ViR", "ViktorPowerTransfer", "VladimirTransfusion", "VolibearQ", "HungeringStrike", "XenZhaoComboTarget", "XenZhaoSweep", "YasuoQ3W", "YasuoQ3Mis", "YasuoQ3", "YasuoRKnockUpComboW" };
+        List<string> MenuSpells = new List<string>();
+
+        SummonersController summoners = new SummonersController();
+        ItemController itens = new ItemController();
+        Spell.Targeted Smite, Ignite;
+        Menu EOMenu;
+
+        AIHeroClient Target;
+        AIHeroClient Player = EloBuddy.Player.Instance;
 
         Spell.Targeted Q { get { return (Spell.Targeted)Spells[0]; } }
         Spell.Active W { get { return (Spell.Active)Spells[1]; } }
@@ -41,6 +46,9 @@ namespace LevelZero.Core.Champions
 
         public override void InitVariables()
         {
+            Smite = (Spell.Targeted)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
+            Ignite = (Spell.Targeted)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Ignite);
+
             Spells = new List<Spell.SpellBase>
             {
                 new Spell.Targeted(SpellSlot.Q, 600),
@@ -194,36 +202,9 @@ namespace LevelZero.Core.Champions
         {
             base.OnUpdate(args);
 
-            var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
+            Target = TargetSelector.GetTarget(900, DamageType.Physical);
+            
             var misc = Features.First(it => it.NameFeature == "Misc");
-
-            //---------------------------------------------Smite Usage---------------------------------------------
-
-            if (SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite) != null)
-            {
-                var Smite = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
-
-                if (Smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
-                {
-                    Obj_AI_Minion Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Smite.Range).FirstOrDefault();
-
-                    if (Mob != default(Obj_AI_Minion))
-                    {
-                        bool kill = GetSmiteDamage() >= Mob.Health;
-
-                        if (kill)
-                        {
-                            if ((Mob.Name.Contains("SRU_Dragon") || Mob.Name.Contains("SRU_Baron"))) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Red") && smiteusage.IsChecked("smiteusage.red")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Blue") && smiteusage.IsChecked("smiteusage.blue")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Murkwolf") && smiteusage.IsChecked("smiteusage.wolf")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Krug") && smiteusage.IsChecked("smiteusage.krug")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Gromp") && smiteusage.IsChecked("smiteusage.gromp")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Razorbeak") && smiteusage.IsChecked("smiteusage.raptor")) Smite.Cast(Mob);
-                        }
-                    }
-                }
-            }
 
             //------------------------------------------------KS------------------------------------------------
 
@@ -231,10 +212,8 @@ namespace LevelZero.Core.Champions
 
             //-----------------------------------------------Auto Ignite----------------------------------------
 
-            if (Features.First(it => it.NameFeature == "Misc").IsChecked("misc.autoignite") && SpellsUtil.GetTargettedSpell("summonerdot", 600) != null)
+            if (Features.First(it => it.NameFeature == "Misc").IsChecked("misc.autoignite") && Ignite != null)
             {
-                var Ignite = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Ignite);
-
                 if (Ignite.IsReady())
                 {
                     var IgniteEnemy = EntityManager.Heroes.Enemies.FirstOrDefault(it => DamageLibrary.GetSummonerSpellDamage(Player, it, DamageLibrary.SummonerSpells.Ignite) >= it.Health - 30);
@@ -279,28 +258,22 @@ namespace LevelZero.Core.Champions
         */
         public override void OnCombo()
         {
-            var combo = Features.First(it => it.NameFeature == "Combo");
-
-            var Target = TargetSelector.GetTarget(900, DamageType.Physical);
-
             if (Target == null) return;
 
-            var itens = new ItemController();
+            var combo = Features.First(it => it.NameFeature == "Combo");
 
             if (Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Polymorph) || Player.HasBuffOfType(BuffType.Silence) || Player.HasBuffOfType(BuffType.Sleep) || Player.HasBuffOfType(BuffType.Snare) || Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Suppression) || Player.HasBuffOfType(BuffType.Taunt)) { itens.CastScimitarQSS(); }
 
             if (Q.IsReady() && combo.IsChecked("combo.q") && Q.IsReady() && Target.IsValidTarget(Q.Range))
             {
-                if (combo.IsChecked("combo.q.smartq")) { QLogic(Target); }
+                if (combo.IsChecked("combo.q.smartq")) { QLogic(); }
                 else if (combo.IsChecked("combo.q.saveqtododgespells")) { }
                 else { Q.Cast(Target); }
             }
 
-            if (SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite) != null)
+            if (Smite != null)
             {
-                var Smite = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
-
-                if (Target.IsValidTarget(Smite.Range) && Smite.IsReady())
+                if (Smite.IsReady() && Target.IsValidTarget(Smite.Range))
                 {
                     if (Smite.Name.Contains("gank")) Smite.Cast(Target);
                     else if (Smite.Name.Contains("duel") && Player.IsInAutoAttackRange(Target)) Smite.Cast(Target);
@@ -324,9 +297,9 @@ namespace LevelZero.Core.Champions
 
         public override void OnHarass()
         {
-            var harass = Features.First(it => it.NameFeature == "Harass");
-            var Target = TargetSelector.GetTarget(900, DamageType.Physical);
             if (Target == null) return;
+
+            var harass = Features.First(it => it.NameFeature == "Harass");
 
             if (harass.IsChecked("harass.q") && Q.IsReady() && Target.IsValidTarget(Q.Range)) Q.Cast(Target);
 
@@ -338,7 +311,6 @@ namespace LevelZero.Core.Champions
         public override void OnLaneClear()
         {
             var laneclear = Features.First(it => it.NameFeature == "Lane Clear");
-            var itens = new ItemController();
 
             bool UseItem = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position, 400).Count() >= 3;
             if (UseItem) itens.CastTiamatHydra();
@@ -380,13 +352,39 @@ namespace LevelZero.Core.Champions
 
         public override void OnJungleClear()
         {
+            var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
+
+            //---------------------------------------------Smite Usage---------------------------------------------
+
+            if (Smite != null)
+            {
+                if (Smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
+                {
+                    Obj_AI_Minion Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Smite.Range).FirstOrDefault();
+
+                    if (Mob != default(Obj_AI_Minion))
+                    {
+                        bool kill = GetSmiteDamage() >= Mob.Health;
+
+                        if (kill)
+                        {
+                            if ((Mob.Name.Contains("SRU_Dragon") || Mob.Name.Contains("SRU_Baron"))) Smite.Cast(Mob);
+                            else if (Mob.Name.StartsWith("SRU_Red") && smiteusage.IsChecked("smiteusage.red")) Smite.Cast(Mob);
+                            else if (Mob.Name.StartsWith("SRU_Blue") && smiteusage.IsChecked("smiteusage.blue")) Smite.Cast(Mob);
+                            else if (Mob.Name.StartsWith("SRU_Murkwolf") && smiteusage.IsChecked("smiteusage.wolf")) Smite.Cast(Mob);
+                            else if (Mob.Name.StartsWith("SRU_Krug") && smiteusage.IsChecked("smiteusage.krug")) Smite.Cast(Mob);
+                            else if (Mob.Name.StartsWith("SRU_Gromp") && smiteusage.IsChecked("smiteusage.gromp")) Smite.Cast(Mob);
+                            else if (Mob.Name.StartsWith("SRU_Razorbeak") && smiteusage.IsChecked("smiteusage.raptor")) Smite.Cast(Mob);
+                        }
+                    }
+                }
+            }
+
             var jungleclear = Features.First(it => it.NameFeature == "Jungle Clear");
 
             if (Player.ManaPercent < jungleclear.SliderValue("jungleclear.mana%")) return;
 
             if (E.IsReady() && EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Player.GetAutoAttackRange()).Any() && jungleclear.IsChecked("jungleclear.e")) E.Cast();
-
-            var itens = new ItemController();
 
             bool UseItem = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, 400).Count() >= 1;
             if (UseItem) itens.CastTiamatHydra();
@@ -447,39 +445,43 @@ namespace LevelZero.Core.Champions
         {
             base.OnProcessSpell(sender, args);
 
-            if (sender.IsValidTarget() && sender.IsEnemy && MenuSpells.Any(el => el == args.SData.Name) && Player.Distance(sender) <= args.SData.CastRange)
+            if (sender.IsEnemy && MenuSpells.Any(el => el == args.SData.Name) && Player.Distance(sender) <= args.SData.CastRange)
             {
-                var Target = TargetSelector.GetTarget(900, DamageType.Physical);
-
-                if (Target == null) return;
-
                 if (Q.IsReady() && (EOMenu[args.SData.Name].Cast<Slider>().CurrentValue == 1 || EOMenu[args.SData.Name].Cast<Slider>().CurrentValue == 3))
                 {
-                    if (args.SData.Name == "JaxCounterStrike") { EloBuddy.SDK.Core.DelayAction(() => Dodge(Target), 2000 - Game.Ping - 100); return; }
+                    if (args.SData.Name == "JaxCounterStrike") { EloBuddy.SDK.Core.DelayAction(() => Dodge(), 2000 - Game.Ping - 100); return; }
 
-                    if (args.SData.Name == "KarthusFallenOne") { EloBuddy.SDK.Core.DelayAction(() => Dodge(Target), 3000 - Game.Ping - 100); return; }
+                    if (args.SData.Name == "KarthusFallenOne") { EloBuddy.SDK.Core.DelayAction(() => Dodge(), 3000 - Game.Ping - 100); return; }
 
-                    if (args.SData.Name == "ZedR" && args.Target.IsMe) { EloBuddy.SDK.Core.DelayAction(() => Dodge(Target), 750 - Game.Ping - 100); return; }
+                    if (args.SData.Name == "ZedR" && args.Target.IsMe) { EloBuddy.SDK.Core.DelayAction(() => Dodge(), 750 - Game.Ping - 100); return; }
 
-                    if (args.SData.Name == "SoulShackles") { EloBuddy.SDK.Core.DelayAction(() => Dodge(Target), 3000 - Game.Ping - 100); return; }
+                    if (args.SData.Name == "SoulShackles") { EloBuddy.SDK.Core.DelayAction(() => Dodge(), 3000 - Game.Ping - 100); return; }
 
-                    if (args.SData.Name == "AbsoluteZero") { EloBuddy.SDK.Core.DelayAction(() => Dodge(Target), 3000 - Game.Ping - 100); return; }
+                    if (args.SData.Name == "AbsoluteZero") { EloBuddy.SDK.Core.DelayAction(() => Dodge(), 3000 - Game.Ping - 100); return; }
 
-                    if (args.SData.Name == "NocturneUnspeakableHorror" && args.Target.IsMe) { EloBuddy.SDK.Core.DelayAction(() => Dodge(Target), 2000 - Game.Ping - 100); return; }
+                    if (args.SData.Name == "NocturneUnspeakableHorror" && args.Target.IsMe) { EloBuddy.SDK.Core.DelayAction(() => Dodge(), 2000 - Game.Ping - 100); return; }
 
-                    EloBuddy.SDK.Core.DelayAction(() => Q.Cast(Target), (int)args.SData.SpellCastTime - Game.Ping - 100);
+                    EloBuddy.SDK.Core.DelayAction(delegate
+                    {
+                        if (Target != null && Target.IsValidTarget(Q.Range)) Q.Cast(Target);
+                    }, (int)args.SData.SpellCastTime - Game.Ping - 100);
+
+                    EloBuddy.SDK.Core.DelayAction(delegate
+                    {
+                        if (sender.IsValidTarget(Q.Range)) Q.Cast(sender);
+                    }, (int)args.SData.SpellCastTime - Game.Ping - 50);
 
                     return;
                 }
 
-                else if (W.IsReady() && Player.IsFacing(sender) && EOMenu[args.SData.Name].Cast<Slider>().CurrentValue > 1 && (args.Target.IsMe || new Geometry.Polygon.Rectangle(args.Start, args.End, args.SData.LineWidth).IsInside(Player) || new Geometry.Polygon.Circle(args.End, args.SData.CastRadius).IsInside(Player)))
+                else if (W.IsReady() && Player.IsFacing(sender) && EOMenu[args.SData.Name].Cast<Slider>().CurrentValue > 1 && (args.Target != null && args.Target.IsMe || new Geometry.Polygon.Rectangle(args.Start, args.End, args.SData.LineWidth).IsInside(Player) || new Geometry.Polygon.Circle(args.End, args.SData.CastRadius).IsInside(Player)))
                 {
                     int delay = (int)(Player.Distance(sender) / ((args.SData.MissileMaxSpeed + args.SData.MissileMinSpeed) / 2) * 1000) - 150 + (int)args.SData.SpellCastTime;
 
                     if (args.SData.Name != "ZedR" && args.SData.Name != "NocturneUnpeakableHorror")
                     {
                         EloBuddy.SDK.Core.DelayAction(() => W.Cast(), delay);
-                        if (Target != null) EloBuddy.SDK.Core.DelayAction(() => EloBuddy.Player.IssueOrder(GameObjectOrder.AttackTo, Target), delay + 100);
+                        if (Target != null && Target.IsValidTarget()) EloBuddy.SDK.Core.DelayAction(() => EloBuddy.Player.IssueOrder(GameObjectOrder.AttackTo, Target), delay + 100);
                     }
                     return;
                 }
@@ -505,7 +507,7 @@ namespace LevelZero.Core.Champions
 
         //----------------------------------------QLogic()-----------------------------------------
 
-        void QLogic(Obj_AI_Base Target)
+        void QLogic()
         {
             if (Target.IsDashing()) Q.Cast(Target);
             if (Target.HealthPercent <= 30) Q.Cast(Target);
@@ -515,7 +517,7 @@ namespace LevelZero.Core.Champions
 
         //----------------------------------------Dodge()------------------------------------------
 
-        void Dodge(AIHeroClient Target)
+        void Dodge()
         {
             if (Target != null)
             {
@@ -562,10 +564,8 @@ namespace LevelZero.Core.Champions
                 if (bye != null) { Q.Cast(bye); return; }
             }
 
-            if (SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite) != null)
+            if (Smite != null)
             {
-                var Smite = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
-
                 if (Smite.Name.Contains("gank") && Smite.IsReady())
                 {
                     var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Smite.Range) && DamageLibrary.GetSummonerSpellDamage(Player, enemy, DamageLibrary.SummonerSpells.Smite) >= enemy.Health);

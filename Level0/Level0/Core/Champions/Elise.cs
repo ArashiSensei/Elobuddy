@@ -379,4 +379,3 @@ namespace LevelZero.Core.Champions
         }
     }
 }
-}

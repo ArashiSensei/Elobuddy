@@ -71,7 +71,6 @@
     <Compile Include="Core\Champions\Elise.cs" />
     <Compile Include="Core\Champions\MasterYi.cs" />
     <Compile Include="Core\Champions\Xerath.cs" />
-    <Compile Include="Core\Champions\MasterYi.cs" />
     <Compile Include="Core\Champions\Tristana.cs" />
     <Compile Include="Model\Enuns\EnumMenuStyle.cs" />
     <Compile Include="Model\Feature.cs" />

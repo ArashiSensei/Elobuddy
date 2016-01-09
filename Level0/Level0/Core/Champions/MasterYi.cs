@@ -6,12 +6,12 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Menu;
 using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Events;
-using EloBuddy.SDK.Rendering;
 using LevelZero.Controller;
 using LevelZero.Model;
 using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
+using Circle = EloBuddy.SDK.Rendering.Circle;
 
 namespace LevelZero.Core.Champions
 {
@@ -280,7 +280,7 @@ namespace LevelZero.Core.Champions
                 }
             }
 
-            if (R.IsReady() && combo.IsChecked("combo.r") && Player.Distance(Target) <= Player.GetAutoAttackRange(Target) + 300) { R.Cast(); }
+            if (R.IsReady() && combo.IsChecked("combo.r") && Player.Distance(Target) <= Player.GetAutoAttackRange(Target) + 400) { R.Cast(); }
 
             if (E.IsReady() && combo.IsChecked("combo.e") && Player.IsInAutoAttackRange(Target)) E.Cast();
 
@@ -331,7 +331,7 @@ namespace LevelZero.Core.Champions
                         for (int i = 0; i < ListMinions.Count(); i++)
                         {
                             if (i + 1 == ListMinions.Count()) break;
-                            else if (ListMinions.ElementAt(i).Distance(ListMinions.ElementAt(i + 1)) <= 300) { hits += 1; }
+                            else if (ListMinions.ElementAt(i).Distance(ListMinions.ElementAt(i + 1)) <= 400) { hits += 1; }
                             else break;
                         }
 

@@ -184,7 +184,7 @@ namespace OneForWeek.Plugin.Hero
                 }
             }
 
-            if (Misc.IsChecked(ComboMenu, "comboE") && E.IsReady() && target.IsValidTarget(E.Range) && (IsPoisoned(target) || !Misc.IsChecked(MiscMenu, "poisonForE")))
+            if (Misc.IsChecked(ComboMenu, "comboE") && E.IsReady() && target.IsValidTarget(E.Range) && (IsPoisoned(target) || !Misc.IsChecked(MiscMenu, "poisonForE")) && canCastE())
             {
                 E.Cast(target);
             }
@@ -244,7 +244,7 @@ namespace OneForWeek.Plugin.Hero
                 }
             }
 
-            if (Misc.IsChecked(HarassMenu, "hsE") && E.IsReady() && target.IsValidTarget(E.Range) && (IsPoisoned(target)))
+            if (Misc.IsChecked(HarassMenu, "hsE") && E.IsReady() && target.IsValidTarget(E.Range) && (IsPoisoned(target)) && canCastE())
             {
                 E.Cast(target);
             }
@@ -514,16 +514,7 @@ namespace OneForWeek.Plugin.Hero
 
             if (args.SData.Name == "CassiopeiaTwinFang")
             {
-                var diffTime = Misc.GetSliderValue(MiscMenu, "miscDelayE") / 100f + _lastECast - Game.Time;
-
-                if (diffTime > 0)
-                {
-                    args.Process = false;
-                }
-                else
-                {
-                    _lastECast = Game.Time;
-                }
+                _lastECast = Game.Time;
             }
 
             if (args.SData.Name == "CassiopeiaPetrofyingGaze" && Misc.IsChecked(MiscMenu, "miscAntiMissR"))
@@ -578,6 +569,11 @@ namespace OneForWeek.Plugin.Hero
                 damage = _Player.GetSpellDamage(target, SpellSlot.Q);
 
             return damage;
+        }
+
+        public bool canCastE()
+        {
+            return (Misc.GetSliderValue(MiscMenu, "miscDelayE") / 100f + _lastECast - Game.Time) > 0;
         }
 
         public bool IsPoisoned(Obj_AI_Base target)

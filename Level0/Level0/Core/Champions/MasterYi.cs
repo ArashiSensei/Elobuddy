@@ -12,6 +12,7 @@ using LevelZero.Model;
 using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
+using Circle = EloBuddy.SDK.Rendering.Circle;
 
 namespace LevelZero.Core.Champions
 {

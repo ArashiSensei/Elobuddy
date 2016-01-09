@@ -21,7 +21,7 @@ namespace OneForWeek
             if (ObjectManager.Player.ChampionName == "Cassiopeia")
             {
                 Notification.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " injected !", Color.DeepSkyBlue));
-                Notification.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Addon by: Vector", Color.LimeGreen));
+                Notification.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Addon by: Mr Articuno", Color.Purple));
                 new Cassiopeia().Init();
                 Igniter.Init();
             }

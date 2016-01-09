@@ -14,7 +14,7 @@ namespace OneForWeek.Plugin
          Config
          */
 
-        public static readonly string GVersion = "1.3.1";
+        public static readonly string GVersion = "1.4.1";
         public static readonly string GCharname = _Player.ChampionName;
 
         /*

@@ -232,21 +232,9 @@ namespace OneForWeek.Plugin.Hero
 
             if (Misc.IsChecked(HarassMenu, "hsW") && W.IsReady() && target.IsValidTarget(W.Range))
             {
-                if (Misc.IsChecked(ComboMenu, "castWifQnotLand"))
-                {
-                    if ((!IsPoisoned(target) && !Q.IsReady()) &&
+                if((!IsPoisoned(target) && !Q.IsReady()) &&
                         (lastQCast - Game.Time) < -0.43f)
                     {
-                        var predictionW = W.GetPrediction(target);
-
-                        if (predictionW.HitChancePercent >= 70)
-                        {
-                            W.Cast(predictionW.CastPosition);
-                        }
-                    }
-                }
-                else
-                {
                     var predictionW = W.GetPrediction(target);
 
                     if (predictionW.HitChancePercent >= 70)
@@ -256,7 +244,7 @@ namespace OneForWeek.Plugin.Hero
                 }
             }
 
-            if (Misc.IsChecked(HarassMenu, "hsE") && E.IsReady() && target.IsValidTarget(E.Range) && (IsPoisoned(target) || !Misc.IsChecked(MiscMenu, "poisonForE")))
+            if (Misc.IsChecked(HarassMenu, "hsE") && E.IsReady() && target.IsValidTarget(E.Range) && (IsPoisoned(target)))
             {
                 E.Cast(target);
             }
@@ -397,7 +385,7 @@ namespace OneForWeek.Plugin.Hero
                     OnFlee();
                     break;
                 case Orbwalker.ActiveModes.Harass:
-                    if (Misc.IsChecked(ComboMenu, "disableAAHS"))
+                    if (Misc.IsChecked(HarassMenu, "disableAAHS"))
                         Orbwalker.DisableAttacking = true;
                     OnHarass();
                     break;

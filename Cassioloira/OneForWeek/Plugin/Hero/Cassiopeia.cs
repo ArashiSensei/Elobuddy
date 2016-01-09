@@ -111,6 +111,12 @@ namespace OneForWeek.Plugin.Hero
             LaneClearMenu.Add("lcKE", new CheckBox("Only E if killable", false));
             LaneClearMenu.Add("lcPE", new CheckBox("Only E if poisoned", true));
 
+            LastHitMenu = Menu.AddSubMenu("Last Hit - " + GCharname, GCharname + "LastHit");
+            LastHitMenu.AddGroupLabel("Last Hit");
+            LastHitMenu.Add("lhQ", new CheckBox("Use Q", true));
+            LastHitMenu.Add("lhW", new CheckBox("Use W", true));
+            LastHitMenu.Add("lhE", new CheckBox("Use E", true));
+
             JungleClearMenu = Menu.AddSubMenu("Jungle Clear - " + GCharname, GCharname + "JungleClear");
             JungleClearMenu.AddGroupLabel("Jungle Clear");
             JungleClearMenu.Add("jcQ", new CheckBox("Use Q", true));
@@ -200,7 +206,7 @@ namespace OneForWeek.Plugin.Hero
             }
         }
 
-        private bool ProbablyFacing(Obj_AI_Base target)
+        private static bool ProbablyFacing(Obj_AI_Base target)
         {
             var predictPos = Prediction.Position.PredictUnitPosition(target, 250);
 
@@ -217,33 +223,40 @@ namespace OneForWeek.Plugin.Hero
             {
                 var predictionQ = Q.GetPrediction(target);
 
-                if (predictionQ.HitChancePercent >= 70)
+                if (predictionQ.HitChancePercent >= 80)
                 {
                     Q.Cast(predictionQ.CastPosition);
+                    lastQCast = Game.Time;
                 }
             }
-            else if (Misc.IsChecked(HarassMenu, "hsQ") && Q.IsReady() && target.IsValidTarget(Q.Range) &&
-                     IsPoisoned(target))
+
+            if (Misc.IsChecked(HarassMenu, "hsW") && W.IsReady() && target.IsValidTarget(W.Range))
             {
-                var predictionQ = Q.GetPrediction(target);
-
-                if (predictionQ.HitChancePercent >= 70)
+                if (Misc.IsChecked(ComboMenu, "castWifQnotLand"))
                 {
-                    Q.Cast(predictionQ.CastPosition);
+                    if ((!IsPoisoned(target) && !Q.IsReady()) &&
+                        (lastQCast - Game.Time) < -0.43f)
+                    {
+                        var predictionW = W.GetPrediction(target);
+
+                        if (predictionW.HitChancePercent >= 70)
+                        {
+                            W.Cast(predictionW.CastPosition);
+                        }
+                    }
+                }
+                else
+                {
+                    var predictionW = W.GetPrediction(target);
+
+                    if (predictionW.HitChancePercent >= 70)
+                    {
+                        W.Cast(predictionW.CastPosition);
+                    }
                 }
             }
 
-            if (Misc.IsChecked(HarassMenu, "hsW") && W.IsReady() && target.IsValidTarget(W.Range) && (!IsPoisoned(target) || target.Distance(_Player) < W.Range - 150 || !Q.IsReady()))
-            {
-                var predictionW = W.GetPrediction(target);
-
-                if (predictionW.HitChancePercent >= 70)
-                {
-                    W.Cast(predictionW.CastPosition);
-                }
-            }
-
-            if (Misc.IsChecked(HarassMenu, "hsE") && E.IsReady() && target.IsValidTarget(E.Range) && (IsPoisoned(target) || !Misc.IsChecked(MiscMenu, "hsPE")))
+            if (Misc.IsChecked(HarassMenu, "hsE") && E.IsReady() && target.IsValidTarget(E.Range) && (IsPoisoned(target) || !Misc.IsChecked(MiscMenu, "poisonForE")))
             {
                 E.Cast(target);
             }
@@ -399,8 +412,57 @@ namespace OneForWeek.Plugin.Hero
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
                 OnJungleClear();
 
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LastHit))
+                OnLastHit();
+
             if (Misc.IsChecked(MiscMenu, "ksOn"))
                 KS();
+        }
+
+        private void OnLastHit()
+        {
+            var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(m => m.IsValidTarget(E.Range) && Player.Instance.GetSpellDamage(m, SpellSlot.R) > m.Health);
+
+            if (minions == null || !minions.Any() || !minions.Any(m => m.IsValidTarget(E.Range))) return;
+
+            var target = minions.FirstOrDefault();
+
+            if (Misc.IsChecked(LastHitMenu, "lhQ") && Q.IsReady() && Q.IsInRange(target) && !IsPoisoned(target))
+            {
+                Q.Cast(target.ServerPosition);
+                lastQCast = Game.Time;
+            }
+
+            if (Misc.IsChecked(LastHitMenu, "lhW") && W.IsReady() && W.IsInRange(target) && !IsPoisoned(target))
+            {
+                if (Misc.IsChecked(ComboMenu, "castWifQnotLand"))
+                {
+                    if ((!IsPoisoned(target) && !Q.IsReady()) &&
+                        (lastQCast - Game.Time) < -0.43f)
+                    {
+                        var predictionW = W.GetPrediction(target);
+
+                        if (predictionW.HitChancePercent >= 70)
+                        {
+                            W.Cast(predictionW.CastPosition);
+                        }
+                    }
+                }
+                else
+                {
+                    var predictionW = W.GetPrediction(target);
+
+                    if (predictionW.HitChancePercent >= 70)
+                    {
+                        W.Cast(predictionW.CastPosition);
+                    }
+                }
+            }
+
+            if (Misc.IsChecked(LastHitMenu, "lhE") && E.IsReady() && E.IsInRange(target) && IsPoisoned(target))
+            {
+                E.Cast(target);
+            }
         }
 
         public void OnDraw(EventArgs args)

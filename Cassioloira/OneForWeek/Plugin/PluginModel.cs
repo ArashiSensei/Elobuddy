@@ -25,6 +25,7 @@ namespace OneForWeek.Plugin
             ComboMenu,
             LaneClearMenu,
             JungleClearMenu,
+            LastHitMenu,
             HarassMenu,
             MiscMenu,
             DrawMenu;

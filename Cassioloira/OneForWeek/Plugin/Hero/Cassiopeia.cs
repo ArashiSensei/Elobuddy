@@ -572,8 +572,8 @@ namespace OneForWeek.Plugin.Hero
         }
 
         public bool canCastE()
-        {
-            return (Misc.GetSliderValue(MiscMenu, "miscDelayE") / 100f + _lastECast - Game.Time) > 0;
+        {//(Misc.GetSliderValue(MiscMenu, "miscDelayE") / 100f + _lastECast - Game.Time) > 0;
+            return true;
         }
 
         public bool IsPoisoned(Obj_AI_Base target)

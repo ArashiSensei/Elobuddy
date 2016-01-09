@@ -560,13 +560,13 @@ namespace OneForWeek.Plugin.Hero
         {
             var damage = 0f;
             if (R.IsReady())
-                damage = _Player.GetSpellDamage(target, SpellSlot.R);
+                damage += _Player.GetSpellDamage(target, SpellSlot.R);
             if (E.IsReady())
-                damage = _Player.GetSpellDamage(target, SpellSlot.E);
+                damage += _Player.GetSpellDamage(target, SpellSlot.E);
             if (W.IsReady())
-                damage = _Player.GetSpellDamage(target, SpellSlot.W);
+                damage += _Player.GetSpellDamage(target, SpellSlot.W);
             if (Q.IsReady())
-                damage = _Player.GetSpellDamage(target, SpellSlot.Q);
+                damage += _Player.GetSpellDamage(target, SpellSlot.Q);
 
             return damage;
         }

@@ -421,7 +421,7 @@ namespace OneForWeek.Plugin.Hero
 
         private void OnLastHit()
         {
-            var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(m => m.IsValidTarget(E.Range) && Player.Instance.GetSpellDamage(m, SpellSlot.R) > m.Health);
+            var minions = EntityManager.MinionsAndMonsters.EnemyMinions.Where(m => m.IsValidTarget(E.Range) && Player.Instance.GetSpellDamage(m, SpellSlot.E) > m.Health);
 
             if (minions == null || !minions.Any() || !minions.Any(m => m.IsValidTarget(E.Range))) return;
 

@@ -57,7 +57,7 @@ namespace OneForWeek.Plugin.Hero
 
             Menu.AddLabel("Version: " + GVersion);
             Menu.AddSeparator();
-            Menu.AddLabel("By Vector");
+            Menu.AddLabel("By MrArticuno");
 
             DrawMenu = Menu.AddSubMenu("Draw - " + GCharname, GCharname + "Draw");
             DrawMenu.AddGroupLabel("Draw");

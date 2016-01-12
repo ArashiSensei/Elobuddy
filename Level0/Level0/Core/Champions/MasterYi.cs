@@ -146,10 +146,12 @@ namespace LevelZero.Core.Champions
             feature.ToMenu();
             Features.Add(feature);
 
-            feature = new Feature
+            if (Smite != null)
             {
-                NameFeature = "Smite Usage",
-                MenuValueStyleList = new List<ValueAbstract>
+                feature = new Feature
+                {
+                    NameFeature = "Smite Usage",
+                    MenuValueStyleList = new List<ValueAbstract>
                 {
                     new ValueCheckbox(true, "smiteusage.usesmite", "Use smite"),
                     new ValueCheckbox(true, "smiteusage.red", "Red"),
@@ -159,10 +161,11 @@ namespace LevelZero.Core.Champions
                     new ValueCheckbox(true, "smiteusage.raptor", "Raptor"),
                     new ValueCheckbox(true, "smiteusage.krug", "Krug")
                 }
-            };
+                };
 
-            feature.ToMenu();
-            Features.Add(feature);
+                feature.ToMenu();
+                Features.Add(feature);
+            }
 
             feature = new Feature
             {
@@ -203,15 +206,15 @@ namespace LevelZero.Core.Champions
             base.OnUpdate(args);
 
             Target = TargetSelector.GetTarget(900, DamageType.Physical);
-            
-            var misc = Features.First(it => it.NameFeature == "Misc");
 
-            var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
+            var misc = Features.First(it => it.NameFeature == "Misc");
 
             //---------------------------------------------Smite Usage---------------------------------------------
 
             if (Smite != null)
             {
+                var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
+
                 if (Smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
                 {
                     Obj_AI_Minion Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Smite.Range).FirstOrDefault();
@@ -279,14 +282,14 @@ namespace LevelZero.Core.Champions
         {
             if (Target == null) return;
 
-            var combo = Features.First(it => it.NameFeature == "Combo");
+            var mode = Features.First(it => it.NameFeature == "Combo");
 
             if (Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Polymorph) || Player.HasBuffOfType(BuffType.Silence) || Player.HasBuffOfType(BuffType.Sleep) || Player.HasBuffOfType(BuffType.Snare) || Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Suppression) || Player.HasBuffOfType(BuffType.Taunt)) { itens.CastScimitarQSS(); }
 
-            if (Q.IsReady() && combo.IsChecked("combo.q") && Q.IsReady() && Target.IsValidTarget(Q.Range))
+            if (Q.IsReady() && mode.IsChecked("combo.q") && Q.IsReady() && Target.IsValidTarget(Q.Range))
             {
-                if (combo.IsChecked("combo.q.smartq")) { QLogic(); }
-                else if (combo.IsChecked("combo.q.saveqtododgespells")) { }
+                if (mode.IsChecked("combo.q.smartq")) { QLogic(); }
+                else if (mode.IsChecked("combo.q.saveqtododgespells")) { }
                 else { Q.Cast(Target); }
             }
 
@@ -299,9 +302,9 @@ namespace LevelZero.Core.Champions
                 }
             }
 
-            if (R.IsReady() && combo.IsChecked("combo.r") && Player.Distance(Target) <= Player.GetAutoAttackRange(Target) + 400) { R.Cast(); }
+            if (R.IsReady() && mode.IsChecked("combo.r") && Player.Distance(Target) <= Player.GetAutoAttackRange(Target) + 400) { R.Cast(); }
 
-            if (E.IsReady() && combo.IsChecked("combo.e") && Player.IsInAutoAttackRange(Target)) E.Cast();
+            if (E.IsReady() && mode.IsChecked("combo.e") && Player.IsInAutoAttackRange(Target)) E.Cast();
 
             if (Target.IsValidTarget(Q.Range)) itens.CastYoumuusGhostBlade();
 
@@ -318,30 +321,30 @@ namespace LevelZero.Core.Champions
         {
             if (Target == null) return;
 
-            var harass = Features.First(it => it.NameFeature == "Harass");
+            var mode = Features.First(it => it.NameFeature == "Harass");
 
-            if (harass.IsChecked("harass.q") && Q.IsReady() && Target.IsValidTarget(Q.Range)) Q.Cast(Target);
+            if (Q.IsReady() && mode.IsChecked("harass.q") && Target.IsValidTarget(Q.Range)) Q.Cast(Target);
 
-            if (harass.IsChecked("harass.e") && E.IsReady() && Player.IsInAutoAttackRange(Target)) E.Cast();
+            if (E.IsReady() && mode.IsChecked("harass.e") && Player.IsInAutoAttackRange(Target)) E.Cast();
 
             return;
         }
 
         public override void OnLaneClear()
         {
-            var laneclear = Features.First(it => it.NameFeature == "Lane Clear");
+            var mode = Features.First(it => it.NameFeature == "Lane Clear");
 
             bool UseItem = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position, 400).Count() >= 3;
             if (UseItem) itens.CastTiamatHydra();
 
-            if (Player.ManaPercent <= laneclear.SliderValue("laneclear.mana%") || !Q.IsReady()) return;
+            if (Player.ManaPercent <= mode.SliderValue("laneclear.mana%") || !Q.IsReady()) return;
 
-            if (laneclear.IsChecked("laneclear.q"))
+            if (mode.IsChecked("laneclear.q"))
             {
                 IEnumerable<Obj_AI_Minion> ListMinions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.ServerPosition, 1000).OrderBy(minion => minion.Distance(Player));
                 int hits = new int();
 
-                if (ListMinions.Any() && ListMinions.Count() >= laneclear.SliderValue("laneclear.q.minminions"))
+                if (ListMinions.Any() && ListMinions.Count() >= mode.SliderValue("laneclear.q.minminions"))
                 {
                     if (!(ListMinions.First().Distance(Player) > Q.Range))
                     {
@@ -354,9 +357,9 @@ namespace LevelZero.Core.Champions
                             else break;
                         }
 
-                        if (hits >= laneclear.SliderValue("laneclear.q.minminions"))
+                        if (hits >= mode.SliderValue("laneclear.q.minminions"))
                         {
-                            if (laneclear.IsChecked("laneclear.q.jimwd"))
+                            if (mode.IsChecked("laneclear.q.jimwd"))
                             {
                                 if ((DamageUtil.GetSpellDamage(ListMinions.First(), SpellSlot.Q) > ListMinions.First().Health || DamageUtil.GetSpellDamage(ListMinions.ElementAt(1), SpellSlot.Q) > ListMinions.ElementAt(1).Health)) Q.Cast(ListMinions.First());
                             }
@@ -371,12 +374,12 @@ namespace LevelZero.Core.Champions
 
         public override void OnJungleClear()
         {
-            var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
-
             //---------------------------------------------Smite Usage---------------------------------------------
 
             if (Smite != null)
             {
+                var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
+
                 if (Smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
                 {
                     Obj_AI_Minion Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Smite.Range).FirstOrDefault();
@@ -398,11 +401,11 @@ namespace LevelZero.Core.Champions
                 }
             }
 
-            var jungleclear = Features.First(it => it.NameFeature == "Jungle Clear");
+            var mode = Features.First(it => it.NameFeature == "Jungle Clear");
 
-            if (Player.ManaPercent < jungleclear.SliderValue("jungleclear.mana%")) return;
+            if (Player.ManaPercent < mode.SliderValue("jungleclear.mana%")) return;
 
-            if (E.IsReady() && EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Player.GetAutoAttackRange()).Any() && jungleclear.IsChecked("jungleclear.e")) E.Cast();
+            if (E.IsReady() && EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Player.GetAutoAttackRange()).Any() && mode.IsChecked("jungleclear.e")) E.Cast();
 
             bool UseItem = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, 400).Count() >= 1;
             if (UseItem) itens.CastTiamatHydra();

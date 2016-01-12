@@ -57,7 +57,7 @@ namespace OneForWeek.Plugin.Hero
 
             Menu.AddLabel("Version: " + GVersion);
             Menu.AddSeparator();
-            Menu.AddLabel("By Vector");
+            Menu.AddLabel("By MrArticuno");
 
             DrawMenu = Menu.AddSubMenu("Draw - " + GCharname, GCharname + "Draw");
             DrawMenu.AddGroupLabel("Draw");
@@ -572,8 +572,8 @@ namespace OneForWeek.Plugin.Hero
         }
 
         public bool canCastE()
-        {//(Misc.GetSliderValue(MiscMenu, "miscDelayE") / 100f + _lastECast - Game.Time) > 0;
-            return true;
+        {
+            return (_lastECast - Game.Time + Misc.GetSliderValue(MiscMenu, "miscDelayE") / 1000f) < 0;
         }
 
         public bool IsPoisoned(Obj_AI_Base target)

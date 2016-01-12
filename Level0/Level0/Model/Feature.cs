@@ -96,18 +96,21 @@ namespace LevelZero.Model
         public object Find(string identifier)
         {
             var foundObject = MenuValueStyleList.FirstOrDefault(o => o.Identifier == identifier);
+            if (foundObject == null) System.Console.WriteLine("O identifier {0} não existe", identifier);
             return foundObject != null ? foundObject.CurrentValue : null;
         }
 
         public bool IsChecked(string identifier)
         {
             var foundObject = MenuValueStyleList.FirstOrDefault(o => o.Identifier == identifier);
+            if (foundObject == null) System.Console.WriteLine("O identifier {0} não existe", identifier);
             return foundObject != null ? (bool)foundObject.CurrentValue : false;
         }
 
         public int SliderValue(string identifier)
         {
             var foundObject = MenuValueStyleList.FirstOrDefault(o => o.Identifier == identifier);
+            if (foundObject == null) System.Console.WriteLine("O identifier {0} não existe", identifier);
             return foundObject != null ? (int)foundObject.CurrentValue : 0;
         }
     }

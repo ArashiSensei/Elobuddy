@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Level0")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("Anti iSphagetti COPY PASTA")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
@@ -31,7 +31,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // Versão
-[assembly: AssemblyVersion("1.3.6.4")]
+[assembly: AssemblyVersion("1.4.6.4")]
 
 
-[assembly: AssemblyFileVersion("1.3.6.4")]
+[assembly: AssemblyFileVersion("1.4.6.4")]

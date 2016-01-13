@@ -81,9 +81,15 @@ namespace LevelZero.Model
         {
         }
 
+        public virtual void PermaActive()
+        {
+        }
+
         public virtual void OnUpdate(EventArgs args)
         {
             if (Player.Instance.IsDead) return;
+
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) OnCombo();
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) OnCombo();
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)) OnHarass();

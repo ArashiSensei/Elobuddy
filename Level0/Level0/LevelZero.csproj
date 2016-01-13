@@ -69,6 +69,7 @@
     <Compile Include="Core\Champions\Darius.cs" />
     <Compile Include="Core\Champions\Alistar.cs" />
     <Compile Include="Core\Champions\Elise.cs" />
+    <Compile Include="Core\Champions\Jhin.cs" />
     <Compile Include="Core\Champions\MasterYi.cs" />
     <Compile Include="Core\Champions\Xerath.cs" />
     <Compile Include="Core\Champions\Tristana.cs" />

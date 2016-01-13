@@ -16,6 +16,7 @@ namespace LevelZero.Model.Interfaces
         void OnJungleClear();
         void OnLastHit();
         void OnFlee();
+        void PermaActive();
         void OnUpdate(EventArgs args);
         void OnDraw(EventArgs args);
         void OnAfterAttack(AttackableUnit target, EventArgs args);

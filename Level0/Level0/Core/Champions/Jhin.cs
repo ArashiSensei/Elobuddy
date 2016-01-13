@@ -26,10 +26,10 @@ namespace LevelZero.Core.Champions
         Spell.Active _heal, _barrier;
         Spell.Targeted _ignite, _smite, _exhaust;
 
-        static Spell.Targeted Q => (Spell.Targeted)Spells[0];
-        static Spell.Skillshot W => (Spell.Skillshot)Spells[1];
-        static Spell.Skillshot E => (Spell.Skillshot)Spells[2];
-        static Spell.Skillshot R => (Spell.Skillshot)Spells[3];
+        Spell.Targeted Q { get { return (Spell.Targeted)Spells[0]; } }
+        Spell.Skillshot W { get { return (Spell.Skillshot)Spells[1]; } }
+        Spell.Skillshot E { get { return (Spell.Skillshot)Spells[2]; } }
+        Spell.Skillshot R { get { return (Spell.Skillshot)Spells[3]; } }
 
         private bool _canCastQ = false;
         private bool _isUltimateOn = false;
@@ -51,7 +51,7 @@ namespace LevelZero.Core.Champions
             Spells = new List<Spell.SpellBase>
             {
                 new Spell.Targeted(SpellSlot.Q, 700),
-                new Spell.Skillshot(SpellSlot.W, 1500, SkillShotType.Linear),
+                new Spell.Skillshot(SpellSlot.W, 2000, SkillShotType.Linear),
                 new Spell.Skillshot(SpellSlot.E, 600, SkillShotType.Circular),
                 new Spell.Skillshot(SpellSlot.R, 3000, SkillShotType.Linear)
             };
@@ -239,7 +239,7 @@ namespace LevelZero.Core.Champions
         public override void OnCombo()
         {
             var TargetW = TargetSelector.GetTarget(W.Range, DamageType.Physical);
-            var TargetR = TargetSelector.GetTarget(W.Range, DamageType.Physical);
+            var TargetR = TargetSelector.GetTarget(R.Range, DamageType.Physical);
             var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
 
             if (Target == null && TargetR == null && TargetW == null) return;

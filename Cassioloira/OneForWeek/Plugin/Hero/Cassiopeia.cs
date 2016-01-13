@@ -282,7 +282,7 @@ namespace OneForWeek.Plugin.Hero
                 if (Misc.IsChecked(LaneClearMenu, "lcKE"))
                 {
                     var minion =
-                        EntityManager.MinionsAndMonsters.EnemyMinions.First(
+                        EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(
                             t =>
                                 t.IsValidTarget(E.Range) && _Player.GetSpellDamage(t, SpellSlot.E) > t.Health &&
                                 (!Misc.IsChecked(LaneClearMenu, "lcPE") || IsPoisoned(t)));
@@ -293,7 +293,7 @@ namespace OneForWeek.Plugin.Hero
                 else
                 {
                     var minion =
-                        EntityManager.MinionsAndMonsters.EnemyMinions.First(
+                        EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(
                             t =>
                                 t.IsValidTarget(E.Range) &&
                                 (Misc.IsChecked(LaneClearMenu, "lcPE") || IsPoisoned(t)));

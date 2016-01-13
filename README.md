@@ -2,7 +2,7 @@ Welcome EB to Mr Articuno Github
 ===================
 
 
-I'm Mr Articuno *aka* Vector
+I'm **Mr Articuno** *aka* Vector
 
 ----------
 
@@ -25,3 +25,8 @@ All the addons of this GitHub are source codes from Elobuddy forum so should not
 #### <i class="icon-folder-open"></i> Committing for other's work addon 
 
 *Never commit other's people work without notify him rightly.*
+
+#### <i class="icon-folder-open"></i> Avoiding problems
+
+*If you wanna copy any code from here please notify the user who pushed to know if you can do it (there's no grantee that's the code would be working)*
+

@@ -110,10 +110,8 @@ namespace LevelZero.Core.Champions
             Features.Add(feature);
         }
 
-        public override void OnUpdate(EventArgs args)
+        public override void PermaActive()
         {
-            base.OnUpdate(args);
-
             var misc = Features.First(it => it.NameFeature == "Misc");
 
             //hu3HU3hu3
@@ -146,7 +144,7 @@ namespace LevelZero.Core.Champions
                         break;
                 }
             }
-            
+
             //Insec
 
             if (misc.IsChecked("misc.insec"))

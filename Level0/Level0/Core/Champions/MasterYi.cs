@@ -170,60 +170,15 @@ namespace LevelZero.Core.Champions
             }
         }
 
-        public override void OnUpdate(EventArgs args)
+        public override void PermaActive()
         {
-            base.OnUpdate(args);
-
             Target = TargetSelector.GetTarget(800, DamageType.Physical);
+
+            //KS
 
             var misc = Features.First(it => it.NameFeature == "Misc");
 
-            /*
-            //---------------------------------------------Smite Usage---------------------------------------------
-
-            if (Smite != null)
-            {
-                var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
-
-                if (Smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
-                {
-                    Obj_AI_Minion Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Smite.Range).FirstOrDefault();
-
-                    if (Mob != default(Obj_AI_Minion))
-                    {
-                        bool kill = GetSmiteDamage() >= Mob.Health;
-
-                        if (kill && (Mob.Name.Contains("SRU_Dragon") || Mob.Name.Contains("SRU_Baron"))) Smite.Cast(Mob);
-                    }
-                }
-            }
-            */
-
-            //------------------------------------------------KS------------------------------------------------
-
             if (misc.IsChecked("misc.ks") && EntityManager.Heroes.Enemies.Any(it => Q.IsInRange(it))) KS();
-
-            /*
-            //-----------------------------------------------Auto Ignite----------------------------------------
-
-            if (misc.IsChecked("misc.autoignite") && Ignite != null)
-            {
-                if (Ignite.IsReady())
-                {
-                    var IgniteEnemy = EntityManager.Heroes.Enemies.FirstOrDefault(it => DamageLibrary.GetSummonerSpellDamage(Player, it, DamageLibrary.SummonerSpells.Ignite) >= it.Health - 30);
-
-                    if (IgniteEnemy != null)
-                    {
-                        if ((IgniteEnemy.Distance(Player) >= 300 || Player.HealthPercent <= 40))
-                        {
-                            Ignite.Cast(IgniteEnemy);
-                        }
-                    }
-                }
-            }
-            */
-
-            return;
         }
 
         public override void OnDraw(EventArgs args)

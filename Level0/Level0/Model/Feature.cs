@@ -157,6 +157,7 @@ namespace LevelZero.Model
             Yeah i know that's shitty code but conditional expression don't work with EB e.e
             (return foundObject?.CurrentValue;)
         */
+
         public object Find(string identifier)
         {
             var foundObject = MenuValueStyleList.FirstOrDefault(o => o.Identifier == identifier);

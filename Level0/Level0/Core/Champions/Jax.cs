@@ -175,10 +175,8 @@ namespace LevelZero.Core.Champions
             Features.Add(feature);
         }
 
-        public override void OnUpdate(EventArgs args)
+        public override void PermaActive()
         {
-            base.OnUpdate(args);
-
             var misc = Features.First(it => it.NameFeature == "Misc");
 
             //----------------------------------------------Ward Jump---------------------------------------
@@ -210,8 +208,6 @@ namespace LevelZero.Core.Champions
             //------------------------------------------------KS------------------------------------------------
 
             if (misc.IsChecked("misc.ks") && EntityManager.Heroes.Enemies.Any(it => Q.IsInRange(it))) KS();
-
-            return;
         }
 
         public override void OnDraw(EventArgs args)
@@ -256,7 +252,7 @@ namespace LevelZero.Core.Champions
             if (R.IsReady() && mode.IsChecked("combo.r"))
             {
                 if (Player.CountEnemiesInRange(650) >= mode.SliderValue("combo.r.minenemies")) R.Cast();
-                else if (mode.IsChecked("combo.r.1v1logic") && (Player.HealthPercent <= 42 || Target.HealthPercent > 30)) R.Cast();
+                else if (mode.IsChecked("combo.r.1v1logic") && (Player.HealthPercent <= 42 || Target.HealthPercent > 40)) R.Cast();
             }
 
             return;

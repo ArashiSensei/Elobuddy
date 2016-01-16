@@ -6,12 +6,13 @@ namespace LevelZero.Model.Values
     {
         public bool InitialValue { get; set; }
 
-        public ValueCheckbox(bool initialValue, string identifier, string displayName)
+        public ValueCheckbox(bool initialValue, string identifier, string displayName, bool separatorBefore = false)
         {
             Identifier = identifier;
             DisplayName = displayName;
             InitialValue = initialValue;
             EnumMenuStyle = EnumMenuStyle.Checkbox;
+            SeparatorBefore = separatorBefore;
         }
     }
 }

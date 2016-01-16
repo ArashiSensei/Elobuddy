@@ -19,20 +19,18 @@ namespace LevelZero
         private static void GameLoaded(EventArgs args)
         {
             VersionUtil.VersionChecker();
+
             try
             {
                 var handle = Activator.CreateInstance(null, "LevelZero.Core.Champions." + Player.Instance.ChampionName);
                 var pluginModel = (PluginModel)handle.Unwrap();
                 NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " Loaded !", Color.DeepSkyBlue));
 
-                /*
-                    Anyone wants your name here ?
-                */
                 NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Addon by: MrArticuno and WujuSan", Color.White));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
+                Console.WriteLine("\n" + ex);
                 NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " is Not Supported", Color.Red));
             }
         }

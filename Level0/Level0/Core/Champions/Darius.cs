@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting;
 using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Events;
-using EloBuddy.SDK.Rendering;
 using LevelZero.Controller;
 using LevelZero.Model;
 using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
 using Circle = EloBuddy.SDK.Rendering.Circle;
+using Activator = LevelZero.Controller.Activator;
 
 namespace LevelZero.Core.Champions
 {
@@ -31,13 +30,16 @@ namespace LevelZero.Core.Champions
 
         public override void InitVariables()
         {
+            Activator = new Activator();
+
             Spells = new List<Spell.SpellBase>
             {
                 new Spell.Skillshot(SpellSlot.Q, 0, SkillShotType.Circular, 750, int.MaxValue, 425) { AllowedCollisionCount = int.MaxValue },
                 new Spell.Active(SpellSlot.W),
                 new Spell.Skillshot(SpellSlot.E, 550, SkillShotType.Cone, 250, 1100, 300) {AllowedCollisionCount = int.MaxValue},
                 new Spell.Targeted(SpellSlot.R, 460)
-        };
+            };
+
             DamageUtil.SpellsDamage = new List<SpellDamage>
             {
                 new SpellDamage(Spells[0], new float[]{ 0, 20 , 35 , 50 , 65 , 80 }, new [] { 0, 0.5f, 0.55f, 0.60f, 0.65f, 0.7f }, DamageType.Physical),
@@ -45,7 +47,9 @@ namespace LevelZero.Core.Champions
             };
 
             InitMenu();
+
             DamageIndicator.Initialize(DamageUtil.GetComboDamage);
+
             new SkinController(5);
         }
 

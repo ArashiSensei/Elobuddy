@@ -12,6 +12,7 @@ using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
 using Circle = EloBuddy.SDK.Rendering.Circle;
+using Activator = LevelZero.Controller.Activator;
 
 namespace LevelZero.Core.Champions
 {
@@ -20,9 +21,6 @@ namespace LevelZero.Core.Champions
         readonly List<string> DodgeSpells = new List<string>() { "SorakaQ", "SorakaE", "TahmKenchW", "TahmKenchQ", "Bushwhack", "ForcePulse", "KarthusFallenOne", "KarthusWallOfPain", "KarthusLayWasteA1", "KarmaWMantra", "KarmaQMissileMantra", "KarmaSpiritBind", "KarmaQ", "JinxW", "JinxE", "JarvanIVGoldenAegis", "HowlingGaleSpell", "SowTheWind", "ReapTheWhirlwind", "IllaoiE", "HeimerdingerUltWDummySpell", "HeimerdingerUltEDummySpell", "HeimerdingerW", "HeimerdingerE", "HecarimUlt", "HecarimRampAttack", "GravesQLineSpell", "GravesQLineMis", "GravesClusterShot", "GravesSmokeGrenade", "GangplankR", "GalioIdolOfDurand", "GalioResoluteSmite", "FioraE", "EvelynnR", "EliseHumanE", "EkkoR", "EkkoW", "EkkoQ", "DravenDoubleShot", "InfectedCleaverMissileCast", "DariusExecute", "DariusAxeGrabCone", "DariusNoxianTacticsONH", "DariusCleave", "PhosphorusBomb", "MissileBarrage", "BraumQ", "BrandFissure", "BardR", "BardQ", "AatroxQ", "AatroxE", "AzirE", "AzirEWrapper", "AzirQWrapper", "AzirQ", "AzirR", "Pulverize", "AhriSeduce", "CurseoftheSadMummy", "InfernalGuardian", "Incinerate", "Volley", "EnchantedCrystalArrow", "BraumRWrapper", "CassiopeiaPetrifyingGaze", "FeralScream", "Rupture", "EzrealEssenceFlux", "EzrealMysticShot", "EzrealTrueshotBarrage", "FizzMarinerDoom", "GnarW", "GnarBigQMissile", "GnarQ", "GnarR", "GragasQ", "GragasE", "GragasR", "RiftWalk", "LeblancSlideM", "LeblancSlide", "LeonaSolarFlare", "UFSlash", "LuxMaliceCannon", "LuxLightStrikeKugel", "LuxLightBinding", "yasuoq3w", "VelkozE", "VeigarEventHorizon", "VeigarDarkMatter", "VarusR", "ThreshQ", "ThreshE", "ThreshRPenta", "SonaQ", "SonaR", "ShenShadowDash", "SejuaniGlacialPrisonCast", "RivenMartyr", "JavelinToss", "NautilusSplashZone", "NautilusAnchorDrag", "NamiR", "NamiQ", "DarkBindingMissile", "StaticField", "RocketGrab", "RocketGrabMissile", "timebombenemybuff", "NocturneUnspeakableHorror", "SyndraQ", "SyndraE", "SyndraR", "VayneCondemn", "Dazzle", "Overload", "AbsoluteZero", "IceBlast", "LeblancChaosOrb", "JudicatorReckoning", "KatarinaQ", "NullLance", "Crowstorm", "FiddlesticksDarkWind", "BrandWildfire", "Disintegrate", "FlashFrost", "Frostbite", "AkaliMota", "InfiniteDuress", "PantheonW", "blindingdart", "JayceToTheSkies", "IreliaEquilibriumStrike", "maokaiunstablegrowth", "nautilusgandline", "runeprison", "WildCards", "BlueCardAttack", "RedCardAttack", "GoldCardAttack", "AkaliShadowDance", "Headbutt", "PowerFist", "BrandConflagration", "CaitlynYordleTrap", "CaitlynAceintheHole", "CassiopeiaNoxiousBlast", "CassiopeiaMiasma", "CassiopeiaTwinFang", "Feast", "DianaArc", "DianaTeleport", "EliseHumanQ", "EvelynnE", "Terrify", "FizzPiercingStrike", "Parley", "GarenQAttack", "GarenR", "IreliaGatotsu", "IreliaEquilibriumStrike", "SowTheWind", "JarvanIVCataclysm", "JaxLeapStrike", "JaxEmpowerTwo", "JaxCounterStrike", "JayceThunderingBlow", "KarmaSpiritBind", "NetherBlade", "KatarinaR", "JudicatorRighteousFury", "KennenBringTheLight", "LeblancChaosOrbM", "BlindMonkRKick", "LeonaZenithBlade", "LeonaShieldOfDaybreak", "LissandraW", "LissandraQ", "LissandraR", "LuluQ", "LuluW", "LuluE", "LuluR", "SeismicShard", "AlZaharMaleficVisions", "AlZaharNetherGrasp", "MaokaiUnstableGrowth", "MordekaiserMaceOfSpades", "MordekaiserChildrenOfTheGrave", "SoulShackles", "NamiW", "NasusW", "NautilusGrandLine", "Takedown", "NocturneParanoia", "PoppyDevastatingBlow", "PoppyHeroicCharge", "QuinnE", "PuncturingTaunt", "RenektonPreExecute", "SpellFlux", "SejuaniWintersClaw", "TwoShivPoisen", "Fling", "SkarnerImpale", "SonaHymnofValor", "SwainTorment", "SwainDecrepify", "BlindingDart", "OrianaIzunaCommand", "OrianaDetonateCommand", "DetonatingShot", "BusterShot", "TrundleTrollSmash", "TrundlePain", "MockingShout", "Expunge", "UdyrBearStance", "UrgotHeatseekingLineMissile", "UrgotSwap2", "VeigarBalefulStrike", "VeigarPrimordialBurst", "ViR", "ViktorPowerTransfer", "VladimirTransfusion", "VolibearQ", "HungeringStrike", "XenZhaoComboTarget", "XenZhaoSweep", "YasuoQ3W", "YasuoQ3Mis", "YasuoQ3", "YasuoRKnockUpComboW" };
         readonly List<string> MenuSpells = new List<string>();
 
-        readonly SummonersController summoners = new SummonersController();
-        readonly ItemController itens = new ItemController();
-        Spell.Targeted Smite, Ignite;
         Menu EOMenu;
 
         AIHeroClient Target;
@@ -35,19 +33,15 @@ namespace LevelZero.Core.Champions
 
         public override void Init()
         {
+            //Console.WriteLine("Init");
             InitVariables();
-            InitEvents();
-        }
-
-        public override void InitEvents()
-        {
-            base.InitEvents();
         }
 
         public override void InitVariables()
         {
-            Smite = (Spell.Targeted)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
-            Ignite = (Spell.Targeted)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Ignite);
+            //Console.WriteLine("InitVariables");
+
+            Activator = new Activator();
 
             Spells = new List<Spell.SpellBase>
             {
@@ -67,11 +61,15 @@ namespace LevelZero.Core.Champions
 
             DamageIndicator.Initialize(DamageUtil.GetComboDamage);
 
-            new SkinController(7);
+            new SkinController(8);
+
+            //Console.WriteLine("Init Variables was finished");
         }
 
         public override void InitMenu()
         {
+            //Console.WriteLine("InitMenu");
+
             var feature = new Feature
             {
                 NameFeature = "Draw",
@@ -94,7 +92,7 @@ namespace LevelZero.Core.Champions
                     new ValueCheckbox(true,  "combo.q", "Combo Q"),
                     new ValueCheckbox(true, "combo.q.smartq", "SmartQ"),
                     new ValueCheckbox(true, "combo.q.saveqtododgespells", "Save Q to dodge spells"),
-                    new ValueCheckbox(true, "combo.waareset", "Use W AA Reset"),
+                    new ValueCheckbox(true, "combo.w.aareset", "Use W AA Reset"),
                     new ValueCheckbox(true,  "combo.e", "Combo E"),
                     new ValueCheckbox(true,  "combo.r", "Combo R")
                 }
@@ -109,7 +107,7 @@ namespace LevelZero.Core.Champions
                 MenuValueStyleList = new List<ValueAbstract>
                 {
                     new ValueCheckbox(true,  "harass.q", "Harass Q"),
-                    new ValueCheckbox(false, "harass.w", "Use W AA Reset"),
+                    new ValueCheckbox(false, "harass.w.aareset", "Use W AA Reset"),
                     new ValueCheckbox(true,  "harass.e", "Harass E")
                 }
             };
@@ -146,35 +144,13 @@ namespace LevelZero.Core.Champions
             feature.ToMenu();
             Features.Add(feature);
 
-            if (Smite != null)
-            {
-                feature = new Feature
-                {
-                    NameFeature = "Smite Usage",
-                    MenuValueStyleList = new List<ValueAbstract>
-                {
-                    new ValueCheckbox(true, "smiteusage.usesmite", "Use smite"),
-                    new ValueCheckbox(true, "smiteusage.red", "Red"),
-                    new ValueCheckbox(true, "smiteusage.blue", "Blue"),
-                    new ValueCheckbox(true, "smiteusage.wolf", "Wolf"),
-                    new ValueCheckbox(true, "smiteusage.gromp", "Gromp"),
-                    new ValueCheckbox(true, "smiteusage.raptor", "Raptor"),
-                    new ValueCheckbox(true, "smiteusage.krug", "Krug")
-                }
-                };
-
-                feature.ToMenu();
-                Features.Add(feature);
-            }
-
             feature = new Feature
             {
                 NameFeature = "Misc",
                 MenuValueStyleList = new List<ValueAbstract>
                 {
                     new ValueCheckbox(true,  "misc.ks", "KS"),
-                    new ValueCheckbox(true, "misc.gapcloser", "Q on enemy gapcloser"),
-                    new ValueCheckbox(true, "misc.autoignite", "Auto Ignire")
+                    new ValueCheckbox(true, "misc.gapcloser", "Q on enemy gapcloser")
                 }
             };
 
@@ -199,16 +175,21 @@ namespace LevelZero.Core.Champions
 
                 EOMenu.AddSeparator();
             }
+
+            //Console.WriteLine("InitMenu was finished");
         }
 
         public override void OnUpdate(EventArgs args)
         {
             base.OnUpdate(args);
 
-            Target = TargetSelector.GetTarget(900, DamageType.Physical);
+            //Console.WriteLine("OnUpdate Yi T.T");
+
+            Target = TargetSelector.GetTarget(800, DamageType.Physical);
 
             var misc = Features.First(it => it.NameFeature == "Misc");
 
+            /*
             //---------------------------------------------Smite Usage---------------------------------------------
 
             if (Smite != null)
@@ -227,11 +208,13 @@ namespace LevelZero.Core.Champions
                     }
                 }
             }
+            */
 
             //------------------------------------------------KS------------------------------------------------
 
             if (misc.IsChecked("misc.ks") && EntityManager.Heroes.Enemies.Any(it => Q.IsInRange(it))) KS();
 
+            /*
             //-----------------------------------------------Auto Ignite----------------------------------------
 
             if (misc.IsChecked("misc.autoignite") && Ignite != null)
@@ -249,6 +232,7 @@ namespace LevelZero.Core.Champions
                     }
                 }
             }
+            */
 
             return;
         }
@@ -256,6 +240,8 @@ namespace LevelZero.Core.Champions
         public override void OnDraw(EventArgs args)
         {
             base.OnDraw(args);
+
+            //Console.WriteLine("OnDraw Yi T.T");
 
             var draw = Features.Find(f => f.NameFeature == "Draw");
 
@@ -278,13 +264,12 @@ namespace LevelZero.Core.Champions
             Spells[2] = E
             Spells[3] = R
         */
+
         public override void OnCombo()
         {
             if (Target == null) return;
 
             var mode = Features.First(it => it.NameFeature == "Combo");
-
-            if (Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Polymorph) || Player.HasBuffOfType(BuffType.Silence) || Player.HasBuffOfType(BuffType.Sleep) || Player.HasBuffOfType(BuffType.Snare) || Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Suppression) || Player.HasBuffOfType(BuffType.Taunt)) { itens.CastScimitarQSS(); }
 
             if (Q.IsReady() && mode.IsChecked("combo.q") && Q.IsReady() && Target.IsValidTarget(Q.Range))
             {
@@ -293,26 +278,9 @@ namespace LevelZero.Core.Champions
                 else { Q.Cast(Target); }
             }
 
-            if (Smite != null)
-            {
-                if (Smite.IsReady() && Target.IsValidTarget(Smite.Range))
-                {
-                    if (Smite.Name.Contains("gank")) Smite.Cast(Target);
-                    else if (Smite.Name.Contains("duel") && Player.IsInAutoAttackRange(Target)) Smite.Cast(Target);
-                }
-            }
-
             if (R.IsReady() && mode.IsChecked("combo.r") && Player.Distance(Target) <= Player.GetAutoAttackRange(Target) + 400) { R.Cast(); }
 
             if (E.IsReady() && mode.IsChecked("combo.e") && Player.IsInAutoAttackRange(Target)) E.Cast();
-
-            if (Target.IsValidTarget(Q.Range)) itens.CastYoumuusGhostBlade();
-
-            itens.CastBilgeBtrk(Target);
-            itens.CastTiamatHydra(Target);
-            itens.CastRanduin(Target);
-            itens.CastHextechGunBlade(Target);
-            itens.CastTitanicHydra(Target);
 
             return;
         }
@@ -335,7 +303,7 @@ namespace LevelZero.Core.Champions
             var mode = Features.First(it => it.NameFeature == "Lane Clear");
 
             bool UseItem = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position, 400).Count() >= 3;
-            if (UseItem) itens.CastTiamatHydra();
+            if (UseItem) { Activator._tiamat.Cast(); Activator._hydra.Cast(); }
 
             if (Player.ManaPercent <= mode.SliderValue("laneclear.mana%") || !Q.IsReady()) return;
 
@@ -374,33 +342,6 @@ namespace LevelZero.Core.Champions
 
         public override void OnJungleClear()
         {
-            //---------------------------------------------Smite Usage---------------------------------------------
-
-            if (Smite != null)
-            {
-                var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
-
-                if (Smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
-                {
-                    Obj_AI_Minion Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Smite.Range).FirstOrDefault();
-
-                    if (Mob != default(Obj_AI_Minion))
-                    {
-                        bool kill = GetSmiteDamage() >= Mob.Health;
-
-                        if (kill)
-                        {
-                            if (Mob.Name.StartsWith("SRU_Red") && smiteusage.IsChecked("smiteusage.red")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Blue") && smiteusage.IsChecked("smiteusage.blue")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Murkwolf") && smiteusage.IsChecked("smiteusage.wolf")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Krug") && smiteusage.IsChecked("smiteusage.krug")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Gromp") && smiteusage.IsChecked("smiteusage.gromp")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Razorbeak") && smiteusage.IsChecked("smiteusage.raptor")) Smite.Cast(Mob);
-                        }
-                    }
-                }
-            }
-
             var mode = Features.First(it => it.NameFeature == "Jungle Clear");
 
             if (Player.ManaPercent < mode.SliderValue("jungleclear.mana%")) return;
@@ -408,7 +349,7 @@ namespace LevelZero.Core.Champions
             if (E.IsReady() && EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Player.GetAutoAttackRange()).Any() && mode.IsChecked("jungleclear.e")) E.Cast();
 
             bool UseItem = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, 400).Count() >= 1;
-            if (UseItem) itens.CastTiamatHydra();
+            if (UseItem) { Activator._tiamat.Cast(); Activator._hydra.Cast(); }
 
             return;
         }
@@ -416,6 +357,8 @@ namespace LevelZero.Core.Champions
         public override void OnAfterAttack(AttackableUnit target, EventArgs args)
         {
             base.OnAfterAttack(target, args);
+
+            //Console.WriteLine("OnAfterAttack Yi T.T");
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear) && Q.IsReady())
             {
@@ -432,7 +375,7 @@ namespace LevelZero.Core.Champions
 
             if (W.IsReady() && Player.Distance(target) <= Player.GetAutoAttackRange() - 50)
             {
-                var AARCombo = Features.First(it => it.NameFeature == "Combo").IsChecked("combo.waareset");
+                var AARCombo = Features.First(it => it.NameFeature == "Combo").IsChecked("combo.w.aareset");
 
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo) && AARCombo)
                 {
@@ -445,7 +388,7 @@ namespace LevelZero.Core.Champions
                     return;
                 }
 
-                var AARHarass = Features.First(it => it.NameFeature == "Harass").IsChecked("harass.waareset");
+                var AARHarass = Features.First(it => it.NameFeature == "Harass").IsChecked("harass.w.aareset");
 
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass) && AARHarass)
                 {
@@ -465,6 +408,8 @@ namespace LevelZero.Core.Champions
         public override void OnProcessSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             base.OnProcessSpell(sender, args);
+
+            //Console.WriteLine("OnProcessSpell Yi T.T");
 
             if (sender.IsEnemy && MenuSpells.Any(el => el == args.SData.Name) && Player.Distance(sender) <= args.SData.CastRange)
             {
@@ -515,6 +460,8 @@ namespace LevelZero.Core.Champions
         {
             base.OnGapCloser(sender, e);
 
+            //Console.WriteLine("OnGapCloser Yi T.T");
+
             if (sender.IsMe) return;
 
             var gapclose = Features.First(it => it.NameFeature == "Misc").IsChecked("misc.gapcloser");
@@ -560,21 +507,6 @@ namespace LevelZero.Core.Champions
             return;
         }
 
-        //------------------------------------GetSmiteDamage()-------------------------------------
-
-        float GetSmiteDamage()
-        {
-            float damage = new float(); //Arithmetic Progression OP :D
-
-            if (Player.Level < 10) damage = 360 + (Player.Level - 1) * 30;
-
-            else if (Player.Level < 15) damage = 280 + (Player.Level - 1) * 40;
-
-            else if (Player.Level < 19) damage = 150 + (Player.Level - 1) * 50;
-
-            return damage;
-        }
-
         //-------------------------------------------KS--------------------------------------------
 
         void KS()
@@ -583,15 +515,6 @@ namespace LevelZero.Core.Champions
             {
                 var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Q.Range) && DamageUtil.GetSpellDamage(enemy, SpellSlot.Q, true, true) >= enemy.Health);
                 if (bye != null) { Q.Cast(bye); return; }
-            }
-
-            if (Smite != null)
-            {
-                if (Smite.Name.Contains("gank") && Smite.IsReady())
-                {
-                    var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Smite.Range) && DamageLibrary.GetSummonerSpellDamage(Player, enemy, DamageLibrary.SummonerSpells.Smite) >= enemy.Health);
-                    if (bye != null) { Smite.Cast(bye); return; }
-                }
             }
         }
     }

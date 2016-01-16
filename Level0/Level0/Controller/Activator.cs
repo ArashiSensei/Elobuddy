@@ -61,8 +61,6 @@ namespace LevelZero.Controller
         
         public Activator(DamageType damageType = DamageType.Physical, int range = 700)
         {
-            //Console.WriteLine("Activator constructor called");
-
             InitMenu();
             InitVariables();
 
@@ -71,7 +69,6 @@ namespace LevelZero.Controller
 
             Game.OnTick += Game_OnTick;
 
-            //Console.WriteLine("Activator constructor ended");
             //AIHeroClient.OnProcessSpellCast += AIHeroClient_OnProcessSpellCast;
         }
 
@@ -321,8 +318,6 @@ namespace LevelZero.Controller
 
         private void Game_OnTick(EventArgs args)
         {
-            //Console.WriteLine("OnTick activator");
-
             if (Player.IsDead || PluginModel.Activator == null) return;
 
             Target = TargetSelector.GetTarget(_range, _damageType);
@@ -407,8 +402,6 @@ namespace LevelZero.Controller
             //Jungle Smite
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
                 _summoners.AutoSmiteMob();
-
-            //Console.WriteLine("OnTick Activator ended");
 
             return;
         }

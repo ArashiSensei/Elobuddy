@@ -29,14 +29,11 @@ namespace LevelZero.Core.Champions
 
         public override void Init()
         {
-            //Console.WriteLine("Init");
             InitVariables();
         }
 
         public override void InitVariables()
         {
-            //Console.WriteLine("InitVariables");
-
             Activator = new Activator();
 
             Spells = new List<Spell.SpellBase>
@@ -61,14 +58,10 @@ namespace LevelZero.Core.Champions
             DamageIndicator.Initialize(DamageUtil.GetComboDamage);
 
             new SkinController(11);
-
-            //Console.WriteLine("Init Variables was finished");
         }
 
         public override void InitMenu()
         {
-            //Console.WriteLine("InitMenu");
-
             var feature = new Feature
             {
                 NameFeature = "Draw",
@@ -180,8 +173,6 @@ namespace LevelZero.Core.Champions
 
             feature.ToMenu();
             Features.Add(feature);
-
-            //Console.WriteLine("InitMenu was finished");
         }
 
         public override void OnUpdate(EventArgs args)

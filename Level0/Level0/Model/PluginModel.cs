@@ -45,8 +45,6 @@ namespace LevelZero.Model
 
         public virtual void InitEvents()
         {
-            //Console.WriteLine("InitEvents");
-
             Game.OnTick += OnUpdate;
             Obj_AI_Base.OnLevelUp += OnPlayerLevelUp;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpell;
@@ -54,8 +52,6 @@ namespace LevelZero.Model
             Orbwalker.OnPostAttack += OnAfterAttack;
             Interrupter.OnInterruptableSpell += OnPossibleToInterrupt;
             Gapcloser.OnGapcloser += OnGapCloser;
-
-            //Console.WriteLine("InitEvents was finished");
         }
         
         public virtual void OnPlayerLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs args)

@@ -33,14 +33,11 @@ namespace LevelZero.Core.Champions
 
         public override void Init()
         {
-            //Console.WriteLine("Init");
             InitVariables();
         }
 
         public override void InitVariables()
         {
-            //Console.WriteLine("InitVariables");
-
             Activator = new Activator();
 
             Spells = new List<Spell.SpellBase>
@@ -61,15 +58,11 @@ namespace LevelZero.Core.Champions
 
             DamageIndicator.Initialize(DamageUtil.GetComboDamage);
 
-            new SkinController(8);
-
-            //Console.WriteLine("Init Variables was finished");
+            new SkinController(9);
         }
 
         public override void InitMenu()
         {
-            //Console.WriteLine("InitMenu");
-
             var feature = new Feature
             {
                 NameFeature = "Draw",
@@ -175,15 +168,11 @@ namespace LevelZero.Core.Champions
 
                 EOMenu.AddSeparator();
             }
-
-            //Console.WriteLine("InitMenu was finished");
         }
 
         public override void OnUpdate(EventArgs args)
         {
             base.OnUpdate(args);
-
-            //Console.WriteLine("OnUpdate Yi T.T");
 
             Target = TargetSelector.GetTarget(800, DamageType.Physical);
 
@@ -241,8 +230,6 @@ namespace LevelZero.Core.Champions
         {
             base.OnDraw(args);
 
-            //Console.WriteLine("OnDraw Yi T.T");
-
             var draw = Features.Find(f => f.NameFeature == "Draw");
 
             if (draw.IsChecked("disable"))
@@ -257,13 +244,6 @@ namespace LevelZero.Core.Champions
             DamageIndicator.Enabled = draw.IsChecked("dmgIndicator");
 
         }
-
-        /*
-            Spells[0] = Q - Useless
-            Spells[1] = W
-            Spells[2] = E
-            Spells[3] = R
-        */
 
         public override void OnCombo()
         {
@@ -329,7 +309,7 @@ namespace LevelZero.Core.Champions
                         {
                             if (mode.IsChecked("laneclear.q.jimwd"))
                             {
-                                if ((DamageUtil.GetSpellDamage(ListMinions.First(), SpellSlot.Q) > ListMinions.First().Health || DamageUtil.GetSpellDamage(ListMinions.ElementAt(1), SpellSlot.Q) > ListMinions.ElementAt(1).Health)) Q.Cast(ListMinions.First());
+                                if (GetQDamage(ListMinions.First()) >= ListMinions.First().Health || GetQDamage(ListMinions.ElementAt(1)) >= ListMinions.ElementAt(1).Health) Q.Cast(ListMinions.First());
                             }
                             else { Q.Cast(ListMinions.First()); }
                         }
@@ -344,8 +324,6 @@ namespace LevelZero.Core.Champions
         {
             var mode = Features.First(it => it.NameFeature == "Jungle Clear");
 
-            if (Player.ManaPercent < mode.SliderValue("jungleclear.mana%")) return;
-
             if (E.IsReady() && EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Player.GetAutoAttackRange()).Any() && mode.IsChecked("jungleclear.e")) E.Cast();
 
             bool UseItem = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, 400).Count() >= 1;
@@ -357,8 +335,6 @@ namespace LevelZero.Core.Champions
         public override void OnAfterAttack(AttackableUnit target, EventArgs args)
         {
             base.OnAfterAttack(target, args);
-
-            //Console.WriteLine("OnAfterAttack Yi T.T");
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear) && Q.IsReady())
             {
@@ -409,8 +385,6 @@ namespace LevelZero.Core.Champions
         {
             base.OnProcessSpell(sender, args);
 
-            //Console.WriteLine("OnProcessSpell Yi T.T");
-
             if (sender.IsEnemy && MenuSpells.Any(el => el == args.SData.Name) && Player.Distance(sender) <= args.SData.CastRange)
             {
                 if (Q.IsReady() && (EOMenu[args.SData.Name].Cast<Slider>().CurrentValue == 1 || EOMenu[args.SData.Name].Cast<Slider>().CurrentValue == 3))
@@ -460,8 +434,6 @@ namespace LevelZero.Core.Champions
         {
             base.OnGapCloser(sender, e);
 
-            //Console.WriteLine("OnGapCloser Yi T.T");
-
             if (sender.IsMe) return;
 
             var gapclose = Features.First(it => it.NameFeature == "Misc").IsChecked("misc.gapcloser");
@@ -473,6 +445,19 @@ namespace LevelZero.Core.Champions
 
         //------------------------------------|| Extension ||--------------------------------------
 
+        //-------------------------------------SpellDamage()---------------------------------------
+
+        float GetQDamage(Obj_AI_Base unit)
+        {
+            if (!unit.IsValidTarget()) return 0;
+
+            if (unit.IsMinion)
+                return Player.CalculateDamageOnUnit(unit, DamageType.Physical, new[] { 0, 100, 160, 220, 280, 340 }[Q.Level] + Player.TotalAttackDamage, true, true);
+
+            return Player.CalculateDamageOnUnit(unit, DamageType.Physical, new[] { 25, 60, 95, 130, 165 }[Q.Level] + Player.TotalAttackDamage, true, true);
+
+        }
+
         //----------------------------------------QLogic()-----------------------------------------
 
         void QLogic()
@@ -480,7 +465,7 @@ namespace LevelZero.Core.Champions
             if (Target.IsDashing()) Q.Cast(Target);
             if (Target.HealthPercent <= 30) Q.Cast(Target);
             if (Player.HealthPercent <= 30) Q.Cast(Target);
-            if (DamageUtil.GetSpellDamage(Target, SpellSlot.Q) >= Target.Health) Q.Cast(Target);
+            if (GetQDamage(Target) >= Target.Health) Q.Cast(Target);
         }
 
         //----------------------------------------Dodge()------------------------------------------
@@ -513,7 +498,7 @@ namespace LevelZero.Core.Champions
         {
             if (Q.IsReady())
             {
-                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Q.Range) && DamageUtil.GetSpellDamage(enemy, SpellSlot.Q, true, true) >= enemy.Health);
+                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Q.Range) && GetQDamage(enemy) >= enemy.Health);
                 if (bye != null) { Q.Cast(bye); return; }
             }
         }

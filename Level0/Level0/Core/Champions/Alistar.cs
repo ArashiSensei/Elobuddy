@@ -19,7 +19,7 @@ namespace LevelZero.Core.Champions
 {
     class Alistar : PluginModel
     {
-        const int QWMANA = 270;
+        int qwmana { get { return new[] { 0, 65, 70, 75, 80, 85 }[Spells[0].Level] + new[] { 0, 65, 70, 75, 80, 85 }[Spells[1].Level]; } }
         bool Insecing;
         bool Combing;
         Spell.Skillshot Flash;
@@ -215,7 +215,6 @@ namespace LevelZero.Core.Champions
 
             var Target = TargetSelector.GetTarget(1000, DamageType.Magical);
             var insec = Features.First(it => it.NameFeature == "Misc").IsChecked("misc.insec");
-            int qwmana = new[] { 0, 65, 70, 75, 80, 85 }[Spells[0].Level] + new[] { 0, 65, 70, 75, 80, 85 }[Spells[1].Level];
 
             if (Target != null && Spells[1].IsReady())
             {
@@ -270,7 +269,7 @@ namespace LevelZero.Core.Champions
 
                 if (Spells[0].IsReady() && Target.IsValidTarget(Spells[0].Range - 80) && !Player.Instance.IsDashing()) Spells[0].Cast();
 
-                else if (Spells[0].IsReady() && Spells[1].IsReady() && Target.IsValidTarget(625) && Player.Instance.Mana >= QWMANA) { WQ(Target); Combing = true; }
+                else if (Spells[0].IsReady() && Spells[1].IsReady() && Target.IsValidTarget(625) && Player.Instance.Mana >= qwmana) { WQ(Target); Combing = true; }
 
                 var combo = Features.First(it => it.NameFeature == "Combo");
 

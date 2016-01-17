@@ -18,6 +18,8 @@ namespace LevelZero.Controller
 {
     class Activator
     {
+        string[] _autoZhonyaSpells = new string[] { "zed.r", "veigar.r", "veigar.w", "malphite.r", "garen.r", "darius.r", "fizz.r", "lux.r", "ezreal.r", "leesin.r", "morgana.r", "chogath.r", "nunu.r" };
+
         List<Feature> Features = new List<Feature>();
         public Feature offensives, defensives, speed, potions, summoners;
         AIHeroClient Player = EloBuddy.Player.Instance;
@@ -86,9 +88,13 @@ namespace LevelZero.Controller
                     new ValueCheckbox(true, "summoners.exhaust", "Use Exhaust (Combo Mode, instantly)"),
 
                     new ValueCheckbox(true, "summoners.heal", "Use Heal", true),
+                    new ValueCheckbox(true, "summoners.heal.dangerousspells", "Use Heal on dangerous spells"),
+                    new ValueSlider(1500, 1, 100, "summoners.heal.dangerousspells.safelife", "(Dangerous) Use Heal just if my health will be >=", true),
                     new ValueSlider(99, 1, 30, "summoners.heal.health%", "Use Heal when health% is at:"),
 
                     new ValueCheckbox(true, "summoners.barrier", "Use Barrier", true),
+                    new ValueCheckbox(true, "summoners.barrier.dangerousspells", "Use Barrier on dangerous spells"),
+                    new ValueSlider(1500, 1, 100, "summoners.barrier.dangerousspells.safelife", "(Dangerous) Use Barrier just if my health will be >=", true),
                     new ValueSlider(99, 1, 30, "summoners.barrier.health%", "Use Barrier when health% is at:"),
 
                     new ValueCheckbox(true, "summoners.ghost", "Use Ghost", true),
@@ -182,6 +188,19 @@ namespace LevelZero.Controller
 
                     new ValueCheckbox(true, "defensives.zhonya", "Use Zhonya", true),
                     new ValueSlider(99, 1, 30, "defensives.zhonya.health%", "Use Zhonya when my health% is at:"),
+                    new ValueCheckbox(true, "defensives.zhonya.zed.r", "Use Zhonya on Zed R", true),
+                    new ValueCheckbox(true, "defensives.zhonya.veigar.r", "Use Zhonya on Veigar R"),
+                    new ValueCheckbox(true, "defensives.zhonya.veigar.w", "Use Zhonya on Veigar W"),
+                    new ValueCheckbox(true, "defensives.zhonya.malphite.r", "Use Zhonya on Malphite R"),
+                    new ValueCheckbox(true, "defensives.zhonya.ezreal.r", "Use Zhonya on Ezreal R"),
+                    new ValueCheckbox(true, "defensives.zhonya.darius.r", "Use Zhonya on Darius R"),
+                    new ValueCheckbox(true, "defensives.zhonya.garen.r", "Use Zhonya on Garen R"),
+                    new ValueCheckbox(true, "defensives.zhonya.fizz.r", "Use Zhonya on Fizz R"),
+                    new ValueCheckbox(true, "defensives.zhonya.leesin.r", "Use Zhonya on Lee Sin R"),
+                    new ValueCheckbox(true, "defensives.zhonya.chogath.r", "Use Zhonya on ChoGath R"),
+                    new ValueCheckbox(true, "defensives.zhonya.lux.r", "Use Zhonya on Lux R"),
+                    new ValueCheckbox(true, "defensives.zhonya.nunu.r", "Use Zhonya on Nunu R"),
+                    new ValueCheckbox(true, "defensives.zhonya.morgana.r", "Use Zhonya on Morgana R (when stun)")
                 }
             };
 
@@ -404,14 +423,130 @@ namespace LevelZero.Controller
             return;
         }
 
-        /*
         private void AIHeroClient_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsAlly || sender.IsMe) return;
+            if (sender.IsAlly || sender.IsMe || Player.Distance(sender) > args.SData.CastRangeDisplayOverride || !(sender is AIHeroClient)) return;
+
+            //Is dangerous spell ?
+            var spell = _autoZhonyaSpells.FirstOrDefault(it => it == sender.BaseSkinName.ToLower() + "." + args.Slot.ToString().ToLower());
+
+            //No ? return;
+            if (spell == null) return;
+
+            //Yes ? Let's go 3:)
+
+            //Summoners on dangerous
+
+            if (spell != "morgana.r" && spell != "nunu.r" && spell != "zed.r")
+            {
+                if (_barrier != null && summoners.IsChecked("summoners.barrier.dangerousspells") && _barrier.IsReady() && (Player.Health + (95 + (20 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100)
+                {
+                    if (args.Target != null && args.Target.IsMe) { _barrier.Cast(); return; }
+
+                    int delay = new int();
+
+                    if (Player.Distance(sender) >= 1000)
+                    {
+                        delay = (int)((((Player.Distance(sender)) / args.SData.MissileSpeed * 1000) + args.SData.SpellCastTime - Game.Ping) / 1.5);
+                    }
+                    else if (Player.Distance(sender) >= 400)
+                    {
+                        delay = (int)((((Player.Distance(sender)) / args.SData.MissileSpeed * 1000) + args.SData.SpellCastTime - Game.Ping) / 2);
+                    }
+
+                    EloBuddy.SDK.Core.DelayAction(() => SummonersOnHit(sender, args, true), delay);
+
+                    return;
+                }
+
+                else if (_heal != null && summoners.IsChecked("summoners.heal.dangerousspells") && _heal.IsReady() && (Player.Health + (75 + (15 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100)
+                {
+                    if (args.Target != null && args.Target.IsMe) { _heal.Cast(); return; }
+
+                    int delay = new int();
+
+                    if (Player.Distance(sender) >= 1000)
+                    {
+                        delay = (int)((((Player.Distance(sender)) / args.SData.MissileSpeed * 1000) + args.SData.SpellCastTime - Game.Ping) / 1.5);
+                    }
+                    else if (Player.Distance(sender) >= 400)
+                    {
+                        delay = (int)((((Player.Distance(sender)) / args.SData.MissileSpeed * 1000) + args.SData.SpellCastTime - Game.Ping) / 2);
+                    }
+
+                    EloBuddy.SDK.Core.DelayAction(() => SummonersOnHit(sender, args, true), delay);
+
+                    return;
+                }
+            }
+
+            //This spells isn't checked on menu ? return;
+            if (!defensives.IsChecked("defensives.zhonya." + spell)) return;
+
+            //Zhonya on dangerous
+            else if (_zhonya.IsOwned() && _zhonya.IsReady())
+            {
+                if (spell == "morgana.r")
+                {
+                    EloBuddy.SDK.Core.DelayAction(delegate
+                    {
+                        if (Player.Distance(sender) < args.SData.CastRangeDisplayOverride) _zhonya.Cast();
+                    }, 2700 - Game.Ping);
+                }
+
+                else if (spell == "nunu.r")
+                {
+                    EloBuddy.SDK.Core.DelayAction(delegate
+                    {
+                        if (Player.Distance(sender) < args.SData.CastRangeDisplayOverride) _zhonya.Cast();
+                    }, 600 - Game.Ping);
+                }
+
+                else if (spell == "zed.r")
+                {
+                    EloBuddy.SDK.Core.DelayAction(() => ZhonyaOnHit(sender, args), 450 - Game.Ping);
+                }
+
+                else
+                {
+                    var delay = (int)(((Player.Distance(sender) - 300) / args.SData.MissileSpeed * 1000) + args.SData.SpellCastTime - 50 - Game.Ping);
+
+                    EloBuddy.SDK.Core.DelayAction(() => ZhonyaOnHit(sender, args), delay);
+                }
+            }
 
             return;
         }
-        */
+
+        //----------------------------------------|| Extensions ||-------------------------------------
+
+        private void ZhonyaOnHit(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (args.Target != null)
+            {
+                if (args.Target.IsMe) _zhonya.Cast();
+                return;
+            }
+
+            var polygons = new Geometry.Polygon[] { new Geometry.Polygon.Rectangle(args.Start, args.End, args.SData.LineWidth), new Geometry.Polygon.Circle(args.End, args.SData.CastRadius) };
+
+            if (polygons.Any(it => it.IsInside(Player))) _zhonya.Cast();
+
+            return;
+        }
+
+        private void SummonersOnHit(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args, bool useHeal = false)
+        {
+            var polygons = new Geometry.Polygon[] { new Geometry.Polygon.Rectangle(args.Start, args.End, args.SData.LineWidth), new Geometry.Polygon.Circle(args.End, args.SData.CastRadius) };
+
+            if (polygons.Any(it => it.IsInside(Player)))
+            {
+                if (useHeal) _heal.Cast();
+                else _barrier.Cast();
+            }
+
+            return;
+        }
 
         #endregion
     }

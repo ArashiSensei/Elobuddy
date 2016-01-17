@@ -173,13 +173,6 @@ namespace LevelZero.Core.Champions
 
         }
 
-        /*
-            Spells[0] = Q
-            Spells[1] = W
-            Spells[2] = E
-            Spells[3] = R
-        */
-
         public override void OnCombo()
         {
             var target = TargetSelector.GetTarget(Spells[2].Range, DamageType.Physical);

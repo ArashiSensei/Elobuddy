@@ -194,7 +194,7 @@ namespace LevelZero.Core.Champions
 
             //Heal
 
-            if (Spells[2].IsReady() && misc.IsChecked("misc.heal") && Player.Instance.ManaPercent >= misc.SliderValue("misc.heal.mana%") && EntityManager.Heroes.Allies.Any(it => it.HealthPercent <= misc.SliderValue("misc.heal.health%") && Spells[2].IsInRange(it)))
+            if (Spells[2].IsReady() && !Player.HasBuff("recall") && misc.IsChecked("misc.heal") && Player.Instance.ManaPercent >= misc.SliderValue("misc.heal.mana%") && EntityManager.Heroes.Allies.Any(it => it.HealthPercent <= misc.SliderValue("misc.heal.health%") && Spells[2].IsInRange(it)))
             {
                 if (!misc.IsChecked("misc.heal.myself") && Player.Instance.HealthPercent <= misc.SliderValue("misc.heal.health%")) { }
                 else Spells[2].Cast();

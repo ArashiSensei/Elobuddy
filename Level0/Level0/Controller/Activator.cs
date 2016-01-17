@@ -397,8 +397,6 @@ namespace LevelZero.Controller
                 _summoners.AutoHeal();
             }
 
-            
-
             //Jungle Smite
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
                 _summoners.AutoSmiteMob();

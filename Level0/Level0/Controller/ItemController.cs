@@ -74,7 +74,7 @@ namespace LevelZero.Controller
 
         private AIHeroClient GetPrioritedProtectionTarget(int healthpercent, int range = 600)
         {
-            var target = Allies.FirstOrDefault(ally => ally.HealthPercent <= healthpercent && Enemies.Any(enemy => enemy.IsInAutoAttackRange(ally)));
+            var target = Allies.FirstOrDefault(ally => ally.HealthPercent <= healthpercent && Enemies.Any(enemy => enemy.IsValidTarget() && !enemy.IsDead && enemy.IsInAutoAttackRange(ally)));
 
             return target;
         }
@@ -107,7 +107,7 @@ namespace LevelZero.Controller
 
         public void AutoSolari()
         {
-            if (!PluginModel.Activator._solari .IsOwned() || !PluginModel.Activator._solari .IsReady() || !PluginModel.Activator.defensives.IsChecked("defensives.solari")) return;
+            if (!PluginModel.Activator._solari.IsOwned() || !PluginModel.Activator._solari.IsReady() || !PluginModel.Activator.defensives.IsChecked("defensives.solari")) return;
 
             var target = GetPrioritedProtectionTarget(PluginModel.Activator.defensives.SliderValue("defensives.solari.health%"));
 

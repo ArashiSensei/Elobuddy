@@ -337,7 +337,7 @@ namespace LevelZero.Controller
 
         private void Game_OnTick(EventArgs args)
         {
-            if (Player.IsDead || PluginModel.Activator == null) return;
+            if (Player.IsDead || this == null) return;
 
             Target = TargetSelector.GetTarget(_range, _damageType);
 
@@ -439,7 +439,7 @@ namespace LevelZero.Controller
 
             if (spell != "morgana.r" && spell != "nunu.r" && spell != "zed.r")
             {
-                if (_barrier != null && summoners.IsChecked("summoners.barrier.dangerousspells") && _barrier.IsReady() && (Player.Health + (95 + (20 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100)
+                if (_barrier != null && summoners.IsChecked("summoners.barrier.dangerousspells") && _barrier.IsReady() && (Player.Health + (95 + (20 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100 && (Player.Health + (95 + (20 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) <= Player.MaxHealth)
                 {
                     if (args.Target != null && args.Target.IsMe) { _barrier.Cast(); return; }
 
@@ -459,7 +459,7 @@ namespace LevelZero.Controller
                     return;
                 }
 
-                else if (_heal != null && summoners.IsChecked("summoners.heal.dangerousspells") && _heal.IsReady() && (Player.Health + (75 + (15 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100)
+                else if (_heal != null && summoners.IsChecked("summoners.heal.dangerousspells") && _heal.IsReady() && (Player.Health + (75 + (15 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100 && (Player.Health + (75 + (15 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) <= Player.MaxHealth)
                 {
                     if (args.Target != null && args.Target.IsMe) { _heal.Cast(); return; }
 

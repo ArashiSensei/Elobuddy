@@ -82,7 +82,7 @@ namespace LevelZero.Controller
         {
             if (PluginModel.Activator._ghost == null || !PluginModel.Activator._ghost.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.ghost") || PluginModel.Activator.Target == null || !PluginModel.Activator.Target.IsValidTarget()) return;
 
-            if (!Player.IsInAutoAttackRange(PluginModel.Activator.Target) && Player.Distance(PluginModel.Activator.Target) <= 300)
+            if (!Player.IsInAutoAttackRange(PluginModel.Activator.Target) && Player.Distance(PluginModel.Activator.Target) <= 400)
                 PluginModel.Activator._ghost.Cast();
         }
 

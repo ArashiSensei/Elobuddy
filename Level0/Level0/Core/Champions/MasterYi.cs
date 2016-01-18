@@ -36,6 +36,25 @@ namespace LevelZero.Core.Champions
             InitVariables();
         }
 
+        public override void InitEvents()
+        {
+            base.InitEvents();
+
+            Obj_AI_Minion.OnPlayAnimation += Obj_AI_Minion_OnPlayAnimation;
+        }
+
+        private void Obj_AI_Minion_OnPlayAnimation(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
+        {
+            if (!(sender is Obj_AI_Minion) || !sender.Name.Contains("Dragon")) return;
+
+            Chat.Print(args.Animation);
+
+            if (args.Animation == "spell1")
+            {
+                EloBuddy.SDK.Core.DelayAction(() => Q.Cast(sender), 500);
+            }
+        }
+
         public override void InitVariables()
         {
             Activator = new Activator();
@@ -409,7 +428,7 @@ namespace LevelZero.Core.Champions
             if (unit.IsMinion)
                 return Player.CalculateDamageOnUnit(unit, DamageType.Physical, new[] { 0, 100, 160, 220, 280, 340 }[Q.Level] + Player.TotalAttackDamage, true, true);
 
-            return Player.CalculateDamageOnUnit(unit, DamageType.Physical, new[] { 25, 60, 95, 130, 165 }[Q.Level] + Player.TotalAttackDamage, true, true);
+            return Player.CalculateDamageOnUnit(unit, DamageType.Physical, new[] { 0, 25, 60, 95, 130, 165 }[Q.Level] + Player.TotalAttackDamage, true, true);
 
         }
 

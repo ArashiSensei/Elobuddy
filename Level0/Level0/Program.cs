@@ -9,7 +9,7 @@ namespace LevelZero
 {
     class Program
     {
-        public static NotificationUtil NotificationUtil = new NotificationUtil();
+        //public static NotificationUtil NotificationUtil = new NotificationUtil();
 
         static void Main(string[] args)
         {
@@ -24,14 +24,17 @@ namespace LevelZero
             {
                 var handle = Activator.CreateInstance(null, "LevelZero.Core.Champions." + Player.Instance.ChampionName);
                 var pluginModel = (PluginModel)handle.Unwrap();
-                NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " Loaded !", Color.DeepSkyBlue));
+                Chat.Print("{0} Loaded !", Player.Instance.ChampionName);
+                Chat.Print("Addon by: MrArticuno and WujuSan");
+                //NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " Loaded !", Color.DeepSkyBlue));
 
-                NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Addon by: MrArticuno and WujuSan", Color.White));
+                //NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Addon by: MrArticuno and WujuSan", Color.White));
             }
             catch (Exception ex)
             {
                 Console.WriteLine("\n" + ex);
-                NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " is Not Supported", Color.Red));
+                Chat.Print("This champion isn't supported");
+                //NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " is Not Supported", Color.Red));
             }
         }
     }

@@ -6,7 +6,6 @@ using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Events;
 using EloBuddy.SDK.Menu.Values;
-using EloBuddy.SDK.Rendering;
 using LevelZero.Controller;
 using LevelZero.Model;
 using LevelZero.Model.Values;
@@ -14,123 +13,28 @@ using LevelZero.Util;
 using SharpDX;
 using Circle = EloBuddy.SDK.Rendering.Circle;
 using Color = System.Drawing.Color;
+using Activator = LevelZero.Controller.Activator;
 
 namespace LevelZero.Core.Champions
 {
     class Alistar : PluginModel
     {
-        static bool Insecing;
-        static bool Combing;
-        static Spell.Skillshot Flash;
-        static Vector3 WalkPos;
-        static List<string> DodgeSpells = new List<string>() { "LuxMaliceCannon", "LuxMaliceCannonMis", "EzrealtrueShotBarrage", "KatarinaR", "YasuoDashWrapper", "ViR", "NamiR", "ThreshQ", "AbsoluteZero", "xerathrmissilewrapper", "yasuoq3w", "UFSlash" };
+        int qwmana { get { return new[] { 0, 65, 70, 75, 80, 85 }[Spells[0].Level] + new[] { 0, 65, 70, 75, 80, 85 }[Spells[1].Level]; } }
+        bool Insecing;
+        bool Combing;
+        Spell.Skillshot Flash;
+        Vector3 WalkPos;
+        List<string> DodgeSpells = new List<string>() { "LuxMaliceCannon", "LuxMaliceCannonMis", "EzrealtrueShotBarrage", "KatarinaR", "YasuoDashWrapper", "ViR", "NamiR", "ThreshQ", "AbsoluteZero", "xerathrmissilewrapper", "yasuoq3w", "UFSlash" };
 
         public override void Init()
         {
             InitVariables();
-            InitEvents();
         }
-       
-
-        //extension
-
-        private void WQ(Obj_AI_Base target)
-        {
-            if (target != null && target.IsValidTarget())
-            {
-                Combing = true;
-                int ADelay = Features.First(it => it.NameFeature == "Misc").SliderValue("misc.W/Q Delay");
-                int delay = (int)( (150 * (Player.Instance.Distance(target))) / 650 + ADelay);
-
-                if (Player.CastSpell(SpellSlot.W, target))
-                {
-                    EloBuddy.SDK.Core.DelayAction(() => Spells[0].Cast(), delay);
-                    EloBuddy.SDK.Core.DelayAction(() => Combing = false, delay + 1000);
-                }
-                else Combing = false;
-            }
-
-            return;
-        }
-
-        private void CheckWDistance(Obj_AI_Base target)
-        {
-            if (Player.Instance.Distance(WalkPos) <= 70) Spells[1].Cast(target);
-            else Insecing = false;
-
-            return;
-        }
-
-        private void QWInsec(Obj_AI_Base target, bool flash = false)
-        {
-            if (flash)
-            {
-                var FlashPos = Player.Instance.Position.Extend(target, Flash.Range).To3D();
-
-                var Flashed = Flash.Cast(FlashPos);
-
-                if (Flashed)
-                {
-                    EloBuddy.SDK.Core.DelayAction(delegate
-                    {
-                        if (Spells[0].Cast())
-                        {
-                            WalkPos = Game.CursorPos.Extend(target, Game.CursorPos.Distance(target) + 150).To3D();
-
-                            int delay = (int)(Player.Instance.Distance(WalkPos) / Player.Instance.MoveSpeed * 1000) + 300 + Spells[0].CastDelay + 2 * Game.Ping;
-
-                            Player.IssueOrder(GameObjectOrder.MoveTo, WalkPos);
-
-                            EloBuddy.SDK.Core.DelayAction(() => CheckWDistance(target), delay);
-                            EloBuddy.SDK.Core.DelayAction(() => Insecing = false, delay + 1000);
-                        }
-                        else Insecing = false;
-                    }, Game.Ping + 70);
-                }
-                else Insecing = false;
-
-                return;
-            }
-
-            else
-            {
-                if (Spells[0].Cast())
-                {
-                    WalkPos = Game.CursorPos.Extend(target, Game.CursorPos.Distance(target) + 150).To3D();
-
-                    int delay = (int)(Player.Instance.Distance(WalkPos) / Player.Instance.MoveSpeed * 1000) + 300 + Spells[0].CastDelay + 2 * Game.Ping;
-
-                    Player.IssueOrder(GameObjectOrder.MoveTo, WalkPos);
-                    EloBuddy.SDK.Core.DelayAction(() => CheckWDistance(target), delay);
-                    EloBuddy.SDK.Core.DelayAction(() => Insecing = false, delay + 1000);
-                }
-                else Insecing = false;
-
-                return;
-            }
-        }
-
-        private bool CanMove(Obj_AI_Base target)
-        {
-            if (target.HasBuffOfType(BuffType.Charm) || target.HasBuffOfType(BuffType.Fear) || target.HasBuffOfType(BuffType.Knockback) ||
-                target.HasBuffOfType(BuffType.Knockup) || target.HasBuffOfType(BuffType.Sleep) || target.HasBuffOfType(BuffType.Snare) ||
-                target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Suppression) || target.HasBuffOfType(BuffType.Taunt)) return false;
-
-            return true;
-        }
-
-        private int qwmana
-        {
-            get
-            {
-                return new[] { 0, 65, 70, 75, 80, 85 }[Spells[0].Level] + new[] { 0, 65, 70, 75, 80, 85 }[Spells[1].Level];
-            }
-        }
-
-        //extension
 
         public override void InitVariables()
         {
+            Activator = new Activator(DamageType.Magical);
+
             Spells = new List<Spell.SpellBase>
             {
                 new Spell.Active(SpellSlot.Q, 365),
@@ -189,15 +93,15 @@ namespace LevelZero.Core.Champions
                 NameFeature = "Misc",
                 MenuValueStyleList = new List<ValueAbstract>
                 {
-                    new ValueKeybind(false, "misc.insec", "Insec", KeyBind.BindTypes.HoldActive),
-                    new ValueSlider(200, -200, 0, "misc.W/Q Delay", "W/Q Delay"),
-                    new ValueCheckbox(true,  "misc.heal", "Use E"),
+                    new ValueKeybind(false, "misc.insec", "Insec", KeyBind.BindTypes.HoldActive, 'J'),
+                    new ValueSlider(200, -200, 0, "misc.W/Q Delay", "W/Q Delay", true),
+                    new ValueCheckbox(true,  "misc.heal", "Use E", true),
                     new ValueCheckbox(true,  "misc.heal.myself", "Heal myself"),
-                    new ValueSlider(99, 1, 50, "misc.heal.health%", "Heal when ally health% <="),
+                    new ValueSlider(99, 1, 50, "misc.heal.health%", "Heal when ally health% <=", true),
                     new ValueSlider(99, 1, 30, "misc.heal.mana%", "Heal when mana% >="),
-                    new ValueCheckbox(true, "misc.gapcloser", "W/Q on enemy gapcloser"),
+                    new ValueCheckbox(true, "misc.gapcloser", "W/Q on enemy gapcloser", true),
                     new ValueCheckbox(true, "misc.interrupter", "Interrupt enemy spells"),
-                    new ValueKeybind(false, "misc.hu3HU3hu3", "hu3HU3hu3"),
+                    new ValueKeybind(false, "misc.hu3HU3hu3", "hu3HU3hu3", KeyBind.BindTypes.HoldActive, 'U', true),
                     new ValueSlider(4, 1, 3, "misc.hu3HU3hu3.mode", "hu3HU3hu3 mode, 1:joke, 2:taunt, 3:dance, 4:laugh")
                 }
             };
@@ -206,10 +110,8 @@ namespace LevelZero.Core.Champions
             Features.Add(feature);
         }
 
-        public override void OnUpdate(EventArgs args)
+        public override void PermaActive()
         {
-            base.OnUpdate(args);
-
             var misc = Features.First(it => it.NameFeature == "Misc");
 
             //hu3HU3hu3
@@ -242,7 +144,7 @@ namespace LevelZero.Core.Champions
                         break;
                 }
             }
-            
+
             //Insec
 
             if (misc.IsChecked("misc.insec"))
@@ -292,7 +194,7 @@ namespace LevelZero.Core.Champions
 
             //Heal
 
-            if (Spells[2].IsReady() && misc.IsChecked("misc.heal") && Player.Instance.ManaPercent >= misc.SliderValue("misc.heal.mana%") && EntityManager.Heroes.Allies.Any(it => it.HealthPercent <= misc.SliderValue("misc.heal.health%") && Spells[2].IsInRange(it)))
+            if (Spells[2].IsReady() && !Player.HasBuff("recall") && misc.IsChecked("misc.heal") && Player.Instance.ManaPercent >= misc.SliderValue("misc.heal.mana%") && EntityManager.Heroes.Allies.Any(it => it.HealthPercent <= misc.SliderValue("misc.heal.health%") && Spells[2].IsInRange(it)))
             {
                 if (!misc.IsChecked("misc.heal.myself") && Player.Instance.HealthPercent <= misc.SliderValue("misc.heal.health%")) { }
                 else Spells[2].Cast();
@@ -313,7 +215,6 @@ namespace LevelZero.Core.Champions
 
             var Target = TargetSelector.GetTarget(1000, DamageType.Magical);
             var insec = Features.First(it => it.NameFeature == "Misc").IsChecked("misc.insec");
-            int qwmana = new[] { 0, 65, 70, 75, 80, 85 }[Spells[0].Level] + new[] { 0, 65, 70, 75, 80, 85 }[Spells[1].Level];
 
             if (Target != null && Spells[1].IsReady())
             {
@@ -359,13 +260,6 @@ namespace LevelZero.Core.Champions
             DamageIndicator.Enabled = draw.IsChecked("dmgIndicator");
 
         }
-
-        /*
-            Spells[0] = Q - Useless
-            Spells[1] = W
-            Spells[2] = E
-            Spells[3] = R
-        */
 
         public override void OnCombo()
         {
@@ -465,10 +359,91 @@ namespace LevelZero.Core.Champions
             return;
         }
 
-        public override void OnPlayerLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs args)
+        //------------------------------------|| Extension ||--------------------------------------
+
+        private void WQ(Obj_AI_Base target)
         {
-            base.OnPlayerLevelUp(sender, args);
+            if (target != null && target.IsValidTarget())
+            {
+                Combing = true;
+                int ADelay = Features.First(it => it.NameFeature == "Misc").SliderValue("misc.W/Q Delay");
+                int delay = (int)((150 * (Player.Instance.Distance(target))) / 650 + ADelay);
+
+                if (Player.CastSpell(SpellSlot.W, target))
+                {
+                    EloBuddy.SDK.Core.DelayAction(() => Spells[0].Cast(), delay);
+                    EloBuddy.SDK.Core.DelayAction(() => Combing = false, delay + 1000);
+                }
+                else Combing = false;
+            }
+
             return;
+        }
+
+        private void CheckWDistance(Obj_AI_Base target)
+        {
+            if (Player.Instance.Distance(WalkPos) <= 70) Spells[1].Cast(target);
+            else Insecing = false;
+
+            return;
+        }
+
+        private void QWInsec(Obj_AI_Base target, bool flash = false)
+        {
+            if (flash)
+            {
+                var FlashPos = Player.Instance.Position.Extend(target, Flash.Range).To3D();
+
+                var Flashed = Flash.Cast(FlashPos);
+
+                if (Flashed)
+                {
+                    EloBuddy.SDK.Core.DelayAction(delegate
+                    {
+                        if (Spells[0].Cast())
+                        {
+                            WalkPos = Game.CursorPos.Extend(target, Game.CursorPos.Distance(target) + 150).To3D();
+
+                            int delay = (int)(Player.Instance.Distance(WalkPos) / Player.Instance.MoveSpeed * 1000) + 300 + Spells[0].CastDelay + 2 * Game.Ping;
+
+                            Player.IssueOrder(GameObjectOrder.MoveTo, WalkPos);
+
+                            EloBuddy.SDK.Core.DelayAction(() => CheckWDistance(target), delay);
+                            EloBuddy.SDK.Core.DelayAction(() => Insecing = false, delay + 1000);
+                        }
+                        else Insecing = false;
+                    }, Game.Ping + 70);
+                }
+                else Insecing = false;
+
+                return;
+            }
+
+            else
+            {
+                if (Spells[0].Cast())
+                {
+                    WalkPos = Game.CursorPos.Extend(target, Game.CursorPos.Distance(target) + 150).To3D();
+
+                    int delay = (int)(Player.Instance.Distance(WalkPos) / Player.Instance.MoveSpeed * 1000) + 300 + Spells[0].CastDelay + 2 * Game.Ping;
+
+                    Player.IssueOrder(GameObjectOrder.MoveTo, WalkPos);
+                    EloBuddy.SDK.Core.DelayAction(() => CheckWDistance(target), delay);
+                    EloBuddy.SDK.Core.DelayAction(() => Insecing = false, delay + 1000);
+                }
+                else Insecing = false;
+
+                return;
+            }
+        }
+
+        private bool CanMove(Obj_AI_Base target)
+        {
+            if (target.HasBuffOfType(BuffType.Charm) || target.HasBuffOfType(BuffType.Fear) || target.HasBuffOfType(BuffType.Knockback) ||
+                target.HasBuffOfType(BuffType.Knockup) || target.HasBuffOfType(BuffType.Sleep) || target.HasBuffOfType(BuffType.Snare) ||
+                target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Suppression) || target.HasBuffOfType(BuffType.Taunt)) return false;
+
+            return true;
         }
     }
 }

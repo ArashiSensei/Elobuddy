@@ -8,5 +8,6 @@ namespace LevelZero.Model.Values
         public string DisplayName { get; set; }
         public object CurrentValue { get; set; }
         public EnumMenuStyle EnumMenuStyle { get; set; }
+        public bool SeparatorBefore { get; set; }
     }
 }

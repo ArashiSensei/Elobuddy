@@ -4,6 +4,7 @@ using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Events;
 using LevelZero.Model.Interfaces;
+using Activator = LevelZero.Controller.Activator;
 
 namespace LevelZero.Model
 {
@@ -11,6 +12,7 @@ namespace LevelZero.Model
     {
         public static List<Spell.SpellBase> Spells { get; set; }
         public static List<Feature> Features { get; set; }
+        public static Activator Activator;
 
         protected PluginModel()
         {
@@ -51,7 +53,7 @@ namespace LevelZero.Model
             Interrupter.OnInterruptableSpell += OnPossibleToInterrupt;
             Gapcloser.OnGapcloser += OnGapCloser;
         }
-
+        
         public virtual void OnPlayerLevelUp(Obj_AI_Base sender, Obj_AI_BaseLevelUpEventArgs args)
         {
             if (!sender.IsMe) return;
@@ -89,7 +91,7 @@ namespace LevelZero.Model
         {
             if (Player.Instance.IsDead) return;
 
-            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) OnCombo();
+            PermaActive();
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) OnCombo();
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass)) OnHarass();

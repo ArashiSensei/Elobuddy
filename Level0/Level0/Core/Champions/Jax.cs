@@ -11,20 +11,16 @@ using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
 using Circle = EloBuddy.SDK.Rendering.Circle;
+using Activator = LevelZero.Controller.Activator;
 
 namespace LevelZero.Core.Champions
 {
     class Jax : PluginModel
     {
         readonly AIHeroClient Player = EloBuddy.Player.Instance;
-        AIHeroClient Target;
-
-        readonly SummonersController summoners = new SummonersController();
-        readonly ItemController itens = new ItemController();
 
         float ETime;
         float WardTick;
-        Spell.Targeted Ignite, Smite;
 
         Spell.Targeted Q { get { return (Spell.Targeted)Spells[0]; } }
         Spell.Active W { get { return (Spell.Active)Spells[1]; } }
@@ -34,18 +30,11 @@ namespace LevelZero.Core.Champions
         public override void Init()
         {
             InitVariables();
-            InitEvents();
-        }
-
-        public override void InitEvents()
-        {
-            base.InitEvents();
         }
 
         public override void InitVariables()
         {
-            Ignite = (Spell.Targeted)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Ignite);
-            Smite = (Spell.Targeted)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
+            Activator = new Activator();
 
             Spells = new List<Spell.SpellBase>
             {
@@ -68,7 +57,7 @@ namespace LevelZero.Core.Champions
 
             DamageIndicator.Initialize(DamageUtil.GetComboDamage);
 
-            new SkinController(10);
+            new SkinController(11);
         }
 
         public override void InitMenu()
@@ -95,10 +84,10 @@ namespace LevelZero.Core.Champions
                     new ValueCheckbox(true,  "combo.q", "Combo Q"),
                     new ValueCheckbox(true, "combo.q.aarange?qondash", "Enemy AARange ? Just Q on dash!"),
                     new ValueSlider(1900, 0, 1500, "combo.q.delay", "Use E and after some milliseconds use Q (1000ms = 1sec):"),
-                    new ValueCheckbox(true, "combo.w", "Combo W"),
+                    new ValueCheckbox(true, "combo.w", "Combo W", true),
                     new ValueCheckbox(true, "combo.w.aareset", "Use W AA Reset"),
-                    new ValueCheckbox(true,  "combo.e", "Combo E"),
-                    new ValueCheckbox(true,  "combo.r", "Combo R"),
+                    new ValueCheckbox(true,  "combo.e", "Combo E", true),
+                    new ValueCheckbox(true,  "combo.r", "Combo R", true),
                     new ValueCheckbox(true,  "combo.r.1v1logic", "Use 1v1 R Logic"),
                     new ValueSlider(5, 1, 2, "combo.r.minenemies", "Min enemies R")
                 }
@@ -114,12 +103,12 @@ namespace LevelZero.Core.Champions
                 {
                     new ValueCheckbox(true,  "harass.q", "Harass Q"),
                     new ValueCheckbox(true, "harass.q.aarange?justqondash", "Enemy AARange ? Just Q on dash!"),
-                    new ValueSlider(1900, 0, 1500, "harass.q.delay", "Use E and after some milliseconds use Q (1000ms = 1sec):"),
-                    new ValueCheckbox(true, "harass.w", "Harass W"),
+                    new ValueSlider(1900, 0, 1500, "harass.q.delay", "Use E and after some milliseconds use Q (1000ms = 1sec):", true),
+                    new ValueCheckbox(true, "harass.w", "Harass W", true),
                     new ValueCheckbox(true, "harass.w.aareset", "Use W AA Reset"),
-                    new ValueCheckbox(true,  "harass.e", "Harass E"),
-                    new ValueCheckbox(true,  "harass.r", "Harass R"),
-                    new ValueSlider(100, 1, 30, "harass.minmana%", "Harass, MinMana%")
+                    new ValueCheckbox(true,  "harass.e", "Harass E", true),
+                    new ValueCheckbox(true,  "harass.r", "Harass R", true),
+                    new ValueSlider(100, 1, 30, "harass.minmana%", "Harass, MinMana%", true)
                 }
             };
 
@@ -133,10 +122,10 @@ namespace LevelZero.Core.Champions
                 {
                     new ValueCheckbox(true,  "laneclear.q", "Lane Clear Q"),
                     new ValueCheckbox(true,  "laneclear.q.jimwd", "Just Q if minion will die"),
-                    new ValueCheckbox(true,  "laneclear.w", "Lane Clear W"),
-                    new ValueCheckbox(true,  "laneclear.e", "Lane Clear E"),
+                    new ValueCheckbox(true,  "laneclear.w", "Lane Clear W", true),
+                    new ValueCheckbox(true,  "laneclear.e", "Lane Clear E", true),
                     new ValueSlider(7, 1, 3,  "laneclear.e.minminions", "Min minions E"),
-                    new ValueSlider(100, 1, 30, "laneclear.mana%", "Lane Clear MinMana%")
+                    new ValueSlider(100, 1, 30, "laneclear.mana%", "Lane Clear MinMana%", true)
                 }
             };
 
@@ -150,7 +139,7 @@ namespace LevelZero.Core.Champions
                 {
                     new ValueCheckbox(true,  "lasthit.q", "Last Hit Q"),
                     new ValueCheckbox(true,  "lasthit.w", "Last Hit W"),
-                    new ValueSlider(100, 1, 30, "lasthit.mana%", "Last Hit MinMana%")
+                    new ValueSlider(100, 1, 30, "lasthit.mana%", "Last Hit MinMana%", true)
                 }
             };
 
@@ -165,33 +154,12 @@ namespace LevelZero.Core.Champions
                     new ValueCheckbox(true,  "jungleclear.q", "Jungle Clear Q"),
                     new ValueCheckbox(true,  "jungleclear.w", "Jungle Clear W"),
                     new ValueCheckbox(true,  "jungleclear.e", "Jungle Clear E"),
-                    new ValueSlider(100, 1, 30, "jungleclear.mana%", "Jungle Clear MinMana%")
+                    new ValueSlider(100, 1, 30, "jungleclear.mana%", "Jungle Clear MinMana%", true)
                 }
             };
 
             feature.ToMenu();
             Features.Add(feature);
-
-            if (Smite != null)
-            {
-                feature = new Feature
-                {
-                    NameFeature = "Smite Usage",
-                    MenuValueStyleList = new List<ValueAbstract>
-                    {
-                    new ValueCheckbox(true, "smiteusage.usesmite", "Use smite"),
-                    new ValueCheckbox(true, "smiteusage.red", "Red"),
-                    new ValueCheckbox(true, "smiteusage.blue", "Blue"),
-                    new ValueCheckbox(true, "smiteusage.wolf", "Wolf"),
-                    new ValueCheckbox(true, "smiteusage.gromp", "Gromp"),
-                    new ValueCheckbox(true, "smiteusage.raptor", "Raptor"),
-                    new ValueCheckbox(true, "smiteusage.krug", "Krug")
-                    }
-                };
-
-                feature.ToMenu();
-                Features.Add(feature);
-            }
 
             feature = new Feature
             {
@@ -199,7 +167,6 @@ namespace LevelZero.Core.Champions
                 MenuValueStyleList = new List<ValueAbstract>
                 {
                     new ValueCheckbox(true,  "misc.ks", "KS"),
-                    new ValueCheckbox(true, "misc.autoignite", "Auto Ignite"),
                     new ValueKeybind(false, "misc.wardjump", "Ward Jump", KeyBind.BindTypes.HoldActive)
                 }
             };
@@ -208,32 +175,9 @@ namespace LevelZero.Core.Champions
             Features.Add(feature);
         }
 
-        public override void OnUpdate(EventArgs args)
+        public override void PermaActive()
         {
-            base.OnUpdate(args);
-
-            Target = TargetSelector.GetTarget(900, DamageType.Physical);
-
             var misc = Features.First(it => it.NameFeature == "Misc");
-
-            //---------------------------------------------Smite Usage---------------------------------------------
-
-            if (Smite != null)
-            {
-                var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
-
-                if (Smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
-                {
-                    Obj_AI_Minion Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Smite.Range).FirstOrDefault();
-
-                    if (Mob != default(Obj_AI_Minion))
-                    {
-                        bool kill = GetSmiteDamage() >= Mob.Health;
-
-                        if (kill && (Mob.Name.Contains("SRU_Dragon") || Mob.Name.Contains("SRU_Baron"))) Smite.Cast(Mob);
-                    }
-                }
-            }
 
             //----------------------------------------------Ward Jump---------------------------------------
 
@@ -264,26 +208,6 @@ namespace LevelZero.Core.Champions
             //------------------------------------------------KS------------------------------------------------
 
             if (misc.IsChecked("misc.ks") && EntityManager.Heroes.Enemies.Any(it => Q.IsInRange(it))) KS();
-
-            //-----------------------------------------------Auto Ignite----------------------------------------
-
-            if (misc.IsChecked("misc.autoignite") && Ignite != null)
-            {
-                if (Ignite.IsReady())
-                {
-                    var IgniteEnemy = EntityManager.Heroes.Enemies.FirstOrDefault(it => DamageLibrary.GetSummonerSpellDamage(Player, it, DamageLibrary.SummonerSpells.Ignite) >= it.Health - 30);
-
-                    if (IgniteEnemy != null)
-                    {
-                        if ((IgniteEnemy.Distance(Player) >= 300 || Player.HealthPercent <= 40))
-                        {
-                            Ignite.Cast(IgniteEnemy);
-                        }
-                    }
-                }
-            }
-
-            return;
         }
 
         public override void OnDraw(EventArgs args)
@@ -306,17 +230,15 @@ namespace LevelZero.Core.Champions
 
         public override void OnCombo()
         {
+            var Target = TargetSelector.GetTarget(900, DamageType.Physical);
+
             if (Target == null) return;
 
             var mode = Features.First(it => it.NameFeature == "Combo");
 
-            if (Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Polymorph) || Player.HasBuffOfType(BuffType.Silence) || Player.HasBuffOfType(BuffType.Sleep) || Player.HasBuffOfType(BuffType.Snare) || Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Suppression) || Player.HasBuffOfType(BuffType.Taunt)) { itens.CastScimitarQSS(); }
-
             if (Q.IsInRange(Target))
             {
                 if (!Player.HasBuff("JaxCounterStrike") && E.IsReady() && mode.IsChecked("combo.e") && E.Cast()) ETime = Environment.TickCount;
-
-                itens.CastYoumuusGhostBlade();
 
                 if (Q.IsReady() && mode.IsChecked("combo.q"))
                 {
@@ -327,26 +249,11 @@ namespace LevelZero.Core.Champions
                 if (W.IsReady() && !mode.IsChecked("combo.w.aareset") && (Q.IsReady() || Player.IsInAutoAttackRange(Target)) && W.Cast()) Orbwalker.ResetAutoAttack();
             }
 
-            if (Smite != null)
-            {
-                if (Smite.IsReady() && Smite.IsInRange(Target))
-                {
-                    if (Smite.Name.Contains("gank")) Smite.Cast(Target);
-                    else if (Smite.Name.Contains("duel") && Player.IsInAutoAttackRange(Target)) Smite.Cast(Target);
-                }
-            }
-
             if (R.IsReady() && mode.IsChecked("combo.r"))
             {
                 if (Player.CountEnemiesInRange(650) >= mode.SliderValue("combo.r.minenemies")) R.Cast();
-                else if (mode.IsChecked("combo.r.1v1logic") && (Player.HealthPercent <= 42 || Target.HealthPercent > 30)) R.Cast();
+                else if (mode.IsChecked("combo.r.1v1logic") && (Player.HealthPercent <= 42 || Target.HealthPercent > 40)) R.Cast();
             }
-
-            itens.CastBilgeBtrk(Target);
-            itens.CastTiamatHydra(Target);
-            itens.CastRanduin(Target);
-            itens.CastHextechGunBlade(Target);
-            itens.CastTitanicHydra(Target);
 
             return;
         }
@@ -354,6 +261,7 @@ namespace LevelZero.Core.Champions
         public override void OnHarass()
         {
             var mode = Features.First(it => it.NameFeature == "Harass");
+            var Target = TargetSelector.GetTarget(900, DamageType.Physical);
 
             if (Target == null || Player.ManaPercent < mode.SliderValue("harass.mana%")) return;
 
@@ -377,7 +285,7 @@ namespace LevelZero.Core.Champions
             if (!minions.Any()) return;
 
             bool UseItem = minions.Count(it => it.IsValidTarget(400)) >= 3;
-            if (UseItem) itens.CastTiamatHydra();
+            if (UseItem) { Activator._tiamat.Cast(); Activator._hydra.Cast(); }
 
             if (Player.ManaPercent < mode.SliderValue("laneclear.mana%")) return;
 
@@ -398,33 +306,6 @@ namespace LevelZero.Core.Champions
 
         public override void OnJungleClear()
         {
-            //---------------------------------------------Smite Usage---------------------------------------------
-
-            if (Smite != null)
-            {
-                var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
-
-                if (Smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
-                {
-                    Obj_AI_Minion Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Smite.Range).FirstOrDefault();
-
-                    if (Mob != default(Obj_AI_Minion))
-                    {
-                        bool kill = GetSmiteDamage() >= Mob.Health;
-
-                        if (kill)
-                        {
-                            if (Mob.Name.StartsWith("SRU_Red") && smiteusage.IsChecked("smiteusage.red")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Blue") && smiteusage.IsChecked("smiteusage.blue")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Murkwolf") && smiteusage.IsChecked("smiteusage.wolf")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Krug") && smiteusage.IsChecked("smiteusage.krug")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Gromp") && smiteusage.IsChecked("smiteusage.gromp")) Smite.Cast(Mob);
-                            else if (Mob.Name.StartsWith("SRU_Razorbeak") && smiteusage.IsChecked("smiteusage.raptor")) Smite.Cast(Mob);
-                        }
-                    }
-                }
-            }
-
             var mode = Features.First(it => it.NameFeature == "Jungle Clear");
 
             if (Player.ManaPercent >= mode.SliderValue("jungleclear.mana%"))
@@ -439,8 +320,9 @@ namespace LevelZero.Core.Champions
                 }
             }
 
+
             bool UseItem = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, 400).Count() >= 1;
-            if (UseItem) itens.CastTiamatHydra();
+            if (UseItem) { Activator._tiamat.Cast(); Activator._hydra.Cast(); }
 
             return;
         }
@@ -599,15 +481,6 @@ namespace LevelZero.Core.Champions
             {
                 var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(W.Range) && DamageUtil.GetSpellDamage(enemy, SpellSlot.Q) + DamageUtil.GetSpellDamage(enemy, SpellSlot.W) >= enemy.Health);
                 if (bye != null) { W.Cast(); EloBuddy.SDK.Core.DelayAction(() => Q.Cast(bye), 100); return; }
-            }
-
-            if (Smite != null)
-            {
-                if (Smite.Name.Contains("gank") && Smite.IsReady())
-                {
-                    var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Smite.Range) && DamageLibrary.GetSummonerSpellDamage(Player, enemy, DamageLibrary.SummonerSpells.Smite) >= enemy.Health);
-                    if (bye != null) { Smite.Cast(bye); return; }
-                }
             }
         }
     }

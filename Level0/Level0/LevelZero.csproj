@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\Activator.cs" />
     <Compile Include="Controller\DamageIndicator.cs" />
     <Compile Include="Controller\ItemController.cs" />
     <Compile Include="Controller\SkinController.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="Core\Champions\Darius.cs" />
     <Compile Include="Core\Champions\Alistar.cs" />
     <Compile Include="Core\Champions\Elise.cs" />
+    <Compile Include="Core\Champions\Jax.cs" />
     <Compile Include="Core\Champions\Jhin.cs" />
     <Compile Include="Core\Champions\MasterYi.cs" />
     <Compile Include="Core\Champions\Xerath.cs" />

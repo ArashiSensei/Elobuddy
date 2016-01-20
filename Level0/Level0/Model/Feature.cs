@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
 using EloBuddy;
@@ -32,6 +33,66 @@ namespace LevelZero.Model
             MenuValueStyleList = menuValueStyleList;
         }
 
+        public Menu ToActivatorMenu()
+        {
+            if (FeatureMenu != null) return FeatureMenu;
+
+            FeatureMenu = Globals.ACTIVATOR_MENU.AddSubMenu("Activator - " + NameFeature, "Activator - " + NameFeature);
+            FeatureMenu.AddGroupLabel("Activator - " + NameFeature);
+
+            foreach (var valueAbstract in MenuValueStyleList)
+            {
+                if (valueAbstract.SeparatorBefore) FeatureMenu.AddSeparator();
+
+                switch (valueAbstract.EnumMenuStyle)
+                {
+                    case EnumMenuStyle.Slider:
+                        MenuValueStyleList.Find(x => x.Identifier == valueAbstract.Identifier).CurrentValue = ((ValueSlider)valueAbstract).InitialValue;
+
+                        var currentMenuFeatureAxuSlider = FeatureMenu.Add(NameFeature + "." + valueAbstract.Identifier,
+                            new Slider(valueAbstract.DisplayName, ((ValueSlider)valueAbstract).InitialValue, ((ValueSlider)valueAbstract).MinValue, ((ValueSlider)valueAbstract).MaxValue));
+
+                        currentMenuFeatureAxuSlider.OnValueChange += delegate (ValueBase<int> sender, ValueBase<int>.ValueChangeArgs args)
+                        {
+                            MenuValueStyleList.Find(x => x.Identifier == valueAbstract.Identifier).CurrentValue = currentMenuFeatureAxuSlider.CurrentValue;
+                        };
+
+                        break;
+
+                    case EnumMenuStyle.Checkbox:
+                        MenuValueStyleList.Find(x => x.Identifier == valueAbstract.Identifier).CurrentValue =
+                            ((ValueCheckbox)valueAbstract).InitialValue;
+
+                        var currentMenuFeatureAuxCheckbox = FeatureMenu.Add(NameFeature + "." + valueAbstract.Identifier,
+                            new CheckBox(valueAbstract.DisplayName, ((ValueCheckbox)valueAbstract).InitialValue));
+
+                        currentMenuFeatureAuxCheckbox.OnValueChange += delegate (ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+                        {
+                            MenuValueStyleList.Find(x => x.Identifier == valueAbstract.Identifier).CurrentValue = currentMenuFeatureAuxCheckbox.CurrentValue;
+                        };
+
+                        break;
+
+                    case EnumMenuStyle.KeyBind:
+                        MenuValueStyleList.Find(x => x.Identifier == valueAbstract.Identifier).CurrentValue =
+                            ((ValueKeybind)valueAbstract).InitialValue;
+
+                        var currentMenuFeatureAuxKeybind = FeatureMenu.Add(NameFeature + "." + valueAbstract.Identifier, ((ValueKeybind)valueAbstract).Key != '\0' ?
+                            new KeyBind(valueAbstract.DisplayName, ((ValueKeybind)valueAbstract).InitialValue, ((ValueKeybind)valueAbstract).BindType, ((ValueKeybind)valueAbstract).Key)
+                            : new KeyBind(valueAbstract.DisplayName, ((ValueKeybind)valueAbstract).InitialValue, ((ValueKeybind)valueAbstract).BindType));
+
+                        currentMenuFeatureAuxKeybind.OnValueChange += delegate (ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+                        {
+                            MenuValueStyleList.Find(x => x.Identifier == valueAbstract.Identifier).CurrentValue = currentMenuFeatureAuxKeybind.CurrentValue;
+                        };
+
+                        break;
+                }
+            }
+
+            return FeatureMenu;
+        }
+
         public Menu ToMenu()
         {
             if (FeatureMenu != null) return FeatureMenu;
@@ -41,6 +102,8 @@ namespace LevelZero.Model
 
             foreach (var valueAbstract in MenuValueStyleList)
             {
+                if (valueAbstract.SeparatorBefore) FeatureMenu.AddSeparator();
+
                 switch (valueAbstract.EnumMenuStyle)
                 {
                     case EnumMenuStyle.Slider:
@@ -68,8 +131,9 @@ namespace LevelZero.Model
                     case EnumMenuStyle.KeyBind:
                         MenuValueStyleList.Find(x => x.Identifier == valueAbstract.Identifier).CurrentValue =
                             ((ValueKeybind)valueAbstract).InitialValue;
-                        var currentMenuFeatureAuxKeybind = FeatureMenu.Add(NameFeature + "." + valueAbstract.Identifier,
-                            new KeyBind(valueAbstract.DisplayName, ((ValueKeybind)valueAbstract).InitialValue, ((ValueKeybind)valueAbstract).BindType));
+                        var currentMenuFeatureAuxKeybind = FeatureMenu.Add(NameFeature + "." + valueAbstract.Identifier, ((ValueKeybind)valueAbstract).Key != '\0' ?
+                            new KeyBind(valueAbstract.DisplayName, ((ValueKeybind)valueAbstract).InitialValue, ((ValueKeybind)valueAbstract).BindType, ((ValueKeybind)valueAbstract).Key)
+                            : new KeyBind(valueAbstract.DisplayName, ((ValueKeybind)valueAbstract).InitialValue, ((ValueKeybind)valueAbstract).BindType));
                         currentMenuFeatureAuxKeybind.OnValueChange +=
                             delegate(ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
                             {
@@ -93,24 +157,25 @@ namespace LevelZero.Model
             Yeah i know that's shitty code but conditional expression don't work with EB e.e
             (return foundObject?.CurrentValue;)
         */
+
         public object Find(string identifier)
         {
             var foundObject = MenuValueStyleList.FirstOrDefault(o => o.Identifier == identifier);
-            if (foundObject == null) System.Console.WriteLine("O identifier {0} não existe", identifier);
+            if (foundObject == null) Console.WriteLine("The identifier {0} doesn't exists", identifier);
             return foundObject != null ? foundObject.CurrentValue : null;
         }
 
         public bool IsChecked(string identifier)
         {
             var foundObject = MenuValueStyleList.FirstOrDefault(o => o.Identifier == identifier);
-            if (foundObject == null) System.Console.WriteLine("O identifier {0} não existe", identifier);
+            if (foundObject == null) Console.WriteLine("The identifier {0} doesn't exists", identifier);
             return foundObject != null ? (bool)foundObject.CurrentValue : false;
         }
 
         public int SliderValue(string identifier)
         {
             var foundObject = MenuValueStyleList.FirstOrDefault(o => o.Identifier == identifier);
-            if (foundObject == null) System.Console.WriteLine("O identifier {0} não existe", identifier);
+            if (foundObject == null) Console.WriteLine("The identifier {0} doesn't exists", identifier);
             return foundObject != null ? (int)foundObject.CurrentValue : 0;
         }
     }

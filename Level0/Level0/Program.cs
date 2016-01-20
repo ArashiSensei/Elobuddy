@@ -9,7 +9,7 @@ namespace LevelZero
 {
     class Program
     {
-        public static NotificationUtil NotificationUtil = new NotificationUtil();
+        //public static NotificationUtil NotificationUtil = new NotificationUtil();
 
         static void Main(string[] args)
         {
@@ -19,21 +19,22 @@ namespace LevelZero
         private static void GameLoaded(EventArgs args)
         {
             VersionUtil.VersionChecker();
+
             try
             {
                 var handle = Activator.CreateInstance(null, "LevelZero.Core.Champions." + Player.Instance.ChampionName);
                 var pluginModel = (PluginModel)handle.Unwrap();
-                NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " Loaded !", Color.DeepSkyBlue));
+                Chat.Print("{0} Loaded !", Player.Instance.ChampionName);
+                Chat.Print("Addon by: MrArticuno and WujuSan");
+                //NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " Loaded !", Color.DeepSkyBlue));
 
-                /*
-                    Anyone wants your name here ?
-                */
-                NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Addon by: MrArticuno and WujuSan", Color.White));
+                //NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, "Addon by: MrArticuno and WujuSan", Color.White));
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.StackTrace);
-                NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " is Not Supported", Color.Red));
+                Console.WriteLine("\n" + ex);
+                Chat.Print("This champion isn't supported");
+                //NotificationUtil.DrawNotification(new NotificationModel(Game.Time, 20f, 1f, ObjectManager.Player.ChampionName + " is Not Supported", Color.Red));
             }
         }
     }

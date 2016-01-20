@@ -12,7 +12,7 @@ namespace LevelZero.Util
             Heal, Barrier, Cleanse, Ghost, Exhaust, Smite, Ignite, Flash
         }
 
-        public static Spell.SpellBase GetActiveSpell(string name, uint range = 0)
+        public static Spell.Active GetActiveSpell(string name, uint range = 0)
         {
             var slot = Player.Instance.GetSpellSlotFromName(name);
 
@@ -24,7 +24,7 @@ namespace LevelZero.Util
             return null;
         }
 
-        public static Spell.SpellBase GetTargettedSpell(string name, uint range)
+        public static Spell.Targeted GetTargettedSpell(string name, uint range)
         {
             var slot = Player.Instance.GetSpellSlotFromName(name);
 
@@ -36,7 +36,7 @@ namespace LevelZero.Util
             return null;
         }
 
-        public static Spell.SpellBase GetSkillshotSpell(string name, uint range, SkillShotType type)
+        public static Spell.Skillshot GetSkillshotSpell(string name, uint range, SkillShotType type)
         {
             var slot = Player.Instance.GetSpellSlotFromName(name);
 
@@ -48,7 +48,7 @@ namespace LevelZero.Util
             return null;
         }
 
-        public static Spell.SpellBase GetActiveSpell(Summoners summoner)
+        public static Spell.Active GetActiveSpell(Summoners summoner)
         {
             SpellSlot slot;
 
@@ -87,7 +87,7 @@ namespace LevelZero.Util
             }
         }
 
-        public static Spell.SpellBase GetTargettedSpell(Summoners summoner)
+        public static Spell.Targeted GetTargettedSpell(Summoners summoner)
         {
             SpellSlot slot;
 
@@ -119,7 +119,7 @@ namespace LevelZero.Util
             }
         }
 
-        public static Spell.SpellBase GetSkillshotSpell(Summoners summoner)
+        public static Spell.Skillshot GetSkillshotSpell(Summoners summoner)
         {
 
             if (summoner != Summoners.Flash) return null;

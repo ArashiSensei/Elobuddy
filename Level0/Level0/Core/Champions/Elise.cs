@@ -13,6 +13,7 @@ using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
 using Circle = EloBuddy.SDK.Rendering.Circle;
+using Activator = LevelZero.Controller.Activator;
 
 namespace LevelZero.Core.Champions
 {
@@ -31,13 +32,16 @@ namespace LevelZero.Core.Champions
 
         public override void InitVariables()
         {
+            Activator = new Activator();
+
             Spells = new List<Spell.SpellBase>
             {
                 new Spell.Skillshot(SpellSlot.Q, 0, SkillShotType.Circular, 750, int.MaxValue, 425) { AllowedCollisionCount = int.MaxValue },
                 new Spell.Active(SpellSlot.W),
                 new Spell.Skillshot(SpellSlot.E, 550, SkillShotType.Cone, 250, 1100, 300) {AllowedCollisionCount = int.MaxValue},
                 new Spell.Targeted(SpellSlot.R, 460)
-        };
+            };
+
             DamageUtil.SpellsDamage = new List<SpellDamage>
             {
                 new SpellDamage(Spells[0], new float[]{ 0, 20 , 35 , 50 , 65 , 80 }, new [] { 0, 0.5f, 0.55f, 0.60f, 0.65f, 0.7f }, DamageType.Physical),
@@ -45,7 +49,9 @@ namespace LevelZero.Core.Champions
             };
 
             InitMenu();
+
             DamageIndicator.Initialize(DamageUtil.GetComboDamage);
+
             new SkinController(5);
         }
 
@@ -166,13 +172,6 @@ namespace LevelZero.Core.Champions
             DamageIndicator.Enabled = draw.IsChecked("dmgIndicator");
 
         }
-
-        /*
-            Spells[0] = Q
-            Spells[1] = W
-            Spells[2] = E
-            Spells[3] = R
-        */
 
         public override void OnCombo()
         {

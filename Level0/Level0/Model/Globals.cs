@@ -7,6 +7,7 @@ namespace LevelZero.Model
 
         public static readonly string ADDON_NAME = "Level 0";
         public static Menu MENU = MainMenu.AddMenu(ADDON_NAME, ADDON_NAME);
+        public static Menu ACTIVATOR_MENU = MainMenu.AddMenu(ADDON_NAME + " - Activator", ADDON_NAME + " - Activator");
 
     }
 }

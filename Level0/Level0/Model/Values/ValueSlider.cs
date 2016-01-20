@@ -8,7 +8,7 @@ namespace LevelZero.Model.Values
         public int MaxValue { get; set; }
         public int MinValue { get; set; }
 
-        public ValueSlider(int maxValue, int minValue, int initialValue, string indentifier, string displayName)
+        public ValueSlider(int maxValue, int minValue, int initialValue, string indentifier, string displayName, bool separatorBefore = false)
         {
             DisplayName = displayName;
             Identifier = indentifier;
@@ -16,6 +16,7 @@ namespace LevelZero.Model.Values
             MaxValue = maxValue;
             MinValue = minValue;
             EnumMenuStyle = EnumMenuStyle.Slider;
+            SeparatorBefore = separatorBefore;
         }
     }
 }

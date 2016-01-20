@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using EloBuddy;
 using EloBuddy.SDK;
-using EloBuddy.SDK.Menu.Values;
 using EloBuddy.SDK.Enumerations;
-using EloBuddy.SDK.Events;
 using LevelZero.Controller;
 using LevelZero.Model;
 using LevelZero.Model.Values;
 using LevelZero.Util;
 using SharpDX;
 using Circle = EloBuddy.SDK.Rendering.Circle;
+using Activator = LevelZero.Controller.Activator;
 
 namespace LevelZero.Core.Champions
 {
@@ -19,12 +18,7 @@ namespace LevelZero.Core.Champions
     {
         readonly AIHeroClient Player = EloBuddy.Player.Instance;
 
-        readonly SummonersController _summoners = new SummonersController();
         readonly PredictionUtil _predictionutil = new PredictionUtil();
-        readonly ItemController _itens = new ItemController();
-
-        Spell.Active _heal, _barrier;
-        Spell.Targeted _ignite, _smite, _exhaust;
 
         Spell.Targeted Q { get { return (Spell.Targeted)Spells[0]; } }
         Spell.Skillshot W { get { return (Spell.Skillshot)Spells[1]; } }
@@ -42,11 +36,7 @@ namespace LevelZero.Core.Champions
 
         public override void InitVariables()
         {
-            _ignite = (Spell.Targeted)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Ignite);
-            _smite = (Spell.Targeted)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
-            _exhaust = (Spell.Targeted)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Exhaust);
-            _heal = (Spell.Active)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Heal);
-            _barrier = (Spell.Active)SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Barrier);
+            Activator = new Activator();
 
             Spells = new List<Spell.SpellBase>
             {
@@ -165,35 +155,13 @@ namespace LevelZero.Core.Champions
             feature.ToMenu();
             Features.Add(feature);
 
-            if (_smite != null)
-            {
-                feature = new Feature
-                {
-                    NameFeature = "Smite Usage",
-                    MenuValueStyleList = new List<ValueAbstract>
-                    {
-                    new ValueCheckbox(true, "smiteusage.usesmite", "Use smite"),
-                    new ValueCheckbox(true, "smiteusage.red", "Red"),
-                    new ValueCheckbox(true, "smiteusage.blue", "Blue"),
-                    new ValueCheckbox(true, "smiteusage.wolf", "Wolf"),
-                    new ValueCheckbox(true, "smiteusage.gromp", "Gromp"),
-                    new ValueCheckbox(true, "smiteusage.raptor", "Raptor"),
-                    new ValueCheckbox(true, "smiteusage.krug", "Krug")
-                    }
-                };
-
-                feature.ToMenu();
-                Features.Add(feature);
-            }
-
             feature = new Feature
             {
                 NameFeature = "Misc",
                 MenuValueStyleList = new List<ValueAbstract>
                 {
-                    new ValueCheckbox(true,  "misc.ks", "KS"),
-                    new ValueCheckbox(true,  "misc.gapcloser", "Auto E on enemy gapcloser"),
-                    new ValueCheckbox(true, "misc.autoignite", "Auto Ignite")
+                    new ValueCheckbox(true,  "misc.ks", "KS")
+                    //new ValueCheckbox(true,  "misc.gapcloser", "Auto E on enemy gapcloser")
                 }
             };
 
@@ -266,12 +234,12 @@ namespace LevelZero.Core.Champions
 
             if (_isUltimateOn) return;
 
-            if (Target != null && Target.IsValidTarget(Q.Range) && mode.IsChecked("combo.q") && Q.IsReady())
+            if (Target != null && Target.IsValidTarget(Q.Range) && Q.IsReady() && mode.IsChecked("combo.q"))
             {
                 _canCastQ = true;
             }
 
-            if (TargetW != null && TargetW.IsValidTarget(W.Range) && mode.IsChecked("combo.w") && W.IsReady())
+            if (TargetW != null && TargetW.IsValidTarget(W.Range) && W.IsReady() && mode.IsChecked("combo.w"))
             {
                 if (Player.IsInAutoAttackRange(TargetW))
                 {
@@ -296,12 +264,16 @@ namespace LevelZero.Core.Champions
                 }
             }
 
-            if (Target != null && Target.IsValidTarget(E.Range) && mode.IsChecked("combo.E") && E.IsReady())
+            if (Target != null && Target.IsValidTarget(E.Range) && E.IsReady() && mode.IsChecked("combo.E"))
             {
-                if (Target.HasBuffOfType(BuffType.Knockup) || Target.HasBuffOfType(BuffType.Snare) ||
-                    Target.HasBuffOfType(BuffType.Stun) || Target.HasBuffOfType(BuffType.Charm))
+                /*
+                Target.HasBuffOfType(BuffType.Knockup) || Target.HasBuffOfType(BuffType.Snare) || Target.HasBuffOfType(BuffType.Stun) || Target.HasBuffOfType(BuffType.Charm)
+                */
+
+                if (!CanMove(Target))
                 {
-                    E.Cast(Target.ServerPosition);
+                    var pred = E.GetPrediction(Target);
+                    E.Cast(pred.CastPosition);
                 }
                 else
                 {
@@ -313,26 +285,6 @@ namespace LevelZero.Core.Champions
                     }
                 }
             }
-
-            if (Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Polymorph) || Player.HasBuffOfType(BuffType.Silence) || Player.HasBuffOfType(BuffType.Sleep) || Player.HasBuffOfType(BuffType.Snare) || Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Suppression) || Player.HasBuffOfType(BuffType.Taunt)) { _itens.CastScimitarQSS(); }
-
-            if (Player.IsInAutoAttackRange(Target))
-            {
-                _itens.CastYoumuusGhostBlade();
-            }
-
-            if (_smite != null)
-            {
-                if (_smite.IsReady() && _smite.IsInRange(Target))
-                {
-                    if (_smite.Name.Contains("gank")) _smite.Cast(Target);
-                    else if (_smite.Name.Contains("duel") && Player.IsInAutoAttackRange(Target)) _smite.Cast(Target);
-                }
-            }
-
-            _itens.CastBilgeBtrk(Target);
-            _itens.CastRanduin(Target);
-            _itens.CastHextechGunBlade(Target);
         }
 
         public override void OnHarass()
@@ -376,10 +328,13 @@ namespace LevelZero.Core.Champions
 
             if (Target != null && Target.IsValidTarget(E.Range) && mode.IsChecked("harass.E") && E.IsReady())
             {
-                if (Target.HasBuffOfType(BuffType.Knockup) || Target.HasBuffOfType(BuffType.Snare) ||
-                    Target.HasBuffOfType(BuffType.Stun) || Target.HasBuffOfType(BuffType.Charm))
+                /*
+                Target.HasBuffOfType(BuffType.Knockup) || Target.HasBuffOfType(BuffType.Snare) || Target.HasBuffOfType(BuffType.Stun) || Target.HasBuffOfType(BuffType.Charm)
+                */
+                if (!CanMove(Target))
                 {
-                    E.Cast(Target.ServerPosition);
+                    var pred = E.GetPrediction(Target);
+                    E.Cast(pred.CastPosition);
                 }
                 else
                 {
@@ -438,6 +393,7 @@ namespace LevelZero.Core.Champions
 
         public override void OnJungleClear()
         {
+            /*
             //---------------------------------------------Smite Usage---------------------------------------------
 
             if (_smite != null)
@@ -449,6 +405,7 @@ namespace LevelZero.Core.Champions
                     _summoners.AutoSmiteMob(_smite, smiteusage);
                 }
             }
+            */
 
             var mode = Features.First(it => it.NameFeature == "Jungle Clear");
 
@@ -518,30 +475,10 @@ namespace LevelZero.Core.Champions
                 Orbwalker.DisableMovement = false;
             }
 
-
             var misc = Features.First(it => it.NameFeature == "Misc");
-
-            //---------------------------------------------Smite Usage---------------------------------------------
-
-            if (_smite != null)
-            {
-                var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
-
-                if (_smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
-                {
-                    _summoners.AutoSmite(_smite);
-                }
-            }
-
             //------------------------------------------------KS------------------------------------------------
 
             if (misc.IsChecked("misc.ks") && EntityManager.Heroes.Enemies.Any(it => R.IsInRange(it))) KS();
-
-            //-----------------------------------------------Auto Ignite----------------------------------------
-
-            if (!misc.IsChecked("misc.autoignite") || _ignite == null || _ignite.IsReady()) return;
-
-            _summoners.AutoIgnite(_ignite);
         }
 
         void KS()
@@ -555,23 +492,37 @@ namespace LevelZero.Core.Champions
             if (W.IsReady())
             {
                 var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(W.Range) && DamageUtil.GetSpellDamage(enemy, SpellSlot.W) >= enemy.Health);
-                if (bye != null) { W.Cast(); EloBuddy.Player.IssueOrder(GameObjectOrder.AttackTo, bye); return; }
+                if (bye != null)
+                {
+                    var pred = W.GetPrediction(bye);
+                    if (pred.HitChancePercent >= 85) W.Cast(pred.CastPosition);
+                }
             }
 
             if (Q.IsReady() && W.IsReady())
             {
-                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(W.Range) && DamageUtil.GetSpellDamage(enemy, SpellSlot.Q) + DamageUtil.GetSpellDamage(enemy, SpellSlot.W) >= enemy.Health);
-                if (bye != null) { W.Cast(); EloBuddy.SDK.Core.DelayAction(() => Q.Cast(bye), 100); return; }
+                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Q.Range) && DamageUtil.GetSpellDamage(enemy, SpellSlot.Q) + DamageUtil.GetSpellDamage(enemy, SpellSlot.W) >= enemy.Health);
+                if (bye != null) { Q.Cast(bye); return; }
             }
 
-            if (_smite != null)
+            if (R.IsReady())
             {
-                if (_smite.Name.Contains("gank") && _smite.IsReady())
+                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(R.Range - 500) && DamageUtil.GetSpellDamage(enemy, SpellSlot.R) >= enemy.Health + 50);
+                if (bye != null)
                 {
-                    var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(_smite.Range) && DamageLibrary.GetSummonerSpellDamage(Player, enemy, DamageLibrary.SummonerSpells.Smite) >= enemy.Health);
-                    if (bye != null) { _smite.Cast(bye); }
+                    var pred = R.GetPrediction(bye);
+                    if (pred.HitChancePercent >= 85) R.Cast(pred.CastPosition);
                 }
             }
+        }
+
+        bool CanMove(Obj_AI_Base target)
+        {
+            if (target.HasBuffOfType(BuffType.Charm) ||
+                target.HasBuffOfType(BuffType.Knockup) || target.HasBuffOfType(BuffType.Sleep) || target.HasBuffOfType(BuffType.Snare) ||
+                target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Suppression) || target.HasBuffOfType(BuffType.Taunt)) return false;
+
+            return true;
         }
     }
 }

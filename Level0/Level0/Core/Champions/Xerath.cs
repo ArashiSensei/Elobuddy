@@ -33,7 +33,7 @@ namespace LevelZero.Core.Champions
 
         public override void InitVariables()
         {
-            Activator = new Activator();
+            Activator = new Activator(DamageType.Magical);
 
             Spells = new List<Spell.SpellBase>
             {

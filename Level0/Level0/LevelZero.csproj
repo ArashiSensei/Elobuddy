@@ -67,6 +67,7 @@
     <Compile Include="Controller\ItemController.cs" />
     <Compile Include="Controller\SkinController.cs" />
     <Compile Include="Controller\SummonersController.cs" />
+    <Compile Include="Core\Champions\Annie.cs" />
     <Compile Include="Core\Champions\Darius.cs" />
     <Compile Include="Core\Champions\Alistar.cs" />
     <Compile Include="Core\Champions\Elise.cs" />

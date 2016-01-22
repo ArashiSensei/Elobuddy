@@ -113,7 +113,7 @@ namespace LevelZero.Model
 
         public virtual void OnPossibleToInterrupt(Obj_AI_Base sender, Interrupter.InterruptableSpellEventArgs args)
         {
-            if (Player.Instance.IsDead) return;
+            if (Player.Instance.IsDead || sender.IsAlly || sender.IsMe) return;
         }
 
         public virtual void OnGapCloser(AIHeroClient sender, Gapcloser.GapcloserEventArgs e)

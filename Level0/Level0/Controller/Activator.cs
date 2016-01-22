@@ -27,7 +27,7 @@ namespace LevelZero.Controller
 
         //Target Selector values
         int _range;
-        public DamageType _damageType;
+        DamageType _damageType;
 
         //Items and Summoners management
         ItemUtil _itemUtil;
@@ -35,23 +35,23 @@ namespace LevelZero.Controller
         SummonersController _summoners;
 
         //<Summoners>
-        public Spell.Active _heal, _barrier, _ghost, _cleanse;
-        public Spell.Targeted _ignite, _exhaust, _smite;
-        public Spell.Skillshot _flash;
+        public Spell.Active heal, barrier, ghost, cleanse;
+        public Spell.Targeted ignite, exhaust, smite;
+        public Spell.Skillshot flash;
 
         //<Itens>
         public Item
         //Offensives
-        _hextech, _botrk, _bilgewater, _tiamat, _hydra, _titanic, _youmuus,
+        hextech, botrk, bilgewater, tiamat, hydra, titanic, youmuus,
 
         //Defensives
-        _faceMountain, _mikael, _solari, _randuin, _scimitar, _qss, _seraph, _zhonya,
+        faceMountain, mikael, solari, randuin, scimitar, qss, seraph, zhonya,
 
         //Speed
-        _talisma, _righteousGlory,
+        talisma, righteousGlory,
 
         //Potions
-        _healthPotion, _biscuitPotion, _corruptingPotion, _huntersPotion, _refillablePotion;
+        healthPotion, biscuitPotion, corruptingPotion, huntersPotion, refillablePotion;
 
         /*
         Wards
@@ -272,58 +272,58 @@ namespace LevelZero.Controller
 
             #region Summoners
 
-            _flash = SpellsUtil.GetSkillshotSpell(SpellsUtil.Summoners.Flash);
+            flash = SpellsUtil.GetSkillshotSpell(SpellsUtil.Summoners.Flash);
 
-            _ignite = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Ignite);
-            _exhaust = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Exhaust);
-            _smite = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
+            ignite = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Ignite);
+            exhaust = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Exhaust);
+            smite = SpellsUtil.GetTargettedSpell(SpellsUtil.Summoners.Smite);
 
-            _heal = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Heal);
-            _barrier = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Barrier);
-            _ghost = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Ghost);
-            _cleanse = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Cleanse);
+            heal = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Heal);
+            barrier = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Barrier);
+            ghost = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Ghost);
+            cleanse = SpellsUtil.GetActiveSpell(SpellsUtil.Summoners.Cleanse);
 
             #endregion
 
             #region Offensives
 
-            _hextech = _itemUtil.GetItem(ItemId.Hextech_Gunblade, 700);
-            _botrk = _itemUtil.GetItem(ItemId.Blade_of_the_Ruined_King, 550);
-            _bilgewater = _itemUtil.GetItem(ItemId.Bilgewater_Cutlass, 550);
-            _tiamat = _itemUtil.GetItem(ItemId.Tiamat_Melee_Only, 325);//range = 400
-            _hydra = _itemUtil.GetItem(ItemId.Ravenous_Hydra_Melee_Only, 325);//range = 400
-            _titanic = _itemUtil.GetItem(3053, 75);//range = 150
-            _youmuus = _itemUtil.GetItem(ItemId.Youmuus_Ghostblade);
+            hextech = _itemUtil.GetItem(ItemId.Hextech_Gunblade, 700);
+            botrk = _itemUtil.GetItem(ItemId.Blade_of_the_Ruined_King, 550);
+            bilgewater = _itemUtil.GetItem(ItemId.Bilgewater_Cutlass, 550);
+            tiamat = _itemUtil.GetItem(ItemId.Tiamat_Melee_Only, 325);//range = 400
+            hydra = _itemUtil.GetItem(ItemId.Ravenous_Hydra_Melee_Only, 325);//range = 400
+            titanic = _itemUtil.GetItem(3053, 75);//range = 150
+            youmuus = _itemUtil.GetItem(ItemId.Youmuus_Ghostblade);
 
             #endregion
 
             #region Defensives
 
-            _faceMountain = _itemUtil.GetItem(ItemId.Face_of_the_Mountain, 600);
-            _mikael = _itemUtil.GetItem(ItemId.Mikaels_Crucible, 600);
-            _solari = _itemUtil.GetItem(ItemId.Locket_of_the_Iron_Solari, 600);
-            _randuin = _itemUtil.GetItem(ItemId.Randuins_Omen, 450);//range = 500
-            _scimitar = _itemUtil.GetItem(ItemId.Mercurial_Scimitar);
-            _qss = _itemUtil.GetItem(ItemId.Quicksilver_Sash);
-            _seraph = _itemUtil.GetItem(3040);
-            _zhonya = _itemUtil.GetItem(ItemId.Zhonyas_Hourglass);
+            faceMountain = _itemUtil.GetItem(ItemId.Face_of_the_Mountain, 600);
+            mikael = _itemUtil.GetItem(ItemId.Mikaels_Crucible, 600);
+            solari = _itemUtil.GetItem(ItemId.Locket_of_the_Iron_Solari, 600);
+            randuin = _itemUtil.GetItem(ItemId.Randuins_Omen, 450);//range = 500
+            scimitar = _itemUtil.GetItem(ItemId.Mercurial_Scimitar);
+            qss = _itemUtil.GetItem(ItemId.Quicksilver_Sash);
+            seraph = _itemUtil.GetItem(3040);
+            zhonya = _itemUtil.GetItem(ItemId.Zhonyas_Hourglass);
 
             #endregion
 
             #region Speed
 
-            _talisma = _itemUtil.GetItem(ItemId.Talisman_of_Ascension);
-            _righteousGlory = _itemUtil.GetItem(ItemId.Righteous_Glory, 600);
+            talisma = _itemUtil.GetItem(ItemId.Talisman_of_Ascension);
+            righteousGlory = _itemUtil.GetItem(ItemId.Righteous_Glory, 600);
 
             #endregion
 
             #region Potions
 
-            _healthPotion = _itemUtil.GetItem(ItemId.Health_Potion);
-            _biscuitPotion = _itemUtil.GetItem(2010);
-            _corruptingPotion = _itemUtil.GetItem(2033);
-            _huntersPotion = _itemUtil.GetItem(2032);
-            _refillablePotion = _itemUtil.GetItem(2031);
+            healthPotion = _itemUtil.GetItem(ItemId.Health_Potion);
+            biscuitPotion = _itemUtil.GetItem(2010);
+            corruptingPotion = _itemUtil.GetItem(2033);
+            huntersPotion = _itemUtil.GetItem(2032);
+            refillablePotion = _itemUtil.GetItem(2031);
 
             #endregion
 
@@ -362,19 +362,15 @@ namespace LevelZero.Controller
                 _summoners.AutoGhost();
 
                 //Exhaust usage
-                if (_exhaust != null && _exhaust.IsReady() && _exhaust.IsInRange(Target))
-                {
-                    if (summoners.IsChecked("summoners.exhaust")) _exhaust.Cast(Target);
-
-                }
+                if (exhaust != null && exhaust.IsReady() && exhaust.IsInRange(Target) && summoners.IsChecked("summoners.exhaust")) exhaust.Cast(Target);
 
                 //Smite usage
-                if (_smite != null && _smite.IsReady() && _smite.IsInRange(Target))
+                if (smite != null && smite.IsReady() && smite.IsInRange(Target))
                 {
                     if (summoners.IsChecked("summoners.smite") && summoners.IsChecked("summoners.smite.enemies"))
                     {
-                        if (_smite.Name.Contains("gank")) _smite.Cast(Target);
-                        else if (_smite.Name.Contains("duel") && Player.IsInAutoAttackRange(Target)) _smite.Cast(Target);
+                        if (smite.Name.Contains("gank")) smite.Cast(Target);
+                        else if (smite.Name.Contains("duel") && Player.IsInAutoAttackRange(Target)) smite.Cast(Target);
                     }
                 }
 
@@ -397,9 +393,9 @@ namespace LevelZero.Controller
 
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
                 {
-                    if (EntityManager.Heroes.Enemies.Any(it => !it.IsDead && it.IsValidTarget(_randuin.Range))) _randuin.Cast();
-                    _righteousGlory.Cast();
-                    _talisma.Cast();
+                    if (EntityManager.Heroes.Enemies.Any(it => !it.IsDead && it.IsValidTarget(randuin.Range))) randuin.Cast();
+                    righteousGlory.Cast();
+                    talisma.Cast();
                 }
 
                 _itens.AutoScimitarQSS();
@@ -439,9 +435,9 @@ namespace LevelZero.Controller
 
             if (spell != "morgana.r" && spell != "nunu.r" && spell != "zed.r")
             {
-                if (_barrier != null && summoners.IsChecked("summoners.barrier.dangerousspells") && _barrier.IsReady() && (Player.Health + (95 + (20 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100 && (Player.Health + (95 + (20 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) <= Player.MaxHealth)
+                if (barrier != null && summoners.IsChecked("summoners.barrier.dangerousspells") && barrier.IsReady() && (Player.Health + (95 + (20 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100 && (Player.Health + (95 + (20 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) <= Player.MaxHealth)
                 {
-                    if (args.Target != null && args.Target.IsMe) { _barrier.Cast(); return; }
+                    if (args.Target != null && args.Target.IsMe) { barrier.Cast(); return; }
 
                     int delay = new int();
 
@@ -454,14 +450,14 @@ namespace LevelZero.Controller
                         delay = (int)((((Player.Distance(sender)) / args.SData.MissileSpeed * 1000) + args.SData.SpellCastTime - Game.Ping) / 2);
                     }
 
-                    EloBuddy.SDK.Core.DelayAction(() => SummonersOnHit(sender, args, true), delay);
+                    EloBuddy.SDK.Core.DelayAction(() => SummonersOnHit(sender, args), delay);
 
                     return;
                 }
 
-                else if (_heal != null && summoners.IsChecked("summoners.heal.dangerousspells") && _heal.IsReady() && (Player.Health + (75 + (15 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100 && (Player.Health + (75 + (15 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) <= Player.MaxHealth)
+                else if (heal != null && summoners.IsChecked("summoners.heal.dangerousspells") && heal.IsReady() && (Player.Health + (75 + (15 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100 && (Player.Health + (75 + (15 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) <= Player.MaxHealth)
                 {
-                    if (args.Target != null && args.Target.IsMe) { _heal.Cast(); return; }
+                    if (args.Target != null && args.Target.IsMe) { heal.Cast(); return; }
 
                     int delay = new int();
 
@@ -484,13 +480,13 @@ namespace LevelZero.Controller
             if (!defensives.IsChecked("defensives.zhonya." + spell)) return;
 
             //Zhonya on dangerous
-            else if (_zhonya.IsOwned() && _zhonya.IsReady())
+            else if (zhonya.IsOwned() && zhonya.IsReady())
             {
                 if (spell == "morgana.r")
                 {
                     EloBuddy.SDK.Core.DelayAction(delegate
                     {
-                        if (Player.Distance(sender) < args.SData.CastRangeDisplayOverride) _zhonya.Cast();
+                        if (Player.Distance(sender) < args.SData.CastRangeDisplayOverride) zhonya.Cast();
                     }, 2700 - Game.Ping);
                 }
 
@@ -498,7 +494,7 @@ namespace LevelZero.Controller
                 {
                     EloBuddy.SDK.Core.DelayAction(delegate
                     {
-                        if (Player.Distance(sender) < args.SData.CastRangeDisplayOverride) _zhonya.Cast();
+                        if (Player.Distance(sender) < args.SData.CastRangeDisplayOverride) zhonya.Cast();
                     }, 600 - Game.Ping);
                 }
 
@@ -524,13 +520,13 @@ namespace LevelZero.Controller
         {
             if (args.Target != null)
             {
-                if (args.Target.IsMe) _zhonya.Cast();
+                if (args.Target.IsMe) zhonya.Cast();
                 return;
             }
 
             var polygons = new Geometry.Polygon[] { new Geometry.Polygon.Rectangle(args.Start, args.End, args.SData.LineWidth), new Geometry.Polygon.Circle(args.End, args.SData.CastRadius) };
 
-            if (polygons.Any(it => it.IsInside(Player))) _zhonya.Cast();
+            if (polygons.Any(it => it.IsInside(Player))) zhonya.Cast();
 
             return;
         }
@@ -541,8 +537,8 @@ namespace LevelZero.Controller
 
             if (polygons.Any(it => it.IsInside(Player)))
             {
-                if (useHeal) _heal.Cast();
-                else _barrier.Cast();
+                if (useHeal) heal.Cast();
+                else barrier.Cast();
             }
 
             return;

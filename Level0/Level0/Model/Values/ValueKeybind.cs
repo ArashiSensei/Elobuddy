@@ -17,7 +17,7 @@ namespace LevelZero.Model.Values
             InitialValue = initialValue;
             BindType = bindType;
             EnumMenuStyle = EnumMenuStyle.KeyBind;
-            key = Key;
+            Key = key;
             SeparatorBefore = separatorBefore;
         }
     }

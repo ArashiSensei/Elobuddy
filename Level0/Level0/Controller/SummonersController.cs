@@ -10,97 +10,98 @@ namespace LevelZero.Controller
     class SummonersController
     {
         AIHeroClient Player = EloBuddy.Player.Instance;
+        private readonly Activator Activator = PluginModel.Activator;
 
         #region Activator methods
 
         public void AutoIgnite()
         {
-            if (PluginModel.Activator._ignite == null || !PluginModel.Activator._ignite.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.ignite")) return;
+            if (PluginModel.Activator.ignite == null || !PluginModel.Activator.ignite.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.ignite")) return;
 
             var igniteEnemy = EntityManager.Heroes.Enemies.FirstOrDefault(it => Player.GetSummonerSpellDamage(it, DamageLibrary.SummonerSpells.Ignite) >= it.Health + 28);
 
             if (igniteEnemy == null) return;
 
             if ((igniteEnemy.Distance(Player) >= 300 || Player.HealthPercent <= 40))
-                PluginModel.Activator._ignite.Cast(igniteEnemy);
+                PluginModel.Activator.ignite.Cast(igniteEnemy);
 
             return;
         }
 
         public void AutoSmite()
         {
-            if (PluginModel.Activator._smite == null || !PluginModel.Activator._smite.IsReady()) return;
+            if (PluginModel.Activator.smite == null || !PluginModel.Activator.smite.IsReady()) return;
 
             if (PluginModel.Activator.summoners.IsChecked("summoners.smite") && PluginModel.Activator.summoners.IsChecked("summoners.smite.ks"))
             {
-                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(it => it.IsValidTarget(PluginModel.Activator._smite.Range) && DamageLibrary.GetSummonerSpellDamage(Player, it, DamageLibrary.SummonerSpells.Smite) >= it.Health);
+                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(it => it.IsValidTarget(PluginModel.Activator.smite.Range) && DamageLibrary.GetSummonerSpellDamage(Player, it, DamageLibrary.SummonerSpells.Smite) >= it.Health);
 
-                if (bye != null) { PluginModel.Activator._smite.Cast(bye); return; }
+                if (bye != null) { PluginModel.Activator.smite.Cast(bye); return; }
             }
 
-            var Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, PluginModel.Activator._smite.Range).FirstOrDefault(it => (it.Name.Contains("SRU_Dragon") || it.Name.Contains("SRU_Baron")) && DamageUtil.GetSmiteDamage() >= it.Health);
+            var Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, PluginModel.Activator.smite.Range).FirstOrDefault(it => (it.Name.Contains("SRUDragon") || it.Name.Contains("SRUBaron")) && DamageUtil.GetSmiteDamage() >= it.Health);
 
-            if (Mob != null) { PluginModel.Activator._smite.Cast(Mob); return; }
+            if (Mob != null) { PluginModel.Activator.smite.Cast(Mob); return; }
         }
 
         public void AutoSmiteMob()
         {
-            if (PluginModel.Activator._smite == null || !PluginModel.Activator._smite.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.smite")) return;
+            if (PluginModel.Activator.smite == null || !PluginModel.Activator.smite.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.smite")) return;
 
-            var Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, PluginModel.Activator._smite.Range).FirstOrDefault(it => DamageUtil.GetSmiteDamage() >= it.Health);
+            var Mob = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, PluginModel.Activator.smite.Range).FirstOrDefault(it => DamageUtil.GetSmiteDamage() >= it.Health);
 
             if (Mob == null) return;
 
-            if (Mob.Name.StartsWith("SRU_Red") && PluginModel.Activator.summoners.IsChecked("summoners.smite.red")) PluginModel.Activator._smite.Cast(Mob);
-            else if (Mob.Name.StartsWith("SRU_Blue") && PluginModel.Activator.summoners.IsChecked("summoners.smite.blue")) PluginModel.Activator._smite.Cast(Mob);
-            else if (Mob.Name.StartsWith("SRU_Murkwolf") && PluginModel.Activator.summoners.IsChecked("summoners.smite.wolf")) PluginModel.Activator._smite.Cast(Mob);
-            else if (Mob.Name.StartsWith("SRU_Krug") && PluginModel.Activator.summoners.IsChecked("summoners.smite.krug")) PluginModel.Activator._smite.Cast(Mob);
-            else if (Mob.Name.StartsWith("SRU_Gromp") && PluginModel.Activator.summoners.IsChecked("summoners.smite.gromp")) PluginModel.Activator._smite.Cast(Mob);
-            else if (Mob.Name.StartsWith("SRU_Razorbeak") && PluginModel.Activator.summoners.IsChecked("summoners.smite.raptor")) PluginModel.Activator._smite.Cast(Mob);
+            if (Mob.Name.StartsWith("SRU_Red") && PluginModel.Activator.summoners.IsChecked("summoners.smite.red")) PluginModel.Activator.smite.Cast(Mob);
+            else if (Mob.Name.StartsWith("SRU_Blue") && PluginModel.Activator.summoners.IsChecked("summoners.smite.blue")) PluginModel.Activator.smite.Cast(Mob);
+            else if (Mob.Name.StartsWith("SRU_Murkwolf") && PluginModel.Activator.summoners.IsChecked("summoners.smite.wolf")) PluginModel.Activator.smite.Cast(Mob);
+            else if (Mob.Name.StartsWith("SRU_Krug") && PluginModel.Activator.summoners.IsChecked("summoners.smite.krug")) PluginModel.Activator.smite.Cast(Mob);
+            else if (Mob.Name.StartsWith("SRU_Gromp") && PluginModel.Activator.summoners.IsChecked("summoners.smite.gromp")) PluginModel.Activator.smite.Cast(Mob);
+            else if (Mob.Name.StartsWith("SRU_Razorbeak") && PluginModel.Activator.summoners.IsChecked("summoners.smite.raptor")) PluginModel.Activator.smite.Cast(Mob);
         }
         
         public void AutoHeal()
         {
-            if (PluginModel.Activator._heal == null || !PluginModel.Activator._heal.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.heal")) return;
+            if (PluginModel.Activator.heal == null || !PluginModel.Activator.heal.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.heal")) return;
 
-            var target = EntityManager.Heroes.Allies.FirstOrDefault(it => it.IsValidTarget(PluginModel.Activator._heal.Range) && it.HealthPercent <= PluginModel.Activator.summoners.SliderValue("summoners.heal.health%"));
+            var target = EntityManager.Heroes.Allies.FirstOrDefault(it => it.IsValidTarget(PluginModel.Activator.heal.Range) && it.HealthPercent <= PluginModel.Activator.summoners.SliderValue("summoners.heal.health%"));
 
             if (target != null)
             {
-                if (EntityManager.Heroes.Enemies.Any(it => it.IsValidTarget() && it.Distance(target) <= it.GetAutoAttackRange())) PluginModel.Activator._heal.Cast();
+                if (EntityManager.Heroes.Enemies.Any(it => it.IsValidTarget() && it.Distance(target) <= it.GetAutoAttackRange())) PluginModel.Activator.heal.Cast();
             }
         }
 
         public void AutoBarrier()
         {
-            if (PluginModel.Activator._barrier == null || !PluginModel.Activator._barrier.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.barrier") || Player.HealthPercent > PluginModel.Activator.summoners.SliderValue("summoners.barrier.health%")) return;
+            if (PluginModel.Activator.barrier == null || !PluginModel.Activator.barrier.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.barrier") || Player.HealthPercent > PluginModel.Activator.summoners.SliderValue("summoners.barrier.health%")) return;
 
-            PluginModel.Activator._barrier.Cast();
+            PluginModel.Activator.barrier.Cast();
         }
 
         public void AutoGhost()
         {
-            if (PluginModel.Activator._ghost == null || !PluginModel.Activator._ghost.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.ghost") || PluginModel.Activator.Target == null || !PluginModel.Activator.Target.IsValidTarget()) return;
+            if (PluginModel.Activator.ghost == null || !PluginModel.Activator.ghost.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.ghost") || PluginModel.Activator.Target == null || !PluginModel.Activator.Target.IsValidTarget()) return;
 
             if (!Player.IsInAutoAttackRange(PluginModel.Activator.Target) && Player.Distance(PluginModel.Activator.Target) <= 400)
-                PluginModel.Activator._ghost.Cast();
+                PluginModel.Activator.ghost.Cast();
         }
 
         public void AutoCleanse()
         {
-            if (PluginModel.Activator._cleanse == null || !PluginModel.Activator._cleanse.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.cleanse")) return;
+            if (PluginModel.Activator.cleanse == null || !PluginModel.Activator.cleanse.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.cleanse")) return;
 
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.blind") && Player.HasBuffOfType(BuffType.Blind)) PluginModel.Activator._cleanse.Cast();
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.charm") && Player.HasBuffOfType(BuffType.Charm)) PluginModel.Activator._cleanse.Cast();
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.fear") && Player.HasBuffOfType(BuffType.Fear)) PluginModel.Activator._cleanse.Cast();
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.polymorph") && Player.HasBuffOfType(BuffType.Polymorph)) PluginModel.Activator._cleanse.Cast();
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.silence") && Player.HasBuffOfType(BuffType.Silence)) PluginModel.Activator._cleanse.Cast();
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.sleep") && Player.HasBuffOfType(BuffType.Sleep)) PluginModel.Activator._cleanse.Cast();
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.slow") && Player.HasBuffOfType(BuffType.Slow)) PluginModel.Activator._cleanse.Cast();
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.snare") && Player.HasBuffOfType(BuffType.Snare)) PluginModel.Activator._cleanse.Cast();
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.stun") && Player.HasBuffOfType(BuffType.Stun)) PluginModel.Activator._cleanse.Cast();
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.suppression") && Player.HasBuffOfType(BuffType.Suppression)) PluginModel.Activator._cleanse.Cast();
-            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.taunt") && Player.HasBuffOfType(BuffType.Taunt)) PluginModel.Activator._cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.blind") && Player.HasBuffOfType(BuffType.Blind)) PluginModel.Activator.cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.charm") && Player.HasBuffOfType(BuffType.Charm)) PluginModel.Activator.cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.fear") && Player.HasBuffOfType(BuffType.Fear)) PluginModel.Activator.cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.polymorph") && Player.HasBuffOfType(BuffType.Polymorph)) PluginModel.Activator.cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.silence") && Player.HasBuffOfType(BuffType.Silence)) PluginModel.Activator.cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.sleep") && Player.HasBuffOfType(BuffType.Sleep)) PluginModel.Activator.cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.slow") && Player.HasBuffOfType(BuffType.Slow)) PluginModel.Activator.cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.snare") && Player.HasBuffOfType(BuffType.Snare)) PluginModel.Activator.cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.stun") && Player.HasBuffOfType(BuffType.Stun)) PluginModel.Activator.cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.suppression") && Player.HasBuffOfType(BuffType.Suppression)) PluginModel.Activator.cleanse.Cast();
+            if (PluginModel.Activator.summoners.IsChecked("summoners.cleanse.taunt") && Player.HasBuffOfType(BuffType.Taunt)) PluginModel.Activator.cleanse.Cast();
         }
 
         #endregion

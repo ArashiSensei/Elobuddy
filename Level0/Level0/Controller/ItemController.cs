@@ -15,6 +15,7 @@ namespace LevelZero.Controller
         private readonly AIHeroClient Player = EloBuddy.Player.Instance;
         private readonly List<AIHeroClient> Allies = EntityManager.Heroes.Allies;
         private readonly List<AIHeroClient> Enemies = EntityManager.Heroes.Enemies;
+        private Activator Activator { get { return PluginModel.Activator; } }
 
         #region Activator methods
 
@@ -22,10 +23,10 @@ namespace LevelZero.Controller
 
         public void AutoHextechGunBlade()
         {
-            if (!PluginModel.Activator._hextech.IsOwned() || !PluginModel.Activator._hextech.IsReady() || PluginModel.Activator.Target == null || !PluginModel.Activator.Target.IsValidTarget() || !PluginModel.Activator.offensives.IsChecked("offensives.hextech")) return;
+            if (!Activator.hextech.IsOwned() || !Activator.hextech.IsReady() || Activator.Target == null || !Activator.Target.IsValidTarget() || !Activator.offensives.IsChecked("offensives.hextech")) return;
             
-            if (PluginModel.Activator._hextech.IsInRange(PluginModel.Activator.Target))
-                PluginModel.Activator._hextech.Cast(PluginModel.Activator.Target);
+            if (Activator.hextech.IsInRange(Activator.Target))
+                Activator.hextech.Cast(Activator.Target);
 
             return;
         }
@@ -34,36 +35,36 @@ namespace LevelZero.Controller
         {
             if (!Player.IsMelee) return;
 
-            if (PluginModel.Activator._tiamat.IsOwned() && PluginModel.Activator._tiamat.IsReady() && !PluginModel.Activator.offensives.IsChecked("offensives.tiamat") && PluginModel.Activator._tiamat.IsInRange(PluginModel.Activator.Target) && PluginModel.Activator._tiamat.Cast()) return;
+            if (Activator.tiamat.IsOwned() && Activator.tiamat.IsReady() && !Activator.offensives.IsChecked("offensives.tiamat") && Activator.tiamat.IsInRange(Activator.Target) && Activator.tiamat.Cast()) return;
 
-            if (PluginModel.Activator._hydra.IsOwned() && PluginModel.Activator._hydra.IsReady() && !PluginModel.Activator.offensives.IsChecked("offensives.hydra") && PluginModel.Activator._hydra.IsInRange(PluginModel.Activator.Target) && PluginModel.Activator._hydra.Cast()) return;
+            if (Activator.hydra.IsOwned() && Activator.hydra.IsReady() && !Activator.offensives.IsChecked("offensives.hydra") && Activator.hydra.IsInRange(Activator.Target) && Activator.hydra.Cast()) return;
 
             return;
         }
 
         public void AutoTitanicHydra()
         {
-            if (!PluginModel.Activator._titanic.IsOwned() || !PluginModel.Activator._titanic.IsReady() || !PluginModel.Activator.offensives.IsChecked("offensives.titanic")) return;
+            if (!Activator.titanic.IsOwned() || !Activator.titanic.IsReady() || !Activator.offensives.IsChecked("offensives.titanic")) return;
 
-            if (PluginModel.Activator._titanic.IsInRange(PluginModel.Activator.Target) && PluginModel.Activator._titanic.Cast()) Orbwalker.ResetAutoAttack();
+            if (Activator.titanic.IsInRange(Activator.Target) && Activator.titanic.Cast()) Orbwalker.ResetAutoAttack();
 
             return;
         }
 
         public void AutoYoumuusGhostBlade()
         {
-            if (PluginModel.Activator._youmuus.IsOwned() && PluginModel.Activator._youmuus.IsReady() && PluginModel.Activator.offensives.IsChecked("offensives.ghostblade") && Player.IsMelee ? Player.Distance(PluginModel.Activator.Target) <= 400 : Player.IsInAutoAttackRange(PluginModel.Activator.Target) && PluginModel.Activator._youmuus.Cast()) return;
+            if (Activator.youmuus.IsOwned() && Activator.youmuus.IsReady() && Activator.offensives.IsChecked("offensives.ghostblade") && Player.IsMelee ? Player.Distance(Activator.Target) <= 400 : Player.IsInAutoAttackRange(Activator.Target) && Activator.youmuus.Cast()) return;
 
             return;
         }
 
         public void AutoBilgeBtrk()
         {
-            if (!PluginModel.Activator._botrk.IsInRange(PluginModel.Activator.Target) && !PluginModel.Activator.offensives.IsChecked("offensives.botrk/bilgewater")) return;
+            if (!Activator.botrk.IsInRange(Activator.Target) && !Activator.offensives.IsChecked("offensives.botrk/bilgewater")) return;
 
-            if (PluginModel.Activator._botrk.IsOwned() && PluginModel.Activator._botrk.IsReady() && PluginModel.Activator._botrk.Cast(PluginModel.Activator.Target)) return;
+            if (Activator.botrk.IsOwned() && Activator.botrk.IsReady() && Activator.botrk.Cast(Activator.Target)) return;
 
-            if (PluginModel.Activator._bilgewater.IsOwned() && PluginModel.Activator._bilgewater.IsReady() && PluginModel.Activator._bilgewater.Cast(PluginModel.Activator.Target)) return;
+            if (Activator.bilgewater.IsOwned() && Activator.bilgewater.IsReady() && Activator.bilgewater.Cast(Activator.Target)) return;
 
             return;
         }
@@ -81,74 +82,74 @@ namespace LevelZero.Controller
 
         public void AutoFaceOfTheMountain()
         {
-            if (!PluginModel.Activator._faceMountain.IsOwned() || !PluginModel.Activator._faceMountain.IsReady() || !PluginModel.Activator.defensives.IsChecked("defensives.fotmountain")) return;
+            if (!Activator.faceMountain.IsOwned() || !Activator.faceMountain.IsReady() || !Activator.defensives.IsChecked("defensives.fotmountain")) return;
 
-            var target = GetPrioritedProtectionTarget(PluginModel.Activator.defensives.SliderValue("defensives.fotmountain.health%"));
+            var target = GetPrioritedProtectionTarget(Activator.defensives.SliderValue("defensives.fotmountain.health%"));
 
-            if (target == null || !target.IsValidTarget() || !PluginModel.Activator._faceMountain.IsInRange(target)) return;
+            if (target == null || !target.IsValidTarget() || !Activator.faceMountain.IsInRange(target)) return;
 
-            PluginModel.Activator._faceMountain.Cast(target);
+            Activator.faceMountain.Cast(target);
 
             return;
         }
 
         public void AutoMikael()
         {
-            if (!PluginModel.Activator._mikael.IsOwned() || !PluginModel.Activator._mikael.IsReady() || !PluginModel.Activator.defensives.IsChecked("defensives.mikael")) return;
+            if (!Activator.mikael.IsOwned() || !Activator.mikael.IsReady() || !Activator.defensives.IsChecked("defensives.mikael")) return;
 
-            var target = GetPrioritedProtectionTarget(PluginModel.Activator.defensives.SliderValue("defensives.mikael.health%"));
+            var target = GetPrioritedProtectionTarget(Activator.defensives.SliderValue("defensives.mikael.health%"));
 
-            if (target == null || !target.IsValidTarget() || !PluginModel.Activator._mikael.IsInRange(target)) return;
+            if (target == null || !target.IsValidTarget() || !Activator.mikael.IsInRange(target)) return;
 
-            PluginModel.Activator._mikael.Cast(target);
+            Activator.mikael.Cast(target);
 
             return;
         }
 
         public void AutoSolari()
         {
-            if (!PluginModel.Activator._solari.IsOwned() || !PluginModel.Activator._solari.IsReady() || !PluginModel.Activator.defensives.IsChecked("defensives.solari")) return;
+            if (!Activator.solari.IsOwned() || !Activator.solari.IsReady() || !Activator.defensives.IsChecked("defensives.solari")) return;
 
-            var target = GetPrioritedProtectionTarget(PluginModel.Activator.defensives.SliderValue("defensives.solari.health%"));
+            var target = GetPrioritedProtectionTarget(Activator.defensives.SliderValue("defensives.solari.health%"));
 
-            if (target == null || !target.IsValidTarget() || !PluginModel.Activator._solari .IsInRange(target)) return;
+            if (target == null || !target.IsValidTarget() || !Activator.solari .IsInRange(target)) return;
 
-            PluginModel.Activator._solari .Cast(target);
+            Activator.solari .Cast(target);
 
             return;
         }
 
         public void AutoScimitarQSS()
         {
-            if (!PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss")) return;
+            if (!Activator.defensives.IsChecked("defensives.scimitar/qss")) return;
 
-            if (PluginModel.Activator._qss.IsOwned() && PluginModel.Activator._qss.IsReady())
+            if (Activator.qss.IsOwned() && Activator.qss.IsReady())
             {
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.blind") && Player.HasBuffOfType(BuffType.Blind)) PluginModel.Activator._qss.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.charm") && Player.HasBuffOfType(BuffType.Charm)) PluginModel.Activator._qss.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.fear") && Player.HasBuffOfType(BuffType.Fear)) PluginModel.Activator._qss.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.polymorph") && Player.HasBuffOfType(BuffType.Polymorph)) PluginModel.Activator._qss.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.silence") && Player.HasBuffOfType(BuffType.Silence)) PluginModel.Activator._qss.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.sleep") && Player.HasBuffOfType(BuffType.Sleep)) PluginModel.Activator._qss.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.slow") && Player.HasBuffOfType(BuffType.Slow)) PluginModel.Activator._qss.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.snare") && Player.HasBuffOfType(BuffType.Snare)) PluginModel.Activator._qss.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.stun") && Player.HasBuffOfType(BuffType.Stun)) PluginModel.Activator._qss.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.suppression") && Player.HasBuffOfType(BuffType.Suppression)) PluginModel.Activator._qss.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.taunt") && Player.HasBuffOfType(BuffType.Taunt)) PluginModel.Activator._qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.blind") && Player.HasBuffOfType(BuffType.Blind)) Activator.qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.charm") && Player.HasBuffOfType(BuffType.Charm)) Activator.qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.fear") && Player.HasBuffOfType(BuffType.Fear)) Activator.qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.polymorph") && Player.HasBuffOfType(BuffType.Polymorph)) Activator.qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.silence") && Player.HasBuffOfType(BuffType.Silence)) Activator.qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.sleep") && Player.HasBuffOfType(BuffType.Sleep)) Activator.qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.slow") && Player.HasBuffOfType(BuffType.Slow)) Activator.qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.snare") && Player.HasBuffOfType(BuffType.Snare)) Activator.qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.stun") && Player.HasBuffOfType(BuffType.Stun)) Activator.qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.suppression") && Player.HasBuffOfType(BuffType.Suppression)) Activator.qss.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.taunt") && Player.HasBuffOfType(BuffType.Taunt)) Activator.qss.Cast();
             }
-            else if (PluginModel.Activator._scimitar.IsOwned() && PluginModel.Activator._scimitar.IsReady())
+            else if (Activator.scimitar.IsOwned() && Activator.scimitar.IsReady())
             {
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.blind") && Player.HasBuffOfType(BuffType.Blind)) PluginModel.Activator._scimitar.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.charm") && Player.HasBuffOfType(BuffType.Charm)) PluginModel.Activator._scimitar.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.fear") && Player.HasBuffOfType(BuffType.Fear)) PluginModel.Activator._scimitar.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.polymorph") && Player.HasBuffOfType(BuffType.Polymorph)) PluginModel.Activator._scimitar.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.silence") && Player.HasBuffOfType(BuffType.Silence)) PluginModel.Activator._scimitar.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.sleep") && Player.HasBuffOfType(BuffType.Sleep)) PluginModel.Activator._scimitar.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.slow") && Player.HasBuffOfType(BuffType.Slow)) PluginModel.Activator._scimitar.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.snare") && Player.HasBuffOfType(BuffType.Snare)) PluginModel.Activator._scimitar.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.stun") && Player.HasBuffOfType(BuffType.Stun)) PluginModel.Activator._scimitar.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.suppression") && Player.HasBuffOfType(BuffType.Suppression)) PluginModel.Activator._scimitar.Cast();
-                if (PluginModel.Activator.defensives.IsChecked("defensives.scimitar/qss.taunt") && Player.HasBuffOfType(BuffType.Taunt)) PluginModel.Activator._scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.blind") && Player.HasBuffOfType(BuffType.Blind)) Activator.scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.charm") && Player.HasBuffOfType(BuffType.Charm)) Activator.scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.fear") && Player.HasBuffOfType(BuffType.Fear)) Activator.scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.polymorph") && Player.HasBuffOfType(BuffType.Polymorph)) Activator.scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.silence") && Player.HasBuffOfType(BuffType.Silence)) Activator.scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.sleep") && Player.HasBuffOfType(BuffType.Sleep)) Activator.scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.slow") && Player.HasBuffOfType(BuffType.Slow)) Activator.scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.snare") && Player.HasBuffOfType(BuffType.Snare)) Activator.scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.stun") && Player.HasBuffOfType(BuffType.Stun)) Activator.scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.suppression") && Player.HasBuffOfType(BuffType.Suppression)) Activator.scimitar.Cast();
+                if (Activator.defensives.IsChecked("defensives.scimitar/qss.taunt") && Player.HasBuffOfType(BuffType.Taunt)) Activator.scimitar.Cast();
             }
 
             return;
@@ -156,25 +157,25 @@ namespace LevelZero.Controller
 
         public void AutoZhonya()
         {
-            if (!PluginModel.Activator._zhonya.IsOwned() || !PluginModel.Activator._zhonya.IsReady() || !PluginModel.Activator.defensives.IsChecked("defensives.zhonya") || Player.HealthPercent > PluginModel.Activator.defensives.SliderValue("defensives.zhonya.health%")) return;
+            if (!Activator.zhonya.IsOwned() || !Activator.zhonya.IsReady() || !Activator.defensives.IsChecked("defensives.zhonya") || Player.HealthPercent > Activator.defensives.SliderValue("defensives.zhonya.health%")) return;
 
-            if (Enemies.Any(it => it.IsInAutoAttackRange(Player))) PluginModel.Activator._zhonya.Cast();
+            if (Enemies.Any(it => it.IsInAutoAttackRange(Player))) Activator.zhonya.Cast();
 
             return;
         }
 
         public void AutoRanduin()
         {
-            if (PluginModel.Activator._randuin.IsOwned() && PluginModel.Activator._randuin.IsReady() && PluginModel.Activator._randuin.IsInRange(PluginModel.Activator.Target) && PluginModel.Activator._randuin.Cast()) return;
+            if (Activator.randuin.IsOwned() && Activator.randuin.IsReady() && Activator.randuin.IsInRange(Activator.Target) && Activator.randuin.Cast()) return;
 
             return;
         }
 
         public void AutoSeraphEmbrace()
         {
-            if (!PluginModel.Activator._seraph.IsOwned() || !PluginModel.Activator._seraph.IsReady() || !PluginModel.Activator.defensives.IsChecked("defensives.seraph") || Player.HealthPercent > PluginModel.Activator.defensives.SliderValue("defensives.seraph.health%")) return;
+            if (!Activator.seraph.IsOwned() || !Activator.seraph.IsReady() || !Activator.defensives.IsChecked("defensives.seraph") || Player.HealthPercent > Activator.defensives.SliderValue("defensives.seraph.health%")) return;
 
-            if (Enemies.Any(it => it.IsInAutoAttackRange(Player))) PluginModel.Activator._seraph.Cast();
+            if (Enemies.Any(it => it.IsInAutoAttackRange(Player))) Activator.seraph.Cast();
 
             return;
         }
@@ -185,18 +186,18 @@ namespace LevelZero.Controller
 
         public void AutoTalisma()
         {
-            if (!PluginModel.Activator._talisma.IsOwned() || !PluginModel.Activator._talisma.IsReady() || !PluginModel.Activator.speed.IsChecked("speed.talisma") || Player.CountAlliesInRange(600) <= 0) return;
+            if (!Activator.talisma.IsOwned() || !Activator.talisma.IsReady() || !Activator.speed.IsChecked("speed.talisma") || Player.CountAlliesInRange(600) <= 0) return;
 
-            if (Player.Distance(PluginModel.Activator.Target) > 400) PluginModel.Activator._talisma.Cast();
+            if (Player.Distance(Activator.Target) > 400) Activator.talisma.Cast();
 
             return;
         }
 
         public void AutoRighteousGlory()
         {
-            if (!PluginModel.Activator._righteousGlory.IsOwned() || !PluginModel.Activator._righteousGlory.IsReady() || !PluginModel.Activator.speed.IsChecked("speed.righteousGlory") || Player.CountAlliesInRange(600) <= 0) return;
+            if (!Activator.righteousGlory.IsOwned() || !Activator.righteousGlory.IsReady() || !Activator.speed.IsChecked("speed.righteousGlory") || Player.CountAlliesInRange(600) <= 0) return;
 
-            if (Player.Distance(PluginModel.Activator.Target) > 400) PluginModel.Activator._righteousGlory.Cast();
+            if (Player.Distance(Activator.Target) > 400) Activator.righteousGlory.Cast();
 
             return;
         }
@@ -207,52 +208,52 @@ namespace LevelZero.Controller
 
         private bool CanUsePotion(string name)
         {
-            if (PluginModel.Activator.potions.IsChecked("potions." + name + "potion") && Player.HealthPercent <= PluginModel.Activator.potions.SliderValue("potions." + name + "potion.health%")) return true;
+            if (Activator.potions.IsChecked("potions." + name + "potion") && Player.HealthPercent <= Activator.potions.SliderValue("potions." + name + "potion.health%")) return true;
 
             return false;
         }
 
         public void AutoHealthPotion()
         {
-            if (!PluginModel.Activator._healthPotion.IsOwned() || !PluginModel.Activator._healthPotion.IsReady() || !CanUsePotion("health")) return;
+            if (!Activator.healthPotion.IsOwned() || !Activator.healthPotion.IsReady() || !CanUsePotion("health")) return;
 
-            PluginModel.Activator._healthPotion.Cast();
+            Activator.healthPotion.Cast();
 
             return;
         }
 
         public void AutoBiscuitPotion()
         {
-            if (!PluginModel.Activator._biscuitPotion.IsOwned() || !PluginModel.Activator._biscuitPotion.IsReady() || !CanUsePotion("biscuit")) return;
+            if (!Activator.biscuitPotion.IsOwned() || !Activator.biscuitPotion.IsReady() || !CanUsePotion("biscuit")) return;
 
-            PluginModel.Activator._biscuitPotion.Cast();
+            Activator.biscuitPotion.Cast();
 
             return;
         }
 
         public void AutoCorruptingPotion()
         {
-            if (!PluginModel.Activator._corruptingPotion.IsOwned() || !PluginModel.Activator._corruptingPotion.IsReady() || !CanUsePotion("corrupting")) return;
+            if (!Activator.corruptingPotion.IsOwned() || !Activator.corruptingPotion.IsReady() || !CanUsePotion("corrupting")) return;
 
-            PluginModel.Activator._corruptingPotion.Cast();
+            Activator.corruptingPotion.Cast();
 
             return;
         }
 
         public void AutoHuntersPotion()
         {
-            if (!PluginModel.Activator._huntersPotion.IsOwned() || !PluginModel.Activator._huntersPotion.IsReady() || !CanUsePotion("hunters")) return;
+            if (!Activator.huntersPotion.IsOwned() || !Activator.huntersPotion.IsReady() || !CanUsePotion("hunters")) return;
 
-            PluginModel.Activator._huntersPotion.Cast();
+            Activator.huntersPotion.Cast();
 
             return;
         }
 
         public void AutoRefillablePotion()
         {
-            if (!PluginModel.Activator._refillablePotion.IsOwned() || !PluginModel.Activator._refillablePotion.IsReady() || !CanUsePotion("refillable")) return;
+            if (!Activator.refillablePotion.IsOwned() || !Activator.refillablePotion.IsReady() || !CanUsePotion("refillable")) return;
 
-            PluginModel.Activator._refillablePotion.Cast();
+            Activator.refillablePotion.Cast();
 
             return;
         }

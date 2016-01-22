@@ -285,7 +285,7 @@ namespace LevelZero.Core.Champions
             if (!minions.Any()) return;
 
             bool UseItem = minions.Count(it => it.IsValidTarget(400)) >= 3;
-            if (UseItem) { Activator._tiamat.Cast(); Activator._hydra.Cast(); }
+            if (UseItem) { Activator.tiamat.Cast(); Activator.hydra.Cast(); }
 
             if (Player.ManaPercent < mode.SliderValue("laneclear.mana%")) return;
 
@@ -322,7 +322,7 @@ namespace LevelZero.Core.Champions
 
 
             bool UseItem = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, 400).Count() >= 1;
-            if (UseItem) { Activator._tiamat.Cast(); Activator._hydra.Cast(); }
+            if (UseItem) { Activator.tiamat.Cast(); Activator.hydra.Cast(); }
 
             return;
         }

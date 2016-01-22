@@ -40,9 +40,9 @@ namespace LevelZero.Core.Champions
 
             Spells = new List<Spell.SpellBase>
             {
-                new Spell.Targeted(SpellSlot.Q,  700),
+                new Spell.Targeted(SpellSlot.Q, 700),
                 new Spell.Skillshot(SpellSlot.W, 2000, SkillShotType.Linear),
-                new Spell.Skillshot(SpellSlot.E,  600, SkillShotType.Circular),
+                new Spell.Skillshot(SpellSlot.E, 600, SkillShotType.Circular),
                 new Spell.Skillshot(SpellSlot.R, 3000, SkillShotType.Linear)
             };
 

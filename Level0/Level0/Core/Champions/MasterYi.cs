@@ -45,13 +45,16 @@ namespace LevelZero.Core.Champions
 
         private void Obj_AI_Minion_OnPlayAnimation(Obj_AI_Base sender, GameObjectPlayAnimationEventArgs args)
         {
-            if (!(sender is Obj_AI_Minion) || !sender.Name.Contains("Dragon")) return;
+            var trytododge = Features.First(it => it.NameFeature == "Misc").IsChecked("misc.dodgefireballs");
 
-            Chat.Print(args.Animation);
+            if (!trytododge || !(sender is Obj_AI_Minion) || !sender.Name.Contains("SRU_Dragon")) return;
 
-            if (args.Animation == "spell1")
+            if (args.Animation == "Spell1")
             {
-                EloBuddy.SDK.Core.DelayAction(() => Q.Cast(sender), 500);
+                var delay = (int)((500 - Game.Ping) * Player.Distance(sender) / 74.6f);
+
+                EloBuddy.SDK.Core.DelayAction(() => Q.Cast(sender), delay - Game.Ping);
+                //Chat.Print(Player.Distance(sender));
             }
         }
 
@@ -162,6 +165,7 @@ namespace LevelZero.Core.Champions
                 MenuValueStyleList = new List<ValueAbstract>
                 {
                     new ValueCheckbox(true,  "misc.ks", "KS"),
+                    new ValueCheckbox(true, "misc.dodgefireballs", "Try to dodge dragon fireballs"),
                     new ValueCheckbox(true, "misc.gapcloser", "Q on enemy gapcloser")
                 }
             };
@@ -257,9 +261,9 @@ namespace LevelZero.Core.Champions
             var mode = Features.First(it => it.NameFeature == "Lane Clear");
 
             bool UseItem = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position, 400).Count() >= 3;
-            if (UseItem) { Activator._tiamat.Cast(); Activator._hydra.Cast(); }
+            if (UseItem) { Activator.tiamat.Cast(); Activator.hydra.Cast(); }
 
-            if (Player.ManaPercent <= mode.SliderValue("laneclear.mana%") || !Q.IsReady()) return;
+            if (Player.ManaPercent < mode.SliderValue("laneclear.mana%") || !Q.IsReady()) return;
 
             if (mode.IsChecked("laneclear.q"))
             {
@@ -301,7 +305,7 @@ namespace LevelZero.Core.Champions
             if (E.IsReady() && EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, Player.GetAutoAttackRange()).Any() && mode.IsChecked("jungleclear.e")) E.Cast();
 
             bool UseItem = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, 400).Count() >= 1;
-            if (UseItem) { Activator._tiamat.Cast(); Activator._hydra.Cast(); }
+            if (UseItem) { Activator.tiamat.Cast(); Activator.hydra.Cast(); }
 
             return;
         }

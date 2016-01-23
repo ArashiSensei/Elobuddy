@@ -411,7 +411,7 @@ namespace LevelZero.Controller
 
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
                 {
-                    if (smite != null && smite.IsReady() && Target.IsValidTarget(smite.Range)) smite.Cast(Target);
+                    if (smite != null && smite.Name.Contains("gank") && smite.IsReady() && Target.IsValidTarget(smite.Range)) smite.Cast(Target);
 
                     if (EntityManager.Heroes.Enemies.Any(it => !it.IsDead && it.IsValidTarget(randuin.Range))) randuin.Cast();
 

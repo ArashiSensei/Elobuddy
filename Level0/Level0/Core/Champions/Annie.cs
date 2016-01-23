@@ -114,7 +114,7 @@ namespace LevelZero.Core.Champions
                 MenuValueStyleList = new List<ValueAbstract>
                 {
                     new ValueCheckbox(true,  "harass.q", "Harass Q"),
-                    new ValueCheckbox(false, "harass.w", "Harass W")
+                    new ValueCheckbox(true, "harass.w", "Harass W")
                 }
             };
 

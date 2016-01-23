@@ -74,6 +74,7 @@
     <Compile Include="Core\Champions\Jax.cs" />
     <Compile Include="Core\Champions\Jhin.cs" />
     <Compile Include="Core\Champions\MasterYi.cs" />
+    <Compile Include="Core\Champions\Malphite.cs" />
     <Compile Include="Core\Champions\Xerath.cs" />
     <Compile Include="Core\Champions\Tristana.cs" />
     <Compile Include="Model\Enuns\EnumMenuStyle.cs" />

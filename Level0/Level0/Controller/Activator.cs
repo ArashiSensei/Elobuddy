@@ -21,7 +21,7 @@ namespace LevelZero.Controller
         string[] _autoZhonyaSpells = new string[] { "zed.r", "veigar.r", "veigar.w", "malphite.r", "garen.r", "darius.r", "fizz.r", "lux.r", "ezreal.r", "leesin.r", "morgana.r", "chogath.r", "nunu.r" };
 
         List<Feature> Features = new List<Feature>();
-        public Feature offensives, defensives, speed, potions, summoners;
+        public Feature offensives, defensives, speed, potions, summoners, misc;
         AIHeroClient Player = EloBuddy.Player.Instance;
         public AIHeroClient Target;
 
@@ -257,11 +257,29 @@ namespace LevelZero.Controller
 
             #endregion
 
+            #region Misc
+
+            feature = new Feature
+            {
+                NameFeature = "Misc",
+                MenuValueStyleList = new List<ValueAbstract>()
+                {
+                    new ValueCheckbox(true, "misc.itemsonlaneclear", "Use Items on Lane Clear"),
+                    new ValueCheckbox(true, "misc.itemsonjungleclear", "Use Items on Jungle Clear")
+                }
+            };
+
+            feature.ToActivatorMenu();
+            Features.Add(feature);
+
+            #endregion
+
             offensives = Features.First(it => it.NameFeature == "Offensives");
             defensives = Features.First(it => it.NameFeature == "Defensives");
             speed = Features.First(it => it.NameFeature == "Speed");
             potions = Features.First(it => it.NameFeature == "Potions");
             summoners = Features.First(it => it.NameFeature == "Summoners");
+            misc = Features.First(it => it.NameFeature == "Misc");
 
             return;
         }
@@ -393,8 +411,12 @@ namespace LevelZero.Controller
 
                 if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee))
                 {
+                    if (smite != null && smite.IsReady() && Target.IsValidTarget(smite.Range)) smite.Cast(Target);
+
                     if (EntityManager.Heroes.Enemies.Any(it => !it.IsDead && it.IsValidTarget(randuin.Range))) randuin.Cast();
+
                     righteousGlory.Cast();
+
                     talisma.Cast();
                 }
 
@@ -412,9 +434,41 @@ namespace LevelZero.Controller
                 _summoners.AutoHeal();
             }
 
-            //Jungle Smite
+            //Lane Clear
+            if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear))
+            {
+                //Items usage
+                if (misc.IsChecked("misc.itemsonlaneclear"))
+                {
+                    var minions = EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, Player.Position, 400);
+
+                    if (minions.Count() >= 3 && minions.Any(it => it.Health > 150))
+                    {
+                        if (tiamat.IsOwned() && tiamat.IsReady()) tiamat.Cast();
+                        if (hydra.IsOwned() && hydra.IsReady()) hydra.Cast();
+                    }
+                }
+            }
+
+            //Jungle Clear
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.JungleClear))
+            {
+                //Smiting mobs
                 _summoners.AutoSmiteMob();
+
+                //Items usage
+                if (misc.IsChecked("misc.itemsonjungleclear"))
+                {
+                    var minions = EntityManager.MinionsAndMonsters.GetJungleMonsters(Player.Position, 650);
+
+                    if (minions.Count(it => it.Distance(Player) <= 400) == minions.Count() && minions.Any(it => it.Health > 150))
+                    {
+                        if (tiamat.IsOwned() && tiamat.IsReady()) tiamat.Cast();
+                        if (hydra.IsOwned() && hydra.IsReady()) hydra.Cast();
+                        if (minions.Any(it => it.Health >= 200) && titanic.IsOwned() && titanic.IsReady()) titanic.Cast();
+                    }
+                }
+            }
 
             return;
         }

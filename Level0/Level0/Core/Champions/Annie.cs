@@ -98,7 +98,7 @@ namespace LevelZero.Core.Champions
                     new ValueCheckbox(true,  "combo.q", "Combo Q"),
                     new ValueCheckbox(true, "combo.w", "Combo W"),
                     new ValueCheckbox(true,  "combo.r", "Combo R", true),
-                    new ValueCheckbox(true,  "combo.r.jiws", "Just R with stun"),
+                    new ValueCheckbox(false,  "combo.r.jiws", "Just R with stun"),
                     new ValueSlider(5, 1, 2, "combo.r.minenemies", "Min enemies R"),
                     new ValueCheckbox(true,  "combo.aa", "AA ?", true),
                     new ValueCheckbox(false,  "combo.aa.maxrange", "AA in max range ?")

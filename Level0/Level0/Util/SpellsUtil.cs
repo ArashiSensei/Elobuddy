@@ -12,6 +12,17 @@ namespace LevelZero.Util
             Heal, Barrier, Cleanse, Ghost, Exhaust, Smite, Ignite, Flash
         }
 
+        public static bool HitChanceCast(Spell.Skillshot spell, Obj_AI_Base target, float chance = 85)
+        {
+            var pred = spell.GetPrediction(target);
+
+            if (pred.HitChancePercent >= chance)
+                if (spell.Cast(pred.CastPosition))
+                    return true;
+
+            return false;
+        }
+
         public static Spell.Active GetActiveSpell(string name, uint range = 0)
         {
             var slot = Player.Instance.GetSpellSlotFromName(name);

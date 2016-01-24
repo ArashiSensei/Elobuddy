@@ -102,7 +102,7 @@ namespace LevelZero.Core.Champions
                     new ValueCheckbox(true,  "harass.q", "Harass Q"),
                     new ValueCheckbox(true, "harass.w", "Harass W"),
                     new ValueCheckbox(true, "harass.e", "Harass E"),
-                    new ValueSlider(99, 1, 30, "harass.mana%", "Harass MinMana%")
+                    new ValueSlider(99, 1, 30, "harass.mana%", "Harass MinMana%", true)
                 }
             };
 
@@ -343,7 +343,10 @@ namespace LevelZero.Core.Champions
         {
             base.OnFlee();
 
+            if (!Q.IsReady()) return;
+
             var Target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+
             if (Target != null && Target.IsValidTarget(Q.Range)) Q.Cast(Target);
         }
 

@@ -42,14 +42,17 @@ namespace LevelZero.Core.Champions
             };
             DamageUtil.SpellsDamage = new List<SpellDamage>
             {
-                new SpellDamage(Spells[1], new float[]{ 0, 0x23, 0x37, 0x4B, 0x4F, 0x73 }, new [] { 0, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f }, DamageType.Physical),
+                new SpellDamage(Spells[1], new float[]{ 0, 0x23, 0x37, 0x4B, 0x4F, 0x73 }, new [] { 0, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f }, DamageType.Mixed, 
+                new float[] {0,0,0,0,0,0}, new [] {0, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f}, DamageType.Magical),
                 new SpellDamage(Spells[2], new float[]{ 0, 0x46, 0x73, 0xA0, 0xCD, 0xFA }, new [] { 0, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f }, DamageType.Magical),
-                new SpellDamage(Spells[2], new float[]{ 0, 0x4B, 0x7D, 0xAF, 0xE1, 0x113 }, new [] { 0, 0.75f, 0.75f, 0.75f, 0.75f, 0.75f }, DamageType.Physical),
-                new SpellDamage(Spells[3], new float[]{ 0, 0x15E, 0x1F4, 0x28A}, new [] { 0, 1f, 1f, 1f }, DamageType.Physical)
+                new SpellDamage(Spells[2], new float[]{ 0, 0x4B, 0x7D, 0xAF, 0xE1, 0x113 }, new [] { 0, 0.75f, 0.75f, 0.75f, 0.75f, 0.75f }, DamageType.Mixed,
+                new float[] {0,0,0,0,0,0}, new [] {0, 0.75f, 0.75f, 0.75f, 0.75f, 0.75f}, DamageType.Magical),
+                new SpellDamage(Spells[3], new float[]{ 0, 0x15E, 0x1F4, 0x28A}, new [] { 0, 1f, 1f, 1f }, DamageType.Mixed,
+                new float[] {0,0,0,0,0,0}, new [] {0, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f}, DamageType.Magical)
             };
             InitMenu();
             DamageIndicator.Initialize(DamageUtil.GetComboDamage);
-            new SkinController(7);
+            new SkinController(10);
         }
 
         public override void InitMenu()
@@ -104,8 +107,22 @@ namespace LevelZero.Core.Champions
                 NameFeature = "Harass",
                 MenuValueStyleList = new List<ValueAbstract>
                 {
+                    new ValueSlider(100, 0 , 50, "mana", "Minimum mana %"),
                     new ValueCheckbox(true,  "harass.q", "Harass Q"),
                     new ValueCheckbox(true,  "harass.w", "Harass W")
+                }
+            };
+
+            feature.ToMenu();
+            Features.Add(feature);
+
+            feature = new Feature
+            {
+                NameFeature = "Last hit",
+                MenuValueStyleList = new List<ValueAbstract>
+                {
+                    new ValueSlider(100, 0 , 50, "mana", "Minimum mana %"),
+                    new ValueCheckbox(true,  "lasthit.q", "Last hit Q"),
                 }
             };
 
@@ -117,6 +134,7 @@ namespace LevelZero.Core.Champions
                 NameFeature = "Lane Clear",
                 MenuValueStyleList = new List<ValueAbstract>
                 {
+                    new ValueSlider(100, 0 , 50, "mana", "Minimum mana %"),
                     new ValueCheckbox(true,  "laneclear.q", "Lane Clear Q"),
                 }
             };
@@ -129,6 +147,7 @@ namespace LevelZero.Core.Champions
                 NameFeature = "Jungle Clear",
                 MenuValueStyleList = new List<ValueAbstract>
                 {
+                    new ValueSlider(100, 0 , 50, "mana", "Minimum mana %"),
                     new ValueCheckbox(true,  "jungleclear.q", "Jungle Clear Q"),
                 }
             };
@@ -179,12 +198,12 @@ namespace LevelZero.Core.Champions
 
             if (R.IsReady() && combo.IsChecked("combo.r"))
             {
-                var targetR = TargetSelector.GetTarget(R.Range, DamageType.Physical);
+                var targetR = TargetSelector.GetTarget(R.Range, DamageType.Mixed);
                 if (comboMisc.SliderValue("combo.misc.minDistance") > Player.Instance.Distance(targetR) && targetR != null && targetR.IsValidTarget() && DamageUtil.Killable(targetR, SpellSlot.R))
                 {
                     var predictionR = R.GetPrediction(targetR);
 
-                    if(predictionR.HitChance >= HitChance.High)
+                    if (predictionR.HitChance >= HitChance.High)
                     {
                         R.Cast(predictionR.CastPosition);
                     }
@@ -196,11 +215,9 @@ namespace LevelZero.Core.Champions
                 }
             }
 
-            var target = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+            var target = TargetSelector.GetTarget(Q.Range, DamageType.Mixed);
 
             if (target == null || !target.IsValidTarget(Q.Range) || !target.IsValidTargetUtil()) return;
-
-            
 
             if (combo.IsChecked("combo.q") && Q.IsReady())
             {
@@ -232,7 +249,7 @@ namespace LevelZero.Core.Champions
 
             if (combo.IsChecked("combo.e") && E.IsReady() && E.IsInRange(target))
             {
-                if(target.CountEnemiesInRange(700) < target.CountAlliesInRange(475) && DamageUtil.Killable(target, SpellSlot.E))
+                if (target.CountEnemiesInRange(700) < target.CountAlliesInRange(475) && DamageUtil.Killable(target, SpellSlot.E))
                 {
                     E.Cast(target.ServerPosition);
                 }
@@ -241,90 +258,82 @@ namespace LevelZero.Core.Champions
 
         public override void OnHarass()
         {
-            var target = TargetSelector.GetTarget(Player.Instance.AttackRange, DamageType.Physical);
-
-            if (target == null || !target.IsValidTarget() || !target.IsValidTargetUtil()) return;
-
+            var target = TargetSelector.GetTarget(Player.Instance.AttackRange, DamageType.Mixed);
             var harass = Features.Find(f => f.NameFeature == "Harass");
 
-            if (harass.IsChecked("harass.q") && Spells[0].IsReady() && Player.Instance.IsInAutoAttackRange(target))
+            if (target == null || !target.IsValidTarget() || !target.IsValidTargetUtil() || harass.SliderValue("mana") > Player.Instance.ManaPercent) return;
+
+            if (harass.IsChecked("harass.q") && Q.IsReady())
             {
-                Spells[0].Cast();
+                var qPredict = Q.GetPrediction(target);
+
+                if (qPredict.HitChancePercent >= 85)
+                {
+                    if (Q.Cast(qPredict.CastPosition))
+                        castQ = false;
+                }
             }
 
-            if (harass.IsChecked("harass.e") && Spells[2].IsReady() && Player.Instance.IsInAutoAttackRange(target))
+            if (harass.IsChecked("harass.w") && W.IsReady())
             {
-                Spells[2].Cast(target);
+                var wPredict = W.GetPrediction(target);
+
+                if (wPredict.HitChancePercent >= 85)
+                {
+                    W.Cast(wPredict.CastPosition);
+                }
             }
         }
 
         public override void OnLaneClear()
         {
-            var target = EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(t => t.IsValidTarget(Player.Instance.AttackRange));
+            if (!EntityManager.MinionsAndMonsters.EnemyMinions.Any(m => m.Distance(Player.Instance) < Q.Range)) return;
 
-            if (target == null || !target.IsValidTarget() || !target.IsValidTargetUtil()) return;
+            var targets = EntityManager.MinionsAndMonsters.EnemyMinions.Where(t => t.IsValidTarget(Q.Range) && t.IsValidTarget(Q.Range));
 
             var laneclear = Features.Find(f => f.NameFeature == "Lane Clear");
 
-            if (laneclear.IsChecked("laneclear.e") && Spells[2].IsReady() && Spells[2].IsInRange(target))
-            {
-                var eTarget = EntityManager.MinionsAndMonsters.EnemyMinions.Aggregate((curMax, x) => ((curMax == null && x.IsValid) || x.MaxHealth > curMax.MaxHealth ? x : curMax));
-                if (eTarget != null)
-                {
-                    Spells[2].Cast(eTarget);
-                    Orbwalker.ForcedTarget = eTarget;
+            if (!Q.IsReady() || !laneclear.IsChecked("laneclear.q") || targets.Any() || laneclear.SliderValue("mana") > Player.Instance.ManaPercent) return;
 
-                    if (laneclear.IsChecked("laneclear.q") && Spells[0].IsReady() && Player.Instance.IsInAutoAttackRange(target))
-                    {
-                        Spells[0].Cast();
-                    }
-                }
-            }
+            var bestTarget = targets.Aggregate((curMax, x) => ((curMax == null && x.IsValid) || x.MaxHealth > curMax.MaxHealth ? x : curMax));
 
-            if (laneclear.IsChecked("laneclear.q") && Spells[0].IsReady() && Player.Instance.IsInAutoAttackRange(target))
+            if (Q.GetPrediction(bestTarget).HitChance >= HitChance.Medium)
             {
-                Spells[0].Cast();
-            }
-
-            if (laneclear.IsChecked("laneclear.w") && Spells[1].IsReady() && target.GetBuffCount("tristanaecharge") == 4)
-            {
-                Spells[1].Cast(target.ServerPosition);
+                Q.Cast(Q.GetPrediction(bestTarget).CastPosition);
             }
         }
 
         public override void OnJungleClear()
         {
-            if (!EntityManager.MinionsAndMonsters.Monsters.Any(m => m.Distance(Player.Instance) < Spells[1].Range)) return;
+            if (!EntityManager.MinionsAndMonsters.Monsters.Any(m => m.Distance(Player.Instance) < Q.Range)) return;
 
-            var target = EntityManager.MinionsAndMonsters.Monsters.FirstOrDefault(t => t.IsValidTarget(Player.Instance.AttackRange));
-
-            if (target == null || !target.IsValidTarget() || !target.IsValidTargetUtil()) return;
+            var targets = EntityManager.MinionsAndMonsters.Monsters.Where(t => t.IsValidTarget(Q.Range) && t.IsValidTarget(Q.Range));
 
             var jungleclear = Features.Find(f => f.NameFeature == "Jungle Clear");
 
-            if (jungleclear.IsChecked("jungleclear.e") && Spells[2].IsReady() && Spells[2].IsInRange(target))
-            {
-                var eTarget = EntityManager.MinionsAndMonsters.Monsters.Aggregate((curMax, x) => ((curMax == null && x.IsValid) || x.MaxHealth > curMax.MaxHealth ? x : curMax));
-                if (eTarget != null)
-                {
-                    Spells[2].Cast(eTarget);
-                    Orbwalker.ForcedTarget = eTarget;
+            if (!Q.IsReady() || !jungleclear.IsChecked("jungleclear.q") || targets.Any() || jungleclear.SliderValue("mana") > Player.Instance.ManaPercent) return;
 
-                    if (jungleclear.IsChecked("jungleclear.q") && Spells[0].IsReady() && Player.Instance.IsInAutoAttackRange(target))
-                    {
-                        Spells[0].Cast();
-                    }
-                }
+            var bestTarget = targets.Aggregate((curMax, x) => ((curMax == null && x.IsValid) || x.MaxHealth > curMax.MaxHealth ? x : curMax));
+
+            if (Q.GetPrediction(bestTarget).HitChance >= HitChance.Medium)
+            {
+                Q.Cast(Q.GetPrediction(bestTarget).CastPosition);
             }
 
-            if (jungleclear.IsChecked("jungleclear.q") && Spells[0].IsReady() && Player.Instance.IsInAutoAttackRange(target))
-            {
-                Spells[0].Cast();
-            }
+        }
 
-            if (jungleclear.IsChecked("jungleclear.w") && Spells[1].IsReady() && target.GetBuffCount("tristanaecharge") == 4)
+        public override void OnLastHit()
+        {
+            var lastHit = Features.Find(f => f.NameFeature == "Last Hit");
+
+            if (lastHit.SliderValue("mana") > Player.Instance.ManaPercent || !lastHit.IsChecked("lasthit.q") || Q.IsReady()) return;
+
+            var targets = EntityManager.MinionsAndMonsters.EnemyMinions.Where(t => t.IsValidTarget(Q.Range) && t.NetworkId != Orbwalker.LastTarget.NetworkId && DamageUtil.Killable(t, SpellSlot.Q));
+
+            foreach (var predictQ in targets.Select(minion => Q.GetPrediction(minion)).Where(predictQ => predictQ.HitChance >= HitChance.Medium))
             {
-                Spells[1].Cast(target.ServerPosition);
+                Q.Cast(predictQ.CastPosition);
+                return;
             }
         }
 
@@ -338,9 +347,9 @@ namespace LevelZero.Core.Champions
 
             var qPredict = Q.GetPrediction(target);
 
-            if(qPredict.HitChancePercent >= 85)
+            if (qPredict.HitChancePercent >= 85)
             {
-                if(Q.Cast(qPredict.CastPosition))
+                if (Q.Cast(qPredict.CastPosition))
                     castQ = false;
             }
         }

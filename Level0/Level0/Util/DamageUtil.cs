@@ -66,8 +66,8 @@ namespace LevelZero.Util
                         }
                         continue;
                     case DamageType.Mixed:
-                        damage += Player.Instance.CalculateDamageOnUnit(enemy, dmg.DamageType, dmg.SpellDamageValue[dmg.Spell.Level] + dmg.DamageIncrease[dmg.Spell.Level] + dmg.SpellDamageModifier[dmg.Spell.Level] * (dmg.DamageType == DamageType.Physical ? Player.Instance.FlatPhysicalDamageMod : Player.Instance.FlatMagicDamageMod), isAbility, isAaOrTargetted);
-                        damage += Player.Instance.CalculateDamageOnUnit(enemy, dmg.HybridType, dmg.SpellDamageValueHybrid[dmg.Spell.Level] + dmg.SpellDamageModifierHybrid[dmg.Spell.Level] * (dmg.HybridType == DamageType.Physical ? Player.Instance.FlatPhysicalDamageMod : Player.Instance.FlatMagicDamageMod), isAbility, isAaOrTargetted);
+                        damage += Player.Instance.CalculateDamageOnUnit(enemy, dmg.DamageType, dmg.SpellDamageValue[dmg.Spell.Level] + dmg.DamageIncrease[dmg.Spell.Level] + dmg.SpellDamageModifier[dmg.Spell.Level] * (dmg.DamageType == DamageType.Mixed ? Player.Instance.FlatPhysicalDamageMod : Player.Instance.FlatMagicDamageMod), isAbility, isAaOrTargetted);
+                        damage += Player.Instance.CalculateDamageOnUnit(enemy, dmg.HybridType, dmg.SpellDamageValueHybrid[dmg.Spell.Level] + dmg.SpellDamageModifierHybrid[dmg.Spell.Level] * (dmg.HybridType == DamageType.Mixed ? Player.Instance.FlatPhysicalDamageMod : Player.Instance.FlatMagicDamageMod), isAbility, isAaOrTargetted);
                         if (dmg.HpPercentIncrease != null)
                         {
                             damage += (enemy.MaxHealth * dmg.HpPercentIncrease[dmg.Spell.Level]) / 100;

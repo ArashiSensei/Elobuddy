@@ -36,8 +36,8 @@ namespace LevelZero.Core.Champions
             Spells = new List<Spell.SpellBase>
             {
                 new Spell.Skillshot(SpellSlot.Q, 0x47E, SkillShotType.Linear, 0xFA, 0x7D0, 65),
-                new Spell.Skillshot(SpellSlot.W, 0x3E8, SkillShotType.Circular, 0xFA, 0x60E, 80) { AllowedCollisionCount = int.MaxValue },
-                new Spell.Skillshot(SpellSlot.E, 0x2EE, SkillShotType.Linear),
+                new Spell.Skillshot(SpellSlot.W, 0x3E8, SkillShotType.Linear, , 0x60E, 80) { AllowedCollisionCount = int.MaxValue },
+                new Spell.Skillshot(SpellSlot.E, 0x2EE, SkillShotType.Circular),
                 new Spell.Skillshot(SpellSlot.R, 0x61A8, SkillShotType.Linear, 0x1F4, 0x7D0, 160) { AllowedCollisionCount = int.MaxValue }
             };
             DamageUtil.SpellsDamage = new List<SpellDamage>

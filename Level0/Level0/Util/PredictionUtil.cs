@@ -8,7 +8,7 @@ namespace LevelZero.Util
 {
     class PredictionUtil
     {
-        internal float GetArrivalTime(float distance, float delay, float missileSpeed = 0)
+        public static float GetArrivalTime(float distance, float delay, float missileSpeed = 0)
         {
             if (missileSpeed != 0)
                 return distance / missileSpeed + delay;

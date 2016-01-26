@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Controller\Activator.cs" />
     <Compile Include="Controller\DamageIndicator.cs" />
+    <Compile Include="Controller\EvadeController.cs" />
     <Compile Include="Controller\ItemController.cs" />
     <Compile Include="Controller\SkinController.cs" />
     <Compile Include="Controller\SummonersController.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Core\Champions\MasterYi.cs" />
     <Compile Include="Core\Champions\Malphite.cs" />
     <Compile Include="Core\Champions\Morgana.cs" />
+    <Compile Include="Core\Champions\Ezreal.cs" />
     <Compile Include="Core\Champions\Xerath.cs" />
     <Compile Include="Core\Champions\Tristana.cs" />
     <Compile Include="Model\Enuns\EnumMenuStyle.cs" />

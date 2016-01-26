@@ -12,18 +12,12 @@ namespace LevelZero.Util
 
         public static float GetComboDamage(Obj_AI_Base enemy)
         {
-            return SpellsDamage.Where(spellBase => spellBase.Spell.IsReady()).Sum(spellBase => Player.Instance.CalculateDamageOnUnit(enemy, spellBase.DamageType, spellBase.SpellDamageValue[spellBase.Spell.Level] + spellBase.SpellDamageModifier[spellBase.Spell.Level] * (spellBase.DamageType == DamageType.Magical ? Player.Instance.FlatMagicDamageMod : Player.Instance.FlatPhysicalDamageMod)));
+            return SpellsDamage.Where(spellBase => spellBase.Spell.IsReady()).Sum(spellBase => GetSpellDamage(enemy,spellBase.Spell.Slot));
         }
 
         public static bool Killable(Obj_AI_Base enemy, SpellSlot slot, float damageDecrease = 0)
         {
-            var spellBase = SpellsDamage.Find(s => s.Spell.Slot == slot);
-            var possibleDamage = Player.Instance.CalculateDamageOnUnit(enemy, spellBase.DamageType,
-                spellBase.SpellDamageValue[spellBase.Spell.Level] +
-                spellBase.SpellDamageModifier[spellBase.Spell.Level]*
-                (spellBase.DamageType == DamageType.Magical
-                    ? Player.Instance.FlatMagicDamageMod
-                    : Player.Instance.FlatPhysicalDamageMod));
+            var possibleDamage = GetSpellDamage(enemy, slot);
 
             return enemy.Health < (possibleDamage - damageDecrease);
         }
@@ -62,6 +56,18 @@ namespace LevelZero.Util
                         continue;
                     case DamageType.Physical:
                         damage += Player.Instance.CalculateDamageOnUnit(enemy, dmg.DamageType, dmg.SpellDamageValue[dmg.Spell.Level] + dmg.DamageIncrease[dmg.Spell.Level] + dmg.SpellDamageModifier[dmg.Spell.Level] * Player.Instance.FlatPhysicalDamageMod, isAbility, isAaOrTargetted);
+                        if (dmg.HpPercentIncrease != null)
+                        {
+                            damage += (enemy.MaxHealth * dmg.HpPercentIncrease[dmg.Spell.Level]) / 100;
+                        }
+                        if (dmg.HpPercentDecrease != null)
+                        {
+                            damage += (enemy.Health * dmg.HpPercentDecrease[dmg.Spell.Level]) / 100;
+                        }
+                        continue;
+                    case DamageType.Mixed:
+                        damage += Player.Instance.CalculateDamageOnUnit(enemy, dmg.DamageType, dmg.SpellDamageValue[dmg.Spell.Level] + dmg.DamageIncrease[dmg.Spell.Level] + dmg.SpellDamageModifier[dmg.Spell.Level] * (dmg.DamageType == DamageType.Physical ? Player.Instance.FlatPhysicalDamageMod : Player.Instance.FlatMagicDamageMod), isAbility, isAaOrTargetted);
+                        damage += Player.Instance.CalculateDamageOnUnit(enemy, dmg.HybridType, dmg.SpellDamageValueHybrid[dmg.Spell.Level] + dmg.SpellDamageModifierHybrid[dmg.Spell.Level] * (dmg.HybridType == DamageType.Physical ? Player.Instance.FlatPhysicalDamageMod : Player.Instance.FlatMagicDamageMod), isAbility, isAaOrTargetted);
                         if (dmg.HpPercentIncrease != null)
                         {
                             damage += (enemy.MaxHealth * dmg.HpPercentIncrease[dmg.Spell.Level]) / 100;

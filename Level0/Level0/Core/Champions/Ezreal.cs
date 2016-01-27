@@ -292,7 +292,7 @@ namespace LevelZero.Core.Champions
 
             var laneclear = Features.Find(f => f.NameFeature == "Lane Clear");
 
-            if (!Q.IsReady() || !laneclear.IsChecked("laneclear.q") || targets.Any() || laneclear.SliderValue("mana") > Player.Instance.ManaPercent) return;
+            if (!Q.IsReady() || !laneclear.IsChecked("laneclear.q") || !targets.Any() || laneclear.SliderValue("mana") > Player.Instance.ManaPercent) return;
 
             var bestTarget = targets.Aggregate((curMax, x) => ((curMax == null && x.IsValid) || x.MaxHealth > curMax.MaxHealth ? x : curMax));
 
@@ -307,11 +307,9 @@ namespace LevelZero.Core.Champions
 
             var jungleclear = Features.Find(f => f.NameFeature == "Jungle Clear");
 
-            if (!Q.IsReady() || !jungleclear.IsChecked("jungleclear.q") || targets.Any() || jungleclear.SliderValue("mana") > Player.Instance.ManaPercent) return;
+            if (!Q.IsReady() || !jungleclear.IsChecked("jungleclear.q") || !targets.Any() || jungleclear.SliderValue("mana") > Player.Instance.ManaPercent) return;
 
-            var bestTarget = targets.Aggregate((curMax, x) => ((curMax == null && x.IsValid) || x.MaxHealth > curMax.MaxHealth ? x : curMax));
-
-            Q.Cast(Q.GetPrediction(bestTarget).CastPosition);
+            Q.Cast(targets.FirstOrDefault());
 
         }
 
@@ -319,11 +317,13 @@ namespace LevelZero.Core.Champions
         {
             var lastHit = Features.Find(f => f.NameFeature == "Last Hit");
 
-            if (lastHit.SliderValue("mana") > Player.Instance.ManaPercent || !lastHit.IsChecked("lasthit.q") || Q.IsReady()) return;
+            if (lastHit.SliderValue("mana") > Player.Instance.ManaPercent || !lastHit.IsChecked("lasthit.q") || !Q.IsReady()) return;
 
-            var targets = EntityManager.MinionsAndMonsters.EnemyMinions.Where(t => t.IsValidTarget(Q.Range) && DamageUtil.Killable(t, SpellSlot.Q));
+            var targets = EntityManager.MinionsAndMonsters.EnemyMinions.Where(t => t != null && t.IsValidTarget(Q.Range) && Orbwalker.LastTarget != null && t.NetworkId != Orbwalker.LastTarget.NetworkId && DamageUtil.Killable(t, SpellSlot.Q));
 
-            foreach (var predictQ in targets.Select(minion => Q.GetPrediction(minion)).Where(predictQ => predictQ.HitChance >= HitChance.Medium))
+            if(!targets.Any()) return;
+
+            foreach (var predictQ in targets.Select(minion => Q.GetPrediction(minion)).Where(predictQ => predictQ.HitChance != HitChance.Collision))
             {
                 Q.Cast(predictQ.CastPosition);
                 return;

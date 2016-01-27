@@ -36,23 +36,20 @@ namespace LevelZero.Core.Champions
             Spells = new List<Spell.SpellBase>
             {
                 new Spell.Skillshot(SpellSlot.Q, 0x47E, SkillShotType.Linear, 0xFA, 0x7D0, 65),
-                new Spell.Skillshot(SpellSlot.W, 0x3E8, SkillShotType.Circular, 0xFA, 0x60E, 80) { AllowedCollisionCount = int.MaxValue },
-                new Spell.Skillshot(SpellSlot.E, 0x2EE, SkillShotType.Linear),
-                new Spell.Skillshot(SpellSlot.R, 0x61A8, SkillShotType.Linear, 0x1F4, 0x7D0, 160) { AllowedCollisionCount = int.MaxValue }
+                new Spell.Skillshot(SpellSlot.W, 0x3E8, SkillShotType.Linear, 0, 0x60E, 80) { AllowedCollisionCount = int.MaxValue },
+                new Spell.Skillshot(SpellSlot.E, 0x2EE, SkillShotType.Circular),
+                new Spell.Skillshot(SpellSlot.R, 5000, SkillShotType.Linear, 0x1F4, 0x7D0, 160) { AllowedCollisionCount = int.MaxValue }
             };
             DamageUtil.SpellsDamage = new List<SpellDamage>
             {
-                new SpellDamage(Spells[1], new float[]{ 0, 0x23, 0x37, 0x4B, 0x4F, 0x73 }, new [] { 0, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f }, DamageType.Mixed, 
-                new float[] {0,0,0,0,0,0}, new [] {0, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f}, DamageType.Magical),
-                new SpellDamage(Spells[2], new float[]{ 0, 0x46, 0x73, 0xA0, 0xCD, 0xFA }, new [] { 0, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f }, DamageType.Magical),
-                new SpellDamage(Spells[2], new float[]{ 0, 0x4B, 0x7D, 0xAF, 0xE1, 0x113 }, new [] { 0, 0.75f, 0.75f, 0.75f, 0.75f, 0.75f }, DamageType.Mixed,
-                new float[] {0,0,0,0,0,0}, new [] {0, 0.75f, 0.75f, 0.75f, 0.75f, 0.75f}, DamageType.Magical),
-                new SpellDamage(Spells[3], new float[]{ 0, 0x15E, 0x1F4, 0x28A}, new [] { 0, 1f, 1f, 1f }, DamageType.Mixed,
-                new float[] {0,0,0,0,0,0}, new [] {0, 0.9f, 0.9f, 0.9f, 0.9f, 0.9f}, DamageType.Magical)
+                new SpellDamage(Q, new float[]{ 0, 0x23, 0x37, 0x4B, 0x4F, 0x73 }, new [] { 0, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f }, DamageType.Physical),
+                new SpellDamage(W, new float[]{ 0, 0x46, 0x73, 0xA0, 0xCD, 0xFA }, new [] { 0, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f }, DamageType.Magical),
+                new SpellDamage(E, new float[]{ 0, 0x4B, 0x7D, 0xAF, 0xE1, 0x113 }, new [] { 0, 0.75f, 0.75f, 0.75f, 0.75f, 0.75f }, DamageType.Physical),
+                new SpellDamage(R, new float[]{ 0, 350, 0x1F4, 0x28A}, new [] { 0, 1f, 1f, 1f }, DamageType.Physical)
             };
             InitMenu();
             DamageIndicator.Initialize(DamageUtil.GetComboDamage);
-            new SkinController(10);
+            new SkinController(8);
         }
 
         public override void InitMenu()
@@ -118,7 +115,7 @@ namespace LevelZero.Core.Champions
 
             feature = new Feature
             {
-                NameFeature = "Last hit",
+                NameFeature = "Last Hit",
                 MenuValueStyleList = new List<ValueAbstract>
                 {
                     new ValueSlider(100, 0 , 50, "mana", "Minimum mana %"),
@@ -199,7 +196,9 @@ namespace LevelZero.Core.Champions
             if (R.IsReady() && combo.IsChecked("combo.r"))
             {
                 var targetR = TargetSelector.GetTarget(R.Range, DamageType.Mixed);
-                if (comboMisc.SliderValue("combo.misc.minDistance") > Player.Instance.Distance(targetR) && targetR != null && targetR.IsValidTarget() && DamageUtil.Killable(targetR, SpellSlot.R))
+
+                if(targetR != null && targetR.IsValidTarget(R.Range))
+                if (comboMisc.SliderValue("combo.misc.minDistance") > Player.Instance.Distance(targetR) && targetR != null && targetR.IsValidTarget() && DamageUtil.Killable(targetR, SpellSlot.R, 89))
                 {
                     var predictionR = R.GetPrediction(targetR);
 
@@ -229,7 +228,7 @@ namespace LevelZero.Core.Champions
                 {
                     var qPredict = Q.GetPrediction(target);
 
-                    if (qPredict.HitChancePercent >= 85)
+                    if (qPredict.HitChancePercent >= 75)
                     {
                         if (Q.Cast(qPredict.CastPosition))
                             castQ = false;
@@ -297,10 +296,7 @@ namespace LevelZero.Core.Champions
 
             var bestTarget = targets.Aggregate((curMax, x) => ((curMax == null && x.IsValid) || x.MaxHealth > curMax.MaxHealth ? x : curMax));
 
-            if (Q.GetPrediction(bestTarget).HitChance >= HitChance.Medium)
-            {
-                Q.Cast(Q.GetPrediction(bestTarget).CastPosition);
-            }
+            Q.Cast(Q.GetPrediction(bestTarget).CastPosition);
         }
 
         public override void OnJungleClear()
@@ -315,10 +311,7 @@ namespace LevelZero.Core.Champions
 
             var bestTarget = targets.Aggregate((curMax, x) => ((curMax == null && x.IsValid) || x.MaxHealth > curMax.MaxHealth ? x : curMax));
 
-            if (Q.GetPrediction(bestTarget).HitChance >= HitChance.Medium)
-            {
-                Q.Cast(Q.GetPrediction(bestTarget).CastPosition);
-            }
+            Q.Cast(Q.GetPrediction(bestTarget).CastPosition);
 
         }
 
@@ -328,7 +321,7 @@ namespace LevelZero.Core.Champions
 
             if (lastHit.SliderValue("mana") > Player.Instance.ManaPercent || !lastHit.IsChecked("lasthit.q") || Q.IsReady()) return;
 
-            var targets = EntityManager.MinionsAndMonsters.EnemyMinions.Where(t => t.IsValidTarget(Q.Range) && t.NetworkId != Orbwalker.LastTarget.NetworkId && DamageUtil.Killable(t, SpellSlot.Q));
+            var targets = EntityManager.MinionsAndMonsters.EnemyMinions.Where(t => t.IsValidTarget(Q.Range) && DamageUtil.Killable(t, SpellSlot.Q));
 
             foreach (var predictQ in targets.Select(minion => Q.GetPrediction(minion)).Where(predictQ => predictQ.HitChance >= HitChance.Medium))
             {

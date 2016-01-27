@@ -5,6 +5,7 @@ using EloBuddy;
 using EloBuddy.SDK;
 using EloBuddy.SDK.Enumerations;
 using EloBuddy.SDK.Events;
+using EloBuddy.SDK.Menu.Values;
 using LevelZero.Controller;
 using LevelZero.Model;
 using LevelZero.Model.Values;
@@ -104,6 +105,7 @@ namespace LevelZero.Core.Champions
                 NameFeature = "Harass",
                 MenuValueStyleList = new List<ValueAbstract>
                 {
+                    new ValueKeybind(false, "harass.auto", "Auto Harass", KeyBind.BindTypes.PressToggle),
                     new ValueSlider(100, 0 , 50, "mana", "Minimum mana %"),
                     new ValueCheckbox(true,  "harass.q", "Harass Q"),
                     new ValueCheckbox(true,  "harass.w", "Harass W")
@@ -327,6 +329,16 @@ namespace LevelZero.Core.Champions
             {
                 Q.Cast(predictQ.CastPosition);
                 return;
+            }
+        }
+
+        public override void PermaActive()
+        {
+            var harass = Features.Find(f => f.NameFeature == "Harass");
+
+            if (harass.IsChecked("harass.auto"))
+            {
+                OnHarass();
             }
         }
 

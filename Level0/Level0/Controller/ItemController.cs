@@ -476,15 +476,6 @@ namespace LevelZero.Controller
             return false;
         }
 
-        public bool CastStealthWard(Vector3 position)
-        {
-            var ward = _itemUtil.GetItem(ItemId.Stealth_Ward);
-
-            if (ward.IsOwned() && ward.IsReady() && ward.Cast(CorrectRange(position))) return true;
-
-            return false;
-        }
-
         public bool CastVisionWard(Vector3 position)
         {
             var ward = _itemUtil.GetItem(ItemId.Vision_Ward);

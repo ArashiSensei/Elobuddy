@@ -21,7 +21,8 @@ namespace LevelZero.Controller
         string[] _autoZhonyaSpells = new string[] { "zed.r", "veigar.r", "veigar.w", "malphite.r", "garen.r", "darius.r", "fizz.r", "lux.r", "ezreal.r", "leesin.r", "morgana.r", "chogath.r", "nunu.r" };
 
         List<Feature> Features = new List<Feature>();
-        public Feature offensives, defensives, speed, potions, summoners, misc;
+        public Feature start, offensives, defensives, speed, potions, summoners, misc;
+
         AIHeroClient Player = EloBuddy.Player.Instance;
         public AIHeroClient Target;
 
@@ -76,9 +77,18 @@ namespace LevelZero.Controller
 
         void InitMenu()
         {
+            var feature = new Feature
+            {
+                NameFeature = "Start",
+                MenuValueStyleList = new List<ValueAbstract>()
+                {
+                    new ValueCheckbox(true, "enable", "Use Activator")
+                }
+            };
+
             #region Summoners
 
-            var feature = new Feature
+            feature = new Feature
             {
                 NameFeature = "Summoners",
                 MenuValueStyleList = new List<ValueAbstract>()
@@ -274,6 +284,7 @@ namespace LevelZero.Controller
 
             #endregion
 
+            start = Features.First(it => it.NameFeature == "Start");
             offensives = Features.First(it => it.NameFeature == "Offensives");
             defensives = Features.First(it => it.NameFeature == "Defensives");
             speed = Features.First(it => it.NameFeature == "Speed");
@@ -355,7 +366,7 @@ namespace LevelZero.Controller
 
         private void Game_OnTick(EventArgs args)
         {
-            if (Player.IsDead || this == null) return;
+            if (Player.IsDead || this == null || !start.IsChecked("enable")) return;
 
             Target = TargetSelector.GetTarget(_range, _damageType);
 
@@ -568,7 +579,7 @@ namespace LevelZero.Controller
             return;
         }
 
-        //----------------------------------------|| Extensions ||-------------------------------------
+        //----------------------------------------|| Methods ||-------------------------------------
 
         private void ZhonyaOnHit(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {

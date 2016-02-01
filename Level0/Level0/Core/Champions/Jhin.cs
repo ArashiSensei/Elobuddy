@@ -234,10 +234,9 @@ namespace LevelZero.Core.Champions
                         Orbwalker.DisableAttacking = true;
                         Orbwalker.DisableMovement = true;
 
-                        EloBuddy.SDK.Core.DelayAction(() => _isUltimateOn = false, 9000);
-
                         Orbwalker.MoveTo(TargetR.Position);
-                        EloBuddy.SDK.Core.DelayAction(() => R.Cast(predictionR.CastPosition), 100);
+                        EloBuddy.SDK.Core.DelayAction(() => R.Cast(predictionR.CastPosition), 200);
+                        EloBuddy.SDK.Core.DelayAction(() => _isUltimateOn = false, 9000);
                     }
                     else
                     {
@@ -454,6 +453,16 @@ namespace LevelZero.Core.Champions
             }
         }
 
+        public override void OnUpdate(EventArgs args)
+        {
+            if (_isUltimateOn && R.IsReady() && (!Orbwalker.DisableAttacking || !Orbwalker.DisableMovement))
+            {
+                return;
+            }
+
+            base.OnUpdate(args);
+        }
+
         public override void PermaActive()
         {
             var miscMenu = Features.First(it => it.NameFeature == "Misc");
@@ -468,12 +477,11 @@ namespace LevelZero.Core.Champions
                     {
                         _isUltimateOn = true;
                         Orbwalker.DisableAttacking = true;
-                        Orbwalker.DisableMovement = true;
-
-                        EloBuddy.SDK.Core.DelayAction(() => _isUltimateOn = false, 9000);
+                        Orbwalker.DisableMovement = true;                       
 
                         Orbwalker.MoveTo(_target.Position);
-                        EloBuddy.SDK.Core.DelayAction(() => R.Cast(predictionR.CastPosition), 100);
+                        EloBuddy.SDK.Core.DelayAction(() => R.Cast(predictionR.CastPosition), 200);
+                        EloBuddy.SDK.Core.DelayAction(() => _isUltimateOn = false, 9000);
                     }
                     else
                     {

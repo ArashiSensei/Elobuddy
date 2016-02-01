@@ -11,6 +11,7 @@ using LevelZero.Util;
 using SharpDX;
 using Circle = EloBuddy.SDK.Rendering.Circle;
 using Activator = LevelZero.Controller.Activator;
+using EloBuddy.SDK.Menu.Values;
 
 namespace LevelZero.Core.Champions
 {
@@ -32,6 +33,12 @@ namespace LevelZero.Core.Champions
         {
             InitVariables();
             InitEvents();
+        }
+
+        public override void InitEvents()
+        {
+            base.InitEvents();
+            Game.OnWndProc += Game_OnWndProc;
         }
 
         public override void InitVariables()
@@ -160,7 +167,8 @@ namespace LevelZero.Core.Champions
                 NameFeature = "Misc",
                 MenuValueStyleList = new List<ValueAbstract>
                 {
-                    new ValueCheckbox(true,  "misc.ks", "KS")
+                    new ValueCheckbox(true,  "misc.ks", "KS"),
+                    new ValueKeybind(false, "misc.castROnSelected", "Cast Ultimate on Selected target", KeyBind.BindTypes.HoldActive, 'T')
                     //new ValueCheckbox(true,  "misc.gapcloser", "Auto E on enemy gapcloser")
                 }
             };
@@ -448,6 +456,32 @@ namespace LevelZero.Core.Champions
 
         public override void PermaActive()
         {
+            var miscMenu = Features.First(it => it.NameFeature == "Misc");
+
+            if (miscMenu.IsChecked("misc.castROnSelected") && R.IsReady() && _target != null && _target.IsValidTarget(R.Range))
+            {
+                var predictionR = R.GetPrediction(_target);
+
+                if (predictionR.HitChance >= HitChance.High)
+                {
+                    if (!_isUltimateOn)
+                    {
+                        _isUltimateOn = true;
+                        Orbwalker.DisableAttacking = true;
+                        Orbwalker.DisableMovement = true;
+
+                        EloBuddy.SDK.Core.DelayAction(() => _isUltimateOn = false, 9000);
+
+                        Orbwalker.MoveTo(_target.Position);
+                        EloBuddy.SDK.Core.DelayAction(() => R.Cast(predictionR.CastPosition), 100);
+                    }
+                    else
+                    {
+                        R.Cast(predictionR.CastPosition);
+                    }
+                }
+            }
+
             if (!R.IsReady() && (Orbwalker.DisableAttacking || Orbwalker.DisableMovement))
             {
                 Orbwalker.DisableAttacking = false;
@@ -502,6 +536,25 @@ namespace LevelZero.Core.Champions
                 target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Suppression) || target.HasBuffOfType(BuffType.Taunt)) return false;
 
             return true;
+        }
+
+        private static AIHeroClient _target;
+        private static int _lastClick;
+
+        private static void Game_OnWndProc(WndEventArgs args)
+        {
+            if (args.Msg != 0x202) return;
+            if (_lastClick + 500 <= Environment.TickCount)
+            {
+                _target =
+                    EntityManager.Heroes.Enemies
+                        .OrderBy(a => a.Distance(ObjectManager.Player))
+                        .FirstOrDefault(a => a.IsEnemy && a.Distance(Game.CursorPos) < 200);
+                if (_target != null)
+                {
+                    _lastClick = Environment.TickCount;
+                }
+            }
         }
     }
 }

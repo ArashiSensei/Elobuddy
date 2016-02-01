@@ -220,15 +220,21 @@ namespace LevelZero.Core.Champions
 
                 if (predictionR.HitChance >= HitChance.High)
                 {
-                    Orbwalker.MoveTo(TargetR.Position);
-                    R.Cast(predictionR.CastPosition);
                     if (!_isUltimateOn)
                     {
+                        _isUltimateOn = true;
                         Orbwalker.DisableAttacking = true;
                         Orbwalker.DisableMovement = true;
-                        _isUltimateOn = true;
+
                         EloBuddy.SDK.Core.DelayAction(() => _isUltimateOn = false, 9000);
+
+                        Orbwalker.MoveTo(TargetR.Position);
+                        EloBuddy.SDK.Core.DelayAction(() => R.Cast(predictionR.CastPosition), 100);
                     }
+                    else
+                    {
+                        R.Cast(predictionR.CastPosition);
+                    }                    
                 }
             }
 
@@ -266,10 +272,6 @@ namespace LevelZero.Core.Champions
 
             if (Target != null && Target.IsValidTarget(E.Range) && E.IsReady() && mode.IsChecked("combo.E"))
             {
-                /*
-                Target.HasBuffOfType(BuffType.Knockup) || Target.HasBuffOfType(BuffType.Snare) || Target.HasBuffOfType(BuffType.Stun) || Target.HasBuffOfType(BuffType.Charm)
-                */
-
                 if (!CanMove(Target))
                 {
                     var pred = E.GetPrediction(Target);
@@ -328,9 +330,6 @@ namespace LevelZero.Core.Champions
 
             if (Target != null && Target.IsValidTarget(E.Range) && mode.IsChecked("harass.E") && E.IsReady())
             {
-                /*
-                Target.HasBuffOfType(BuffType.Knockup) || Target.HasBuffOfType(BuffType.Snare) || Target.HasBuffOfType(BuffType.Stun) || Target.HasBuffOfType(BuffType.Charm)
-                */
                 if (!CanMove(Target))
                 {
                     var pred = E.GetPrediction(Target);
@@ -346,7 +345,6 @@ namespace LevelZero.Core.Champions
                     }
                 }
             }
-
         }
 
         public override void OnLaneClear()
@@ -393,20 +391,6 @@ namespace LevelZero.Core.Champions
 
         public override void OnJungleClear()
         {
-            /*
-            //---------------------------------------------Smite Usage---------------------------------------------
-
-            if (_smite != null)
-            {
-                var smiteusage = Features.First(it => it.NameFeature == "Smite Usage");
-
-                if (_smite.IsReady() && smiteusage.IsChecked("smiteusage.usesmite"))
-                {
-                    _summoners.AutoSmiteMob(_smite, smiteusage);
-                }
-            }
-            */
-
             var mode = Features.First(it => it.NameFeature == "Jungle Clear");
 
             var minions = EntityManager.MinionsAndMonsters.GetJungleMonsters().Where(m => Q.IsInRange(m));
@@ -464,12 +448,7 @@ namespace LevelZero.Core.Champions
 
         public override void PermaActive()
         {
-            if (_isUltimateOn && R.IsReady())
-            {
-                Orbwalker.DisableAttacking = true;
-                Orbwalker.DisableMovement = true;
-            }
-            else if(Orbwalker.DisableAttacking || Orbwalker.DisableMovement)
+            if (!R.IsReady() && (Orbwalker.DisableAttacking || Orbwalker.DisableMovement))
             {
                 Orbwalker.DisableAttacking = false;
                 Orbwalker.DisableMovement = false;
@@ -485,13 +464,13 @@ namespace LevelZero.Core.Champions
         {
             if (Q.IsReady())
             {
-                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Q.Range) && DamageUtil.GetSpellDamage(enemy, SpellSlot.Q) >= enemy.Health);
+                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(Q.Range) && DamageUtil.Killable(enemy, SpellSlot.Q));
                 if (bye != null) { Q.Cast(bye); return; }
             }
 
             if (W.IsReady())
             {
-                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(W.Range) && DamageUtil.GetSpellDamage(enemy, SpellSlot.W) >= enemy.Health);
+                var bye = EntityManager.Heroes.Enemies.FirstOrDefault(enemy => enemy.IsValidTarget(W.Range) && DamageUtil.Killable(enemy, SpellSlot.W));
                 if (bye != null)
                 {
                     var pred = W.GetPrediction(bye);

@@ -85,6 +85,8 @@ namespace LevelZero.Controller
                     new ValueCheckbox(true, "enable", "Use Activator")
                 }
             };
+            feature.ToActivatorMenu();
+            Features.Add(feature);
 
             #region Summoners
 

@@ -178,6 +178,17 @@ namespace LevelZero.Core.Champions
             Spells[2] = E
             Spells[3] = R
         */
+
+        public override void PermaActive()
+        {
+            base.PermaActive();
+
+            if(Orbwalker.ForcedTarget != null && (!Player.Instance.IsInAutoAttackRange(Orbwalker.ForcedTarget) || Orbwalker.ForcedTarget.IsValidTarget(Player.Instance.GetAutoAttackRange())))
+            {
+                Orbwalker.ForcedTarget = null;
+            }
+        }
+
         public override void OnCombo()
         {
             var target = TargetSelector.GetTarget(Spells[1].Range, DamageType.Physical);

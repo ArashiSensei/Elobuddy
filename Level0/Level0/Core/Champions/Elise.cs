@@ -64,7 +64,7 @@ namespace LevelZero.Core.Champions
 
             DamageIndicator.Initialize(DamageUtil.GetComboDamage);
 
-            new SkinController(4);
+            //new SkinController(4);
         }
 
         public override void InitMenu()

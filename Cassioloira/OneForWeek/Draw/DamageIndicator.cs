@@ -42,7 +42,7 @@ namespace OneForWeek.Draw
         {
             if (Enabled)
             {
-                foreach (var unit in HeroManager.Enemies.Where(u => u.IsValidTarget() && u.IsHPBarRendered))
+                foreach (var unit in EntityManager.Heroes.Enemies.Where(u => u.IsValidTarget() && u.IsHPBarRendered))
                 {
                     // Get damage to unit
                     var damage = DamageToUnit(unit);

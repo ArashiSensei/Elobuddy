@@ -68,7 +68,7 @@ namespace LevelZero.Controller
 
             if (target != null)
             {
-                if (EntityManager.Heroes.Enemies.Any(it => it.IsValidTarget() && it.Distance(target) <= it.GetAutoAttackRange())) PluginModel.Activator.heal.Cast();
+                if (EntityManager.Heroes.Enemies.Any(it => it.IsValidTarget() && it.IsInAutoAttackRange(target))) PluginModel.Activator.heal.Cast();
             }
         }
 

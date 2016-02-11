@@ -488,7 +488,7 @@ namespace LevelZero.Controller
 
         private void AIHeroClient_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsAlly || sender.IsMe || Player.Distance(sender) > args.SData.CastRangeDisplayOverride || !(sender is AIHeroClient)) return;
+            if (start.IsChecked("enable") || !sender.IsEnemy || Player.Distance(sender) >= args.SData.CastRangeDisplayOverride || !(sender is AIHeroClient)) return;
 
             //Is dangerous spell ?
             var spell = _autoZhonyaSpells.FirstOrDefault(it => it == sender.BaseSkinName.ToLower() + "." + args.Slot.ToString().ToLower());
@@ -502,9 +502,12 @@ namespace LevelZero.Controller
 
             if (spell != "morgana.r" && spell != "nunu.r" && spell != "zed.r")
             {
-                if (barrier != null && summoners.IsChecked("summoners.barrier.dangerousspells") && barrier.IsReady() && (Player.Health + (95 + (20 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100 && (Player.Health + (95 + (20 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) <= Player.MaxHealth)
+                if (barrier != null && summoners.IsChecked("summoners.barrier") && summoners.IsChecked("summoners.barrier.dangerousspells") && barrier.IsReady())
                 {
-                    if (args.Target != null && args.Target.IsMe) { barrier.Cast(); return; }
+                    var plusHealth = (95 + (20 * Player.Level)); //Barrier health
+                    var finalHealth = Player.Health + plusHealth - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot);
+
+                    if (args.Target != null && args.Target.IsMe && finalHealth >= summoners.SliderValue("summoners.barrier.dangerousspells.safelife") && finalHealth <= Player.MaxHealth * 0.7f) { barrier.Cast(); return; }
 
                     int delay = new int();
 
@@ -522,9 +525,12 @@ namespace LevelZero.Controller
                     return;
                 }
 
-                else if (heal != null && summoners.IsChecked("summoners.heal.dangerousspells") && heal.IsReady() && (Player.Health + (75 + (15 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) > 100 && (Player.Health + (75 + (15 * Player.Level))) - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot) <= Player.MaxHealth)
+                else if (heal != null && summoners.IsChecked("summoners.heal") && summoners.IsChecked("summoners.heal.dangerousspells") && heal.IsReady())
                 {
-                    if (args.Target != null && args.Target.IsMe) { heal.Cast(); return; }
+                    var plusHealth = (75 + (15 * Player.Level)); //Heal health
+                    var finalHealth = Player.Health + plusHealth - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot);
+
+                    if (args.Target != null && args.Target.IsMe && finalHealth > summoners.SliderValue("summoners.heal.dangerousspells.safelife") && finalHealth <= Player.MaxHealth * 0.7f) { heal.Cast(); return; }
 
                     int delay = new int();
 
@@ -543,7 +549,7 @@ namespace LevelZero.Controller
                 }
             }
 
-            //This spells isn't checked on menu ? return;
+            //This spell isn't checked on menu ? return;
             if (!defensives.IsChecked("defensives.zhonya." + spell)) return;
 
             //Zhonya on dangerous
@@ -602,7 +608,7 @@ namespace LevelZero.Controller
         {
             var polygons = new Geometry.Polygon[] { new Geometry.Polygon.Rectangle(args.Start, args.End, args.SData.LineWidth), new Geometry.Polygon.Circle(args.End, args.SData.CastRadius) };
 
-            if (polygons.Any(it => it.IsInside(Player)))
+            if (Player.Position.Distance(args.Start.To2D(), args.End.To2D(), true) < args.SData.LineWidth * args.SData.LineWidth || Player.Distance(args.End, true) < args.SData.CastRadius * args.SData.CastRadius)
             {
                 if (useHeal) heal.Cast();
                 else barrier.Cast();

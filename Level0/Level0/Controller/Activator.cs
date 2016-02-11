@@ -507,7 +507,9 @@ namespace LevelZero.Controller
                     var plusHealth = (95 + (20 * Player.Level)); //Barrier health
                     var finalHealth = Player.Health + plusHealth - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot);
 
-                    if (args.Target != null && args.Target.IsMe && finalHealth >= summoners.SliderValue("summoners.barrier.dangerousspells.safelife") && finalHealth <= Player.MaxHealth * 0.7f) { barrier.Cast(); return; }
+                    if (!(finalHealth >= summoners.SliderValue("summoners.barrier.dangerousspells.safelife") && finalHealth <= Player.MaxHealth * 0.7f)) return;
+
+                    if (args.Target != null && args.Target.IsMe) { barrier.Cast(); return; }
 
                     int delay = new int();
 
@@ -530,7 +532,9 @@ namespace LevelZero.Controller
                     var plusHealth = (75 + (15 * Player.Level)); //Heal health
                     var finalHealth = Player.Health + plusHealth - ((AIHeroClient)sender).GetSpellDamage(Player, args.Slot);
 
-                    if (args.Target != null && args.Target.IsMe && finalHealth > summoners.SliderValue("summoners.heal.dangerousspells.safelife") && finalHealth <= Player.MaxHealth * 0.7f) { heal.Cast(); return; }
+                    if (!(finalHealth >= summoners.SliderValue("summoners.heal.dangerousspells.safelife") && finalHealth <= Player.MaxHealth * 0.7f)) return;
+
+                    if (args.Target != null && args.Target.IsMe) { heal.Cast(); return; }
 
                     int delay = new int();
 

@@ -217,7 +217,7 @@ namespace LevelZero.Core.Champions
 
             if (combo.IsChecked("combo.e") && E.IsReady() && E.IsInRange(target))
             {
-                if (target.Distance(Player.Instance) < Player.Instance.AttackRange - 100 || DamageUtil.Killable(target, SpellSlot.E))
+                if ((!target.HasBuff("QuinnW") || (target.IsMelee && target.IsInAutoAttackRange(Player.Instance))) || DamageUtil.Killable(target, SpellSlot.E))
                 {
                     E.Cast(target);
                 }

@@ -64,7 +64,7 @@ namespace LevelZero.Controller
         {
             if (PluginModel.Activator.heal == null || !PluginModel.Activator.heal.IsReady() || !PluginModel.Activator.summoners.IsChecked("summoners.heal")) return;
 
-            var target = EntityManager.Heroes.Allies.FirstOrDefault(it => it.IsValidTarget(PluginModel.Activator.heal.Range) && it.HealthPercent <= PluginModel.Activator.summoners.SliderValue("summoners.heal.health%"));
+            var target = EntityManager.Heroes.Allies.FirstOrDefault(it => Player.Distance(it) <= 830 && !it.IsDead && it.HasBuffOfType(BuffType.Invulnerability) && it.HealthPercent <= PluginModel.Activator.summoners.SliderValue("summoners.heal.health%"));
 
             if (target != null)
             {
